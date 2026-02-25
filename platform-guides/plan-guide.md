@@ -4,16 +4,22 @@ This guide defines how to **write** a high-quality plan. For execution details (
 
 ## What a Plan Is
 
-- A plan is a tracked unit of work with a status and priority.
+- A plan is a tracked unit of work with a type, status, and priority.
 - Use plans when the work spans multiple steps or requires review and verification.
 - Plans support comments, assignment, and status transitions.
+- Plans have a **type** that classifies the nature of the work:
+  - `FEATURE` — New functionality or capability
+  - `BUG_FIX` — Fix for a defect or unexpected behavior
+  - `ISSUE` — Investigation or issue resolution
+  - `REFACTOR` — Code restructuring without behavior change
+  - `CHORE` — Maintenance, config, docs, or other housekeeping
 
 ## Plan Writing Workflow
 
 1. **Clarify requirements** — explore the codebase, interview the requester if needed
 2. **Write plan body** — follow Plan Tiers below to pick the right structure
 3. **Gap analysis** — SHOULD run Metis review; use the self-check below if unavailable
-4. **Register** — `agentteams plan create --file {path} --priority {level}`
+4. **Register** — `agentteams plan create --file {path} --type {type} --priority {level}`
 
 Repository linkage note:
 

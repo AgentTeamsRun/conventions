@@ -114,7 +114,8 @@ When the user asks for a completion report but no plan exists:
 2. If approved:
    ```bash
    agentteams plan quick --title "<brief work summary>" \
-     --content "<TL;DR and actual tasks performed>"
+     --content "<TL;DR and actual tasks performed>" \
+     --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE>
    ```
    > `plan quick` does not attach a completion report. For detailed reporting, use the full plan workflow (`plan create` → `plan start` → `plan finish`).
 3. If declined, use `agentteams report create` (see Standalone report above).

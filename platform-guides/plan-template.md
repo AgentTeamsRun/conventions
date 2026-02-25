@@ -13,6 +13,7 @@
 > - <!-- file/module 2 — what changes -->
 >
 > **Estimated Effort**: <!-- Short / Medium / Long -->
+> **Type**: <!-- FEATURE / BUG_FIX / ISSUE / REFACTOR / CHORE -->
 > **Parallel Execution**: <!-- YES / NO -->
 > **Critical Path**: <!-- Task X → Task Y → ... -->
 
