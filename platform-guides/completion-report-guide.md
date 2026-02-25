@@ -27,51 +27,67 @@ Completion reports capture what changed, why it changed, how it was verified, an
 - `report create` and completion report payloads do **not** use `reportType` anymore.
 - Use `status` + metrics (commit and line/file stats) to describe report context.
 
-## Minimal Template
+## Report File Structure
 
-Use a short structure so future readers can scan it quickly:
+Write the report file with this structure:
 
-~~~
+~~~markdown
 ## Summary
-- What changed and why
+- <what changed and why — be specific, not generic>
 
 ## Verification
-- typecheck: ...
-- tests: ...
+- typecheck: <pass or fail, with the command you ran>
+- tests: <pass or fail, with the command you ran>
 
 ## Notes
-- risks / follow-ups
+- <risks, follow-ups, or "none">
 
 ## Conventions Referenced
-- .agentteams/rules/...  # list conventions you referenced during this work
+- <list .agentteams/rules/*.md files you actually referenced — do not guess>
 ~~~
+
+## Report File Naming
+
+Use `{first 8 characters of planId}-report.md`. Example: if planId is `57a51ec2-cf70-...`, the file name is `57a51ec2-report.md`.
+
+For standalone reports (no plan), use a descriptive name: `<feature-or-fix-name>-report.md`.
 
 ## Plan-Linked vs Non-Plan Reports
 
 You can attach report content directly while finishing a plan:
 
 ~~~bash
-agentteams plan finish --id {planId} --report-title "Work completion summary" --report-file .agentteams/temp/<report-file-name>.md
+agentteams plan finish --id {planId} \
+  --report-title "<what you did and why, in one sentence>" \
+  --report-file .agentteams/temp/{planId-first-8-chars}-report.md \
+  --quality-score <0-100, see Quality Score section> \
+  --report-status <COMPLETED | PARTIAL | FAILED>
 
 # Alternative: attach a minimal template without writing a file
 agentteams plan finish --id {planId} --report-template minimal
 ~~~
 
-If you were working under a plan, link the report to the plan.
+> Git metrics (`commitHash`, `branchName`, `filesModified`, `linesAdded`, `linesDeleted`) are auto-collected. Use `--no-git` to disable. Manual overrides: `--duration-seconds`, `--commit-start`, `--commit-end`, `--pull-request-id`.
+
+If you were working under a plan, link the report to the plan:
 
 ~~~bash
 agentteams report create \
   --plan-id {planId} \
-  --title "Feature X implemented" \
-  --content "## Summary\n- What changed and why\n\n## Verification\n- typecheck: pass\n- tests: pass\n\n## Notes\n- risks / follow-ups"
+  --title "<what you did and why, in one sentence>" \
+  --file .agentteams/temp/{planId-first-8-chars}-report.md \
+  --quality-score <0-100> \
+  --status <COMPLETED | PARTIAL | FAILED>
 ~~~
 
-If you were not working under a plan, omit the plan id.
+If you were not working under a plan, omit the plan id:
 
 ~~~bash
 agentteams report create \
-  --title "Feature X implemented" \
-  --content "## Summary\n- What changed and why\n\n## Verification\n- typecheck: pass\n- tests: pass\n\n## Notes\n- risks / follow-ups"
+  --title "<what you did and why, in one sentence>" \
+  --file .agentteams/temp/<feature-or-fix-name>-report.md \
+  --quality-score <0-100> \
+  --status <COMPLETED | PARTIAL | FAILED>
 ~~~
 
 Repository linkage note:
@@ -80,7 +96,7 @@ Repository linkage note:
 
 ## Metrics (Auto + Manual)
 
-`report create` can attach work metrics for insight workflows.
+`report create` and `plan finish` can attach work metrics for insight workflows.
 
 - Auto-collected by default (git context required):
   - `commitHash`, `branchName`, `filesModified`, `linesAdded`, `linesDeleted`
@@ -89,36 +105,22 @@ Repository linkage note:
 - `--no-git` disables auto collection.
 - Manual options override auto-collected values.
 
-Example:
-
-~~~bash
-agentteams report create \
-  --plan-id {planId} \
-  --title "Feature X implemented" \
-  --content "## Summary\n- What changed and why" \
-  --files-modified 5 \
-  --lines-added 120 \
-  --lines-deleted 30 \
-  --quality-score 95
-~~~
-
 ## Quality Score
 
 Work quality is self-assessed by the agent on a 0-100 scale. Use the four dimensions below to judge holistically.
 
-**Dimensions:**
-- **Verification**: Did typecheck and tests pass?
-- **Completeness**: Were all requirements addressed?
-- **Scope Adherence**: Were changes limited to the requested scope? Were conventions followed?
-- **Side Effects**: Did the change avoid unintended impact on existing behavior?
+| Dimension | What to check |
+|---|---|
+| Verification | Did typecheck and tests pass? |
+| Completeness | Were all requirements addressed? |
+| Scope Adherence | Were changes limited to the requested scope? Were conventions followed? |
+| Side Effects | Did the change avoid unintended impact on existing behavior? |
 
-**Score Tiers:**
-
-| Score | Color | Criteria |
-|-------|-------|----------|
-| 90-100 | Green | All verification passed. All requirements met. Changes within scope and conventions followed. No side effects. |
-| 70-89 | Yellow | Minor gaps: verification partially skipped, slight scope overage, or minor convention deviations. |
-| 0-69 | Red | Verification failed, requirements unmet, significant scope violation, or side effects introduced. |
+| Score | Meaning |
+|---|---|
+| 90-100 | All verification passed. All requirements met. Conventions followed. No side effects. |
+| 70-89 | Minor gaps: verification partially skipped, slight scope overage, or minor convention deviations. |
+| 0-69 | Verification failed, requirements unmet, significant scope violation, or side effects introduced. |
 
 > Convention violations (naming, logging, PR rules, etc.) count against Scope Adherence.
 > A score of 90+ requires conventions to be followed.

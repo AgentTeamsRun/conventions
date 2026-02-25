@@ -1,120 +1,167 @@
 # AgentTeams Reporting Rule
 
-When work starts or ends, report status to AgentTeams **only if you are working under a plan**.
+Report status to AgentTeams **only if you are working under a plan**.
+If you are not working under a plan, skip all reporting and continue the task.
+
+> If the CLI is unavailable, skip reporting and continue the task.
 
 ## On work start
-
-If you are working under a plan, start the plan:
 
 ```bash
 agentteams plan start --id {planId}
 ```
 
-If you are not working under a plan, skip reporting and continue the task.
-
 ## On work completion
 
-If you are working under a plan:
-
 ```bash
-agentteams plan finish --id {planId} --report-title "Work completion summary" --report-file .agentteams/temp/<report-file-name>.md
+agentteams plan finish --id {planId} \
+  --report-title "<what you did and why, in one sentence>" \
+  --report-file .agentteams/temp/{planId-first-8-chars}-report.md \
+  --quality-score <0-100, see scoring rules below> \
+  --report-status <see status rules below>
 ```
 
-If you are not working under a plan, skip reporting and continue the task.
+### Report file naming
 
-> If the CLI is unavailable, skip reporting and continue the task.
+Use `{first 8 characters of planId}-report.md`. Example: if planId is `57a51ec2-cf70-...`, the file name is `57a51ec2-report.md`.
 
-### Completion Report Writing Guide
+### Report file structure
 
-Before writing a completion report, read: `.agentteams/platform/completion-report-guide.md`
+Write the report file with this structure before running `plan finish`:
 
-Assign `--quality-score` based on four dimensions: Verification, Completeness, Scope Adherence (includes conventions), and Side Effects.
-90+ = all passing · 70-89 = minor gaps · 0-69 = failures or violations.
+```markdown
+## Summary
+- <what changed and why — be specific, not generic>
 
-Include reproducible verification evidence (commands + outcomes), but keep outcomes short:
-write pass/fail plus 1-3 lines of summary; do not paste long raw logs into the report body.
+## Verification
+- typecheck: <pass or fail, with the command you ran>
+- tests: <pass or fail, with the command you ran>
 
-If you are not working under a plan and need a standalone report:
+## Notes
+- <risks, follow-ups, or "none">
+
+## Conventions Referenced
+- <list .agentteams/rules/*.md files you actually referenced — do not guess>
+```
+
+### Quality score rules
+
+Assign `--quality-score` by evaluating these four dimensions:
+
+| Dimension | What to check |
+|---|---|
+| Verification | Did typecheck and tests pass? |
+| Completeness | Were all requirements addressed? |
+| Scope Adherence | Were changes limited to the requested scope? Were conventions followed? |
+| Side Effects | Did the change avoid unintended impact on existing behavior? |
+
+**Score**: 90-100 = all four pass · 70-89 = minor gaps · 0-69 = failures or violations.
+
+### Report status rules
+
+| Status | When to use |
+|---|---|
+| `COMPLETED` | All verification passed, all requirements met |
+| `PARTIAL` | Some requirements done, but work remains (e.g., blocked by external dependency) |
+| `FAILED` | Verification failed, critical requirements unmet, or changes had to be reverted |
+
+### Git metrics
+
+Git metrics (`commitHash`, `branchName`, `filesModified`, `linesAdded`, `linesDeleted`) are auto-collected. Use `--no-git` to disable. Manual-only fields: `--duration-seconds`, `--commit-start`, `--commit-end`, `--pull-request-id`.
+
+---
+
+## Standalone report (no plan)
+
+If you completed work without a plan and need a standalone report:
 
 ```bash
 agentteams report create \
-  --title "Work completion summary" \
-  --file .agentteams/temp/<report-file-name>.md \
-  --quality-score 95
+  --title "<what you did and why, in one sentence>" \
+  --file .agentteams/temp/<descriptive-name>-report.md \
+  --quality-score <0-100, see scoring rules above> \
+  --status <COMPLETED | PARTIAL | FAILED>
 ```
 
-### Postmortem Submission
+The same report file structure, quality score rules, and status rules apply.
 
-If you had an incident or a high-severity quality issue, create a postmortem.
+---
 
-Before writing a postmortem, read: `.agentteams/platform/post-mortem-guide.md`
+## Postmortem
+
+Create a postmortem **only when**: verification failed AND the failure affected existing behavior (regression, data loss, broken API contract).
+
+Do NOT create a postmortem for: minor test failures, styling issues, or incomplete features.
+
+Before writing, read: `.agentteams/platform/post-mortem-guide.md`
 
 ```bash
 agentteams postmortem create \
   --plan-id {planId} \
-  --title "Incident postmortem" \
-  --file .agentteams/temp/<postmortem-file-name>.md \
-  --action-items "Follow-up 1,Follow-up 2" \
+  --title "<what broke — e.g., 'API 500 on plan finish after schema migration'>" \
+  --file .agentteams/temp/{planId-first-8-chars}-postmortem.md \
+  --action-items "<specific preventive action 1>,<specific preventive action 2>" \
   --status OPEN
 ```
 
+---
+
 ## Quick Plan
 
-When a completion report is requested but no plan exists, suggest creating a quick plan first:
+When the user asks for a completion report but no plan exists:
 
-1. Ask the user whether to create a quick plan.
+1. Ask the user: "No active plan found. Create a quick plan to attach the report?"
 2. If approved:
    ```bash
-   agentteams plan quick --title "[work summary]" --report-title "Work completion summary" --report-file .agentteams/temp/<report-file-name>.md
+   agentteams plan quick --title "<brief work summary>" \
+     --report-title "<what you did and why, in one sentence>" \
+     --report-file .agentteams/temp/<descriptive-name>-report.md \
+     --quality-score <0-100>
    ```
-   This single command creates a plan (template: quick-minimal, priority: LOW), starts it, and finishes it with the report attached.
-3. If declined, create a standalone report:
-   ```bash
-   agentteams report create --title "Work completion summary" --file .agentteams/temp/<report-file-name>.md
-   ```
+3. If declined, use `agentteams report create` (see Standalone report above).
+
+---
 
 ## Plan Workflow Rules
 
-### Download plan snapshot before starting
+### Before starting work on a plan
 
-Download the plan as a local runbook before starting work.
+1. Download the plan as a local runbook:
+   ```bash
+   agentteams plan download --id {planId}
+   ```
+   This saves to `.agentteams/active-plan/{filename}.md`. Read this file at the start of your work.
 
-```bash
-agentteams plan download --id {planId}
-```
+2. Check for comments (especially `RISK` comments):
+   ```bash
+   agentteams comment list --plan-id {planId}
+   ```
 
-This saves the plan to `.agentteams/active-plan/{filename}.md`.
-Always reference this file during work. After completing or cancelling the plan, clean up:
+### During work
+
+Post comments to track progress:
+
+- **Risk found**: `agentteams comment create --plan-id {planId} --type RISK --content "<describe the risk and its potential impact>"`
+- **Scope changed**: `agentteams comment create --plan-id {planId} --type MODIFICATION --content "<what changed from the original plan and why>"`
+- **Status update**: `agentteams comment create --plan-id {planId} --type GENERAL --content "<current progress with specific verification results>"`
+
+### After completing or cancelling a plan
+
+Clean up the local runbook:
 
 ```bash
 agentteams plan cleanup --id {planId}
 ```
 
-### Check comments before starting
+### Guide checks before writing documents
 
-Before working on a plan, read its comments first.
+Before writing or updating **platform documents** (plans, reports, conventions, postmortems), read the matching guide:
 
-```bash
-agentteams comment list --plan-id {planId}
-```
-
-Pay special attention to `RISK` comments.
-
-### Post comments during work
-
-- **RISK**: `agentteams comment create --plan-id {planId} --type RISK --content "[risk details]"`
-- **MODIFICATION**: `agentteams comment create --plan-id {planId} --type MODIFICATION --content "[what changed and why]"`
-- **GENERAL**: `agentteams comment create --plan-id {planId} --type GENERAL --content "Done. Verified (typecheck/tests)."`
-
-### Required guide checks before writing documents
-
-You MUST read the relevant platform guide before writing or updating related documents.
-
-- Plan execution: `.agentteams/platform/plan-guide.md`
-- New plan: `.agentteams/platform/plan-template.md`
-- Completion reports: `.agentteams/platform/completion-report-guide.md`
-- Post mortems: `.agentteams/platform/post-mortem-guide.md`
-- Conventions: `.agentteams/platform/convention-authoring-guide.md`
-- Convention update/delete: `.agentteams/platform/convention-ud-guide.md`
-
-If the required guide is not checked, do not proceed with document creation.
+| Document type | Guide to read |
+|---|---|
+| Plan execution | `.agentteams/platform/plan-guide.md` |
+| New plan | `.agentteams/platform/plan-template.md` |
+| Completion report | `.agentteams/platform/completion-report-guide.md` |
+| Postmortem | `.agentteams/platform/post-mortem-guide.md` |
+| Convention (create) | `.agentteams/platform/convention-authoring-guide.md` |
+| Convention (update/delete) | `.agentteams/platform/convention-ud-guide.md` |

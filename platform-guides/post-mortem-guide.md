@@ -42,37 +42,43 @@ A post mortem is a written analysis of an incident, focusing on root cause and p
 
 ## Post Mortem Content Template
 
-Use this structure for the `--content` field:
+Use this structure for the `--content` field or the `--file` content:
 
 ~~~markdown
 ## Summary
-[What happened - 1-2 sentences]
+<what happened — 1-2 sentences, be specific>
 
 ## Timeline
-- HH:MM - ...
-- HH:MM - ...
+- HH:MM - <event 1>
+- HH:MM - <event 2>
 
 ## Root Cause
-[Specific cause, not symptoms]
+<specific cause, not symptoms — describe the causal chain>
 
 ## Impact
-[Who/what was affected and for how long]
+<who/what was affected and for how long>
 
 ## What Went Wrong
-- ...
+- <contributing factor 1>
+- <contributing factor 2>
 
 ## What Went Well
-- ...
+- <what helped limit the damage or speed up recovery>
 ~~~
+
+## Post Mortem File Naming
+
+Use `{first 8 characters of planId}-postmortem.md`. Example: if planId is `57a51ec2-cf70-...`, the file name is `57a51ec2-postmortem.md`.
 
 ## Useful Commands
 
 ~~~bash
 agentteams postmortem create \
-  --title "Incident title" \
-  --content "## Summary\n- ...\n\n## Timeline\n- ...\n\n## Root Cause\n- ...\n\n## Impact\n- ..." \
-  --action-items "item1,item2" \
-  --status RESOLVED
+  --plan-id {planId} \
+  --title "<what broke — e.g., 'API 500 on plan finish after schema migration'>" \
+  --file .agentteams/temp/{planId-first-8-chars}-postmortem.md \
+  --action-items "<specific preventive action 1>,<specific preventive action 2>" \
+  --status OPEN
 ~~~
 
 Repository linkage note:
