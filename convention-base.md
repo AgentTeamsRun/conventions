@@ -141,8 +141,8 @@ When the user asks for a completion report but no plan exists:
 
 Post comments to track progress:
 
-- **Risk found**: `agentteams comment create --plan-id {planId} --type RISK --content "<describe the risk and its potential impact>"`
-- **Scope changed**: `agentteams comment create --plan-id {planId} --type MODIFICATION --content "<what changed from the original plan and why>"`
+- **Risk found**: `agentteams comment create --plan-id {planId} --type RISK --content "<describe the risk and its potential impact>" --affected-files "<comma-separated file paths>"`
+- **Scope changed**: `agentteams comment create --plan-id {planId} --type MODIFICATION --content "<what changed from the original plan and why>" --affected-files "<comma-separated file paths>"`
 - **Status update**: `agentteams comment create --plan-id {planId} --type GENERAL --content "<current progress with specific verification results>"`
 
 ### After completing or cancelling a plan
