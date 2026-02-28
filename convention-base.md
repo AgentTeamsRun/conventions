@@ -132,6 +132,11 @@ When the user asks for a completion report but no plan exists:
    ```
    This saves to `.agentteams/active-plan/{filename}.md`. Read this file at the start of your work.
 
+3. If the plan contains entity references in `[label](type:id:path)` format, resolve them:
+   - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
+   - `completionReport:id` → `agentteams report download --id {id}` 로 다운로드 후 로컬 파일 참조
+   - `postMortem:id` → `agentteams postmortem download --id {id}` 로 다운로드 후 로컬 파일 참조
+
 2. Check for comments (especially `RISK` comments):
    ```bash
    agentteams comment list --plan-id {planId}
