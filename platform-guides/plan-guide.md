@@ -43,8 +43,6 @@ agentteams plan finish --id {planId} \
   --quality-score <0-100, see Quality Score dimensions> \
   --report-status <COMPLETED | PARTIAL | FAILED>
 
-# Finish and include a minimal completion report template
-agentteams plan finish --id {planId} --report-template minimal
 ~~~
 
 ## Plan Tiers — Pick the Right Level

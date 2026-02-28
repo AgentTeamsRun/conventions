@@ -65,8 +65,6 @@ agentteams plan finish --id {planId} \
   --quality-score <0-100, see Quality Score section> \
   --report-status <COMPLETED | PARTIAL | FAILED>
 
-# Alternative: attach a minimal template without writing a file
-agentteams plan finish --id {planId} --report-template minimal
 ~~~
 
 > Git metrics (`commitHash`, `branchName`, `filesModified`, `linesAdded`, `linesDeleted`) are auto-collected. Use `--no-git` to disable. Manual overrides: `--duration-seconds`, `--commit-start`, `--commit-end`, `--pull-request-id`.

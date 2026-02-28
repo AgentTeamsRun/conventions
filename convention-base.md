@@ -1,7 +1,7 @@
 # AgentTeams Reporting Rule
 
-Report status to AgentTeams **only if you are working under a plan**.
-If you are not working under a plan, skip all reporting and continue the task.
+Report status to AgentTeams **if you are working under a plan**.
+If you are not working under a plan, see the **Completion report without a plan** section below.
 
 > If the CLI is unavailable, skip reporting and continue the task.
 
@@ -71,54 +71,36 @@ Git metrics (`commitHash`, `branchName`, `filesModified`, `linesAdded`, `linesDe
 
 ---
 
-## Standalone report (no plan)
+## Completion report without a plan
 
-If you completed work without a plan and need a standalone report:
+When you complete work **without a plan**, follow this decision flow:
 
-```bash
-agentteams report create \
-  --title "<what you did and why, in one sentence>" \
-  --file .agentteams/temp/<descriptive-name>-report.md \
-  --quality-score <0-100, see scoring rules above> \
-  --status <COMPLETED | PARTIAL | FAILED>
-```
-
-The same report file structure, quality score rules, and status rules apply.
-
----
-
-## Postmortem
-
-Create a postmortem **only when**: verification failed AND the failure affected existing behavior (regression, data loss, broken API contract).
-
-Do NOT create a postmortem for: minor test failures, styling issues, or incomplete features.
-
-Before writing, read: `.agentteams/platform/post-mortem-guide.md`
-
-```bash
-agentteams postmortem create \
-  --plan-id {planId} \
-  --title "<what broke — e.g., 'API 500 on plan finish after schema migration'>" \
-  --file .agentteams/temp/{planId-first-8-chars}-postmortem.md \
-  --action-items "<specific preventive action 1>,<specific preventive action 2>" \
-  --status OPEN
-```
-
----
-
-## Quick Plan
-
-When the user asks for a completion report but no plan exists:
-
-1. Ask the user: "No active plan found. Create a quick plan to attach the report?"
+1. Ask the user: "No active plan found. Should I create a quick plan to record this work?"
 2. If approved:
    ```bash
    agentteams plan quick --title "<brief work summary>" \
      --content "<TL;DR and actual tasks performed>" \
      --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE>
    ```
-   > `plan quick` does not attach a completion report. For detailed reporting, use the full plan workflow (`plan create` → `plan start` → `plan finish`).
-3. If declined, use `agentteams report create` (see Standalone report above).
+   Then create the report separately:
+   ```bash
+   agentteams report create \
+     --plan-id <planId from quick plan> \
+     --title "<what you did and why, in one sentence>" \
+     --file .agentteams/temp/<planId-first-8-chars>-report.md \
+     --quality-score <0-100, see scoring rules above> \
+     --status <COMPLETED | PARTIAL | FAILED>
+   ```
+3. If declined, create a standalone report (no plan link):
+   ```bash
+   agentteams report create \
+     --title "<what you did and why, in one sentence>" \
+     --file .agentteams/temp/<descriptive-name>-report.md \
+     --quality-score <0-100, see scoring rules above> \
+     --status <COMPLETED | PARTIAL | FAILED>
+   ```
+
+The same report file structure, quality score rules, and status rules apply.
 
 ---
 
