@@ -86,3 +86,21 @@ Use these prefixes consistently across documents (include a trailing space after
 - `📌 `: key summary
 - `💡 `: tip/reference
 - `🎯 `: goal/intent
+
+## 5) Useful Commands
+
+~~~bash
+# Create a new convention
+agentteams convention create --file .agentteams/{category}/{convention-name}.md
+
+# Download all conventions (required before update/delete)
+agentteams convention download
+
+# Preview update (dry-run)
+agentteams convention update --file .agentteams/{category}/{convention-name}.md
+
+# Apply update to server
+agentteams convention update --file .agentteams/{category}/{convention-name}.md --apply
+~~~
+
+> Place the file under `.agentteams/<category>/` before running `convention create`. The `<category>` must be one of: `rules`, `skills`, `guides`, `references`.
