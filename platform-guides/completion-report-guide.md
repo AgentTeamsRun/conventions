@@ -52,7 +52,7 @@ Use `{first 8 characters of planId}-report.md`. Example: if planId is `57a51ec2-
 
 For standalone reports (no plan), use a descriptive name: `<feature-or-fix-name>-report.md`.
 
-> ⚠️ **경로 A 또는 경로 B 중 하나만 사용하세요.** 동시 실행 시 같은 플랜에 완료보고가 중복 생성됩니다.
+> ⚠️ **Use either Path A or Path B, not both.** Running both simultaneously will create duplicate completion reports for the same plan.
 >
 ## Plan-Linked vs Non-Plan Reports
 

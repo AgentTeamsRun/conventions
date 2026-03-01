@@ -116,8 +116,9 @@ The same report file structure, quality score rules, and status rules apply.
 
 3. If the plan contains entity references in `[label](type:id:path)` format, resolve them:
    - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
-   - `completionReport:id` → `agentteams report download --id {id}` 로 다운로드 후 로컬 파일 참조
-   - `postMortem:id` → `agentteams postmortem download --id {id}` 로 다운로드 후 로컬 파일 참조
+   - `completionReport:id` → Download with `agentteams report download --id {id}` and read the local file
+   - `postMortem:id` → Download with `agentteams postmortem download --id {id}` and read the local file
+   - `coAction:id` → Download with `agentteams coaction download --id {id}` and read the local file
 
 2. Check for comments (especially `RISK` comments):
    ```bash
@@ -152,3 +153,4 @@ Before writing or updating **platform documents** (plans, reports, conventions, 
 | Postmortem | `.agentteams/platform/post-mortem-guide.md` |
 | Convention (create) | `.agentteams/platform/convention-authoring-guide.md` |
 | Convention (update/delete) | `.agentteams/platform/convention-ud-guide.md` |
+| Co-action (handoff) | `.agentteams/platform/co-action-guide.md` |
