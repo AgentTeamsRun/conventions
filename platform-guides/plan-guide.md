@@ -45,6 +45,30 @@ agentteams plan finish --id {planId} \
 
 ~~~
 
+## Plan Start → Execution Flow
+
+When a user explicitly says to start a plan (e.g. "start plan {id}", "let's start {id}"), treat it as an explicit execution approval. Follow this flow:
+
+~~~bash
+# 1. Start lifecycle
+agentteams plan start --id {planId}
+
+# 2. Download runbook
+agentteams plan download --id {planId}
+
+# 3. Check for blocking comments
+agentteams comment list --plan-id {planId}
+~~~
+
+**Decision after comment check:**
+
+| Comments found | Action |
+|---|---|
+| `RISK` or `MODIFICATION` present | Report to user and wait for confirmation before implementing |
+| None (or `GENERAL` only) | Proceed with implementation immediately |
+
+The phrase "start the plan" is an explicit approval signal — do not stop after the CLI status change. Implement unless a blocking comment requires human confirmation.
+
 ## Plan Tiers — Pick the Right Level
 
 Not every plan needs the same structure. Pick the tier that matches your task size.
