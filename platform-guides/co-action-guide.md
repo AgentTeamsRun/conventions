@@ -109,6 +109,21 @@ agentteams coaction update --id {coActionId} --file .agentteams/temp/{name}-coac
 agentteams coaction update --id {coActionId} --status CLOSED
 ~~~
 
+## Output Behavior
+
+- `coaction create` and `coaction update` print post-action tips to **stderr**.
+- Structured command results (for `--format json`) remain on **stdout**.
+- This separation prevents JSON pipeline parsing failures when tips are shown.
+
+~~~bash
+# Keep stdout clean for JSON consumers
+agentteams coaction create \
+  --title "<title>" \
+  --file .agentteams/temp/{name}-coaction.md \
+  --format json \
+  2>/tmp/coaction-tips.log
+~~~
+
 ## Common Pitfalls
 
 - Dumping raw session logs instead of curated knowledge
@@ -116,6 +131,7 @@ agentteams coaction update --id {coActionId} --status CLOSED
 - Skipping the "Follow-up / Known Constraints" section — this is the most valuable part for handoff
 - Forgetting to link related plans and reports
 - Using PRIVATE visibility when the knowledge should be shared with the team
+- Assuming info tips are printed to stdout; they are intentionally sent to stderr
 
 ## References
 
