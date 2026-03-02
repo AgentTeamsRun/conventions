@@ -50,14 +50,14 @@ agentteams plan finish --id {planId} \
 When a user explicitly says to start a plan (e.g. "start plan {id}", "let's start {id}"), treat it as an explicit execution approval. Follow this flow:
 
 ~~~bash
-# 1. Start lifecycle
-agentteams plan start --id {planId}
-
-# 2. Download runbook
+# 1. Download runbook
 agentteams plan download --id {planId}
 
-# 3. Check for blocking comments
+# 2. Check for blocking comments
 agentteams comment list --plan-id {planId}
+
+# 3. Start lifecycle
+agentteams plan start --id {planId}
 ~~~
 
 **Decision after comment check:**
