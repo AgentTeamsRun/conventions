@@ -114,7 +114,10 @@ The same report file structure, quality score rules, and status rules apply.
    ```
    This saves to `.agentteams/active-plan/{filename}.md`. Read this file at the start of your work.
 
-3. If the plan contains entity references in `[label](type:id:path)` format, resolve them:
+3. If the plan contains entity references in `[label](type:id)` or `[label](type:id:path)` format, resolve them:
+   - **ID prefix stripping (IMPORTANT)**: The `id` part may include a type prefix such as `plan_`, `cr_`, `ca_`, `conv_`, or `pm_`. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
+     - Example: `[My Plan](plan:plan_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
+     - Full prefix list: `plan_` · `cr_` · `ca_` · `conv_` · `pm_`
    - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
    - `completionReport:id` → Download with `agentteams report download --id {id}` and read the local file
    - `postMortem:id` → Download with `agentteams postmortem download --id {id}` and read the local file
