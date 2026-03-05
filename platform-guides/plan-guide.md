@@ -41,7 +41,7 @@ agentteams plan finish --id {planId}
 # Finish and include completion report with metrics
 agentteams plan finish --id {planId} \
   --report-title "<what you did and why, in one sentence>" \
-  --report-file .agentteams/temp/{planId-first-8-chars}-report.md \
+  --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
   --quality-score <0-100, see Quality Score dimensions> \
   --report-status <COMPLETED | PARTIAL | FAILED>
 

@@ -78,7 +78,7 @@ Use `{first 8 characters of planId}-postmortem.md`. Example: if planId is `57a51
 agentteams postmortem create \
   --plan-id {planId} \
   --title "<what broke — e.g., 'API 500 on plan finish after schema migration'>" \
-  --file .agentteams/temp/{planId-first-8-chars}-postmortem.md \
+  --file .agentteams/cli/temp/{planId-first-8-chars}-postmortem.md \
   --action-items "<specific preventive action 1>,<specific preventive action 2>" \
   --status OPEN
 ~~~

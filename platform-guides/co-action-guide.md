@@ -88,7 +88,7 @@ agentteams coaction takeaway-create --id {coActionId} --content "<insight>"
 # Create
 agentteams coaction create \
   --title "<concise handoff title>" \
-  --file .agentteams/temp/{descriptive-name}-coaction.md \
+  --file .agentteams/cli/temp/{descriptive-name}-coaction.md \
   --visibility PRIVATE
 
 # Download for reference
@@ -105,7 +105,7 @@ agentteams coaction takeaway-list --id {coActionId}
 agentteams coaction takeaway-update --id {coActionId} --takeaway-id {takeawayId} --content "<updated insight>"
 agentteams coaction takeaway-delete --id {coActionId} --takeaway-id {takeawayId}
 # Update content
-agentteams coaction update --id {coActionId} --file .agentteams/temp/{name}-coaction.md
+agentteams coaction update --id {coActionId} --file .agentteams/cli/temp/{name}-coaction.md
 
 # Change status
 agentteams coaction update --id {coActionId} --status CLOSED
@@ -121,7 +121,7 @@ agentteams coaction update --id {coActionId} --status CLOSED
 # Keep stdout clean for JSON consumers
 agentteams coaction create \
   --title "<title>" \
-  --file .agentteams/temp/{name}-coaction.md \
+  --file .agentteams/cli/temp/{name}-coaction.md \
   --format json \
   2>/tmp/coaction-tips.log
 ~~~

@@ -63,7 +63,7 @@ You can attach report content directly while finishing a plan:
 ~~~bash
 agentteams plan finish --id {planId} \
   --report-title "<what you did and why, in one sentence>" \
-  --report-file .agentteams/temp/{planId-first-8-chars}-report.md \
+  --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
   --quality-score <0-100, see Quality Score section> \
   --report-status <COMPLETED | PARTIAL | FAILED>
 
@@ -77,7 +77,7 @@ If you were working under a plan, link the report to the plan:
 agentteams report create \
   --plan-id {planId} \
   --title "<what you did and why, in one sentence>" \
-  --file .agentteams/temp/{planId-first-8-chars}-report.md \
+  --file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
   --quality-score <0-100> \
   --status <COMPLETED | PARTIAL | FAILED>
 ~~~
@@ -87,7 +87,7 @@ If you were not working under a plan, omit the plan id:
 ~~~bash
 agentteams report create \
   --title "<what you did and why, in one sentence>" \
-  --file .agentteams/temp/<feature-or-fix-name>-report.md \
+  --file .agentteams/cli/temp/<feature-or-fix-name>-report.md \
   --quality-score <0-100> \
   --status <COMPLETED | PARTIAL | FAILED>
 ~~~

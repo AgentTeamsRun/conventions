@@ -32,7 +32,7 @@ agentteams plan start --id {planId}
 # Finish (with completion report)
 agentteams plan finish --id {planId} \
   --report-title "<what you did and why, in one sentence>" \
-  --report-file .agentteams/temp/{planId-first-8-chars}-report.md \
+  --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
   --quality-score <0-100> \
   --report-status <COMPLETED | PARTIAL | FAILED>
 ```
@@ -61,7 +61,7 @@ For report file structure, quality score dimensions, and status rules, see `.age
    ```bash
    agentteams plan download --id {planId}
    ```
-   This saves to `.agentteams/active-plan/{filename}.md`. Read this file at the start of your work.
+   This saves to `.agentteams/cli/active-plan/{filename}.md`. Read this file at the start of your work.
 
 2. Check for comments (especially `RISK` comments):
    ```bash
