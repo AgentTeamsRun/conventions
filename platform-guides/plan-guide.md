@@ -69,6 +69,35 @@ agentteams plan start --id {planId}
 
 The phrase "start the plan" is an explicit approval signal — do not stop after the CLI status change. Implement unless a blocking comment requires human confirmation.
 
+## Entity Reference Resolution
+
+Plans may contain entity references in `[label](type:id)` or `[label](type:id:path)` format. Resolve them as follows:
+
+1. **ID prefix stripping (IMPORTANT)**: The `id` part may include a type prefix such as `plan_`, `cr_`, `ca_`, `conv_`, or `pm_`. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
+   - Example: `[My Plan](plan:plan_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
+   - Full prefix list: `plan_` · `cr_` · `ca_` · `conv_` · `pm_`
+2. Resolution by type:
+   - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
+   - `completionReport:id` → Download with `agentteams report download --id {id}` and read the local file
+   - `postMortem:id` → Download with `agentteams postmortem download --id {id}` and read the local file
+   - `coAction:id` → Download with `agentteams coaction download --id {id}` and read the local file
+
+## During Plan Execution
+
+Post comments to track progress:
+
+- **Risk found**: `agentteams comment create --plan-id {planId} --type RISK --content "<risk description>" --affected-files "<paths>"`
+- **Scope changed**: `agentteams comment create --plan-id {planId} --type MODIFICATION --content "<what changed and why>" --affected-files "<paths>"`
+- **Status update**: `agentteams comment create --plan-id {planId} --type GENERAL --content "<current progress>"`
+
+## After Completing or Cancelling a Plan
+
+Clean up the local runbook:
+
+~~~bash
+agentteams plan cleanup --id {planId}
+~~~
+
 ## Plan Tiers — Pick the Right Level
 
 Not every plan needs the same structure. Pick the tier that matches your task size.
