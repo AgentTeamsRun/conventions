@@ -1,5 +1,7 @@
 # Post Mortem Guide (AgentTeams)
 
+> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+
 A post mortem is a written analysis of an incident, focusing on root cause and prevention.
 
 ## Goals

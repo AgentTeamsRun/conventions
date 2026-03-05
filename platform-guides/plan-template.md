@@ -1,5 +1,7 @@
 # Plan Template (Full Tier)
 
+> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+
 > This template is for **Full tier** plans (4+ tasks, multi-wave, unfamiliar domain).
 > For Minimal or Standard plans, refer to the Plan Tiers section in `plan-guide.md` and extract only the sections you need.
 

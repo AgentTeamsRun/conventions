@@ -1,5 +1,7 @@
 # AgentTeams Convention
 
+> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+
 ## Entity References & ID Handling
 
 User messages from the AgentTeams web UI may contain entity references in `[label](type:id)` or `[label](type:id:path)` format.
@@ -14,6 +16,8 @@ User messages from the AgentTeams web UI may contain entity references in `[labe
   - `coAction:id` → Download with `agentteams coaction download --id {id}` and read the local file
 
 ---
+
+> ⚠️ When creating, updating, or deleting platform documents (plans, conventions, reports, postmortems, co-actions), do not stop at writing local files — always register the result to the server via the CLI.
 
 Report status to AgentTeams **if you are working under a plan**.
 

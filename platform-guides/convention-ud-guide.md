@@ -1,5 +1,7 @@
 # Convention Update/Delete Guide (AgentTeams)
 
+> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+
 This guide explains how to update or delete **project convention files** using the `agentteams` CLI.
 
 ## Preconditions

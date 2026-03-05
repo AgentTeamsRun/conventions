@@ -1,5 +1,7 @@
 # Plan Guide (AgentTeams)
 
+> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+
 This guide defines how to **write** a high-quality plan. For execution details (status transitions, CLI commands, comments), follow your project's workflow conventions and CLI help.
 
 ## What a Plan Is

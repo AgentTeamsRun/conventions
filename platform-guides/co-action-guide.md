@@ -1,5 +1,7 @@
 # Co-Action Guide (AgentTeams)
 
+> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+
 A co-action is a **handoff document** — it captures knowledge that cannot be inferred from code alone. Use it to transfer implicit knowledge between agents or between sessions.
 
 ## What a Co-Action Is

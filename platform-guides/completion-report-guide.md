@@ -1,5 +1,7 @@
 # Completion Report Guide (AgentTeams)
 
+> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+
 Completion reports capture what changed, why it changed, how it was verified, and what remains.
 
 ## When to Create a Report

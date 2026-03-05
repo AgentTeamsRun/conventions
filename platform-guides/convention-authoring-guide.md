@@ -1,5 +1,7 @@
 # Convention Authoring Rules (AgentTeams)
 
+> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+
 This guide defines the baseline rules for authoring and editing convention files under `.agentteams/<category>/*.md`.
 For the convention body, follow the structures and elements supported by the **Web Convention Editor toolbar** so the content stays consistent across Web/CLI/AI workflows.
 
