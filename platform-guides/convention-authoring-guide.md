@@ -16,9 +16,12 @@ Example:
 ---
 trigger: always_on
 description: "..."
-agentInstruction: |
-  ...
 ---
+
+# AGENT_RULES
+
+- Rule 1
+- Rule 2
 
 # Title
 
@@ -29,11 +32,31 @@ agentInstruction: |
 
 - `trigger` (optional): a hint for auto-apply/reference triggers (e.g. `always_on`, `model_decision`, `-`)
 - `description` (optional): a short summary of purpose/scope
-- `agentInstruction` (optional): explicit instructions for agents (multi-line supported)
 
 Notes:
 
 - Frontmatter may be generated/normalized by the server, and some fields may be ignored or overwritten during updates.
+- `agentInstruction` (frontmatter) is **deprecated**. Use `# AGENT_RULES` in the document body instead.
+
+## 2-1) AGENT_RULES section
+
+Place a `# AGENT_RULES` heading at the top of the document body (right after frontmatter) to define rules the agent must follow.
+
+- LLMs recognize patterns like `AGENT_RULES`, `NON_NEGOTIABLE_RULES`, `GUARDRAILS` strongly because they appear frequently in training data.
+- Rules in this section have higher compliance rates than rules embedded in general context.
+
+Example:
+
+~~~markdown
+# AGENT_RULES
+
+- Do not use .env files for development
+- Use each folder's .env file instead
+- Design dev tool features from the user's perspective
+
+# PROJECT CONTEXT
+...
+~~~
 
 ## 3) Category / path rules
 
