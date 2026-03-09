@@ -135,6 +135,66 @@ cd api && npm test
 cd cli && npm test
 ~~~
 
+## Post-Report: Linked Document Auto-Creation
+
+**Immediately after** writing a completion report, review the following two categories and create the documents if applicable.
+
+### Co-Action Auto-Creation
+
+Create a co-action if **any** of the following apply:
+
+- Discoveries were made that cannot be inferred from code alone (workarounds, undocumented behaviors, environment quirks)
+- Design decisions involved alternatives whose rationale should be recorded
+- Follow-up work or known constraints remain
+- Implicit knowledge needs to be handed off to another agent or session
+
+~~~bash
+# Create co-action
+agentteams coaction create \
+  --title "<concise handoff title>" \
+  --file .agentteams/cli/temp/{descriptive-name}-coaction.md \
+  --visibility PROJECT
+
+# Link to plan (if applicable)
+agentteams coaction link-plan --id {coActionId} --plan-id {planId}
+
+# Link to completion report
+agentteams coaction link-completion-report --id {coActionId} --completion-report-id {crId}
+~~~
+
+> For co-action content structure, see `co-action-guide.md`.
+
+### Post-Mortem Auto-Creation
+
+Create a post-mortem if **any** of the following apply:
+
+- A failure, bug, or regression occurred during the work
+- Unexpected behavior required significant debugging time
+- A deployment or migration failure occurred
+- Existing functionality was unintentionally affected
+
+~~~bash
+agentteams postmortem create \
+  --plan-id {planId} \
+  --title "<what went wrong — be specific>" \
+  --file .agentteams/cli/temp/{name}-postmortem.md \
+  --action-items "<preventive action 1>,<preventive action 2>" \
+  --status OPEN
+~~~
+
+> For post-mortem content structure, see `post-mortem-guide.md`.
+
+### Review Criteria Summary
+
+| Document | Creation Condition | Timing |
+|---|---|---|
+| **Co-Action** | Implicit knowledge, design decisions, or follow-up work exists | Immediately after report |
+| **Post-Mortem** | Failure, regression, or unexpected issue occurred | Immediately after report |
+
+> ⚠️ Do not create documents when none of the conditions apply. However, **never skip the review itself.**
+
+---
+
 ## Notes
 
 - Keep reports factual and reproducible.
