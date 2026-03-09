@@ -39,17 +39,40 @@ agentteams plan finish --id {planId} \
 
 For report file structure, quality score dimensions, and status rules, see `.agentteams/platform/completion-report-guide.md`.
 
-## Completion Report Without a Plan
+## Work Completion Rules
 
-1. Ask the user: "No active plan found. Should I create a quick plan to record this work?"
+### With a Plan
+
+- Completion report is automatically created when `plan finish` is executed
+- If handoff to another agent is needed, also create a co-action (see `.agentteams/platform/co-action-guide.md`)
+
+### Without a Plan
+
+Only execute the following flow when the user explicitly requests a completion report:
+
+1. Ask the user whether to create a quick plan: "No active plan found. Would you like to create a quick plan?"
 2. If approved:
    ```bash
    agentteams plan quick --title "<brief work summary>" \
-     --content "<TL;DR and actual tasks performed>" \
+     --content "<content following the format below>" \
      --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE>
    ```
    Then follow the report creation steps in `.agentteams/platform/completion-report-guide.md`.
-3. If declined, create a standalone report (no plan link). See `.agentteams/platform/completion-report-guide.md`.
+3. If declined: create a standalone completion report (no plan link). See `.agentteams/platform/completion-report-guide.md`.
+4. If handoff to another agent is needed, also create a co-action (see `.agentteams/platform/co-action-guide.md`)
+
+#### Quick Plan `--content` Format
+
+```markdown
+## TL;DR
+<!-- 1-2 sentence summary -->
+
+## Work Performed
+- <!-- changed files / description -->
+
+## Verification Results
+- <!-- build/test pass status -->
+```
 
 ---
 
