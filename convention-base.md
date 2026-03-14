@@ -76,6 +76,16 @@ Only execute the following flow when the user explicitly requests a completion r
 
 ---
 
+## Unified Search
+
+Use `agentteams search` to find entities (plans, co-actions, reports, post-mortems, conventions) across the project in a single call.
+
+```bash
+agentteams search --query "<keyword>" --format json
+```
+
+---
+
 ## Plan Workflow Rules
 
 ### Before starting work on a plan
