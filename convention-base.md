@@ -17,6 +17,8 @@ User messages from the AgentTeams web UI may contain entity references in `[labe
 
 ---
 
+> ⚠️ **Do not use the worktree branch name directly**: The runner creates worktrees on branches like `worktree/{id}`. When you need to push or create a PR, **always create a new branch** with a descriptive name (e.g., `feat/add-login-api`, `fix/null-pointer-dashboard`) instead of using the `worktree/…` branch. The `worktree/…` branch is a system-managed throwaway branch — pushing or opening a PR from it makes review harder and pollutes the branch list.
+
 > ⚠️ When creating, updating, or deleting platform documents (plans, conventions, reports, postmortems, co-actions), do not stop at writing local files — always register the result to the server via the CLI.
 
 > ⚠️ **Always display `webUrl`**: When a CLI command output contains a `webUrl` field, you **must** show it to the user as a clickable markdown link (e.g., `[View in AgentTeams](https://...)`) — not as raw text or inline code. Do not omit or summarize it away — the URL is the primary way users navigate to the created or updated entity.
