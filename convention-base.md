@@ -19,6 +19,8 @@ User messages from the AgentTeams web UI may contain entity references in `[labe
 
 > ⚠️ When creating, updating, or deleting platform documents (plans, conventions, reports, postmortems, co-actions), do not stop at writing local files — always register the result to the server via the CLI.
 
+> ⚠️ **Always display `webUrl`**: When a CLI command output contains a `webUrl` field, you **must** show it to the user. Do not omit or summarize it away — the URL is the primary way users navigate to the created or updated entity.
+
 Report status to AgentTeams **if you are working under a plan**.
 
 > If the CLI is unavailable, skip reporting and continue the task.
