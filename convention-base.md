@@ -2,6 +2,14 @@
 
 > ⚠️ This file is automatically deployed from the server. Do not edit it directly.
 
+> ⚠️ **Priority**: When platform rules (Part 1) and project rules (Part 2) conflict, **project rules take precedence**.
+
+---
+
+# Part 1 — Platform Rules
+
+Rules for interacting with the AgentTeams platform (CLI, plans, reports, conventions). These are system-level and apply to all projects.
+
 ## Entity References & ID Handling
 
 User messages from the AgentTeams web UI may contain entity references in `[label](type:id)` or `[label](type:id:path)` format.
@@ -16,19 +24,17 @@ User messages from the AgentTeams web UI may contain entity references in `[labe
   - `coAction:id` → Download with `agentteams coaction download --id {id}` and read the local file
   - `LINEAR_ISSUE:uuid` → Fetch issue details with `agentteams linear issue get --issue-id {uuid}` and use the response as context. No prefix stripping needed — the value after `LINEAR_ISSUE:` is the raw Linear issue UUID.
 
----
-
-> ⚠️ **Do not use the worktree branch name directly**: The runner creates worktrees on branches like `worktree/{id}`. When you need to push or create a PR, **always create a new branch** with a descriptive name (e.g., `feat/add-login-api`, `fix/null-pointer-dashboard`) instead of using the `worktree/…` branch. The `worktree/…` branch is a system-managed throwaway branch — pushing or opening a PR from it makes review harder and pollutes the branch list.
+## CLI Output Rules
 
 > ⚠️ When creating, updating, or deleting platform documents (plans, conventions, reports, postmortems, co-actions), do not stop at writing local files — always register the result to the server via the CLI.
 
 > ⚠️ **Always display `webUrl`**: When a CLI command output contains a `webUrl` field, you **must** show it to the user as a clickable markdown link (e.g., `[View in AgentTeams](https://...)`) — not as raw text or inline code. Do not omit or summarize it away — the URL is the primary way users navigate to the created or updated entity.
 
-Report status to AgentTeams **if you are working under a plan**.
-
 > If the CLI is unavailable, skip reporting and continue the task.
 
 ## Plan Lifecycle (Quick Reference)
+
+Report status to AgentTeams **if you are working under a plan**.
 
 ```bash
 # Start
@@ -43,6 +49,23 @@ agentteams plan finish --id {planId} \
 ```
 
 For report file structure, quality score dimensions, and status rules, see `.agentteams/platform/completion-report-guide.md`.
+
+## Plan Workflow Rules
+
+### Before starting work on a plan
+
+1. Download the plan as a local runbook:
+   ```bash
+   agentteams plan download --id {planId}
+   ```
+   This saves to `.agentteams/cli/active-plan/{filename}.md`. Read this file at the start of your work.
+
+2. Check for comments (especially `RISK` comments):
+   ```bash
+   agentteams comment list --plan-id {planId}
+   ```
+
+3. For detailed execution workflow (entity references, comments, cleanup), see `.agentteams/platform/plan-guide.md`.
 
 ## Work Completion Rules
 
@@ -79,8 +102,6 @@ Only execute the following flow when the user explicitly requests a completion r
 - <!-- build/test pass status -->
 ```
 
----
-
 ## Unified Search
 
 Use `agentteams search` to find entities (plans, co-actions, reports, post-mortems, conventions) across the project in a single call.
@@ -89,26 +110,7 @@ Use `agentteams search` to find entities (plans, co-actions, reports, post-morte
 agentteams search --query "<keyword>" --format json
 ```
 
----
-
-## Plan Workflow Rules
-
-### Before starting work on a plan
-
-1. Download the plan as a local runbook:
-   ```bash
-   agentteams plan download --id {planId}
-   ```
-   This saves to `.agentteams/cli/active-plan/{filename}.md`. Read this file at the start of your work.
-
-2. Check for comments (especially `RISK` comments):
-   ```bash
-   agentteams comment list --plan-id {planId}
-   ```
-
-3. For detailed execution workflow (entity references, comments, cleanup), see `.agentteams/platform/plan-guide.md`.
-
-### Guide checks before writing documents
+## Guide Checks Before Writing Documents
 
 Before writing or updating **platform documents** (plans, reports, conventions, postmortems), read the matching guide:
 
@@ -121,3 +123,9 @@ Before writing or updating **platform documents** (plans, reports, conventions, 
 | Convention (create) | `.agentteams/platform/convention-authoring-guide.md` |
 | Convention (update/delete) | `.agentteams/platform/convention-ud-guide.md` |
 | Co-action (handoff) | `.agentteams/platform/co-action-guide.md` |
+
+---
+
+# Part 2 — Project Rules
+
+Project-specific conventions defined by the team. These rules govern coding standards, workflow, and domain-specific guidelines for this repository.
