@@ -102,8 +102,10 @@ Repository linkage note:
 
 - Auto-collected by default (git context required):
   - `commitHash`, `branchName`, `filesModified`, `linesAdded`, `linesDeleted`
+  - `commitStart`, `commitEnd` — auto-filled when `plan start` recorded a start commit
+  - `durationSeconds` — auto-calculated from `startedAt` to finish time (server-side)
 - Manual-only fields:
-  - `durationSeconds`, `commitStart`, `commitEnd`, `pullRequestId`
+  - `pullRequestId`
 - `--no-git` disables auto collection.
 - Manual options override auto-collected values.
 
