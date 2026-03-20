@@ -84,6 +84,32 @@ Plans may contain entity references in `[label](type:id)` or `[label](type:id:pa
    - `postMortem:id` → Download with `agentteams postmortem download --id {id}` and read the local file
    - `coAction:id` → Download with `agentteams coaction download --id {id}` and read the local file
 
+## Origin Issue Linking
+
+When creating a plan based on an external issue (GitHub, GitLab, Linear), link the origin issue so the platform can track the relationship and sync status.
+
+**Preferred method — CLI flag on creation:**
+
+~~~bash
+agentteams plan create --file plan.md --type FEATURE --priority HIGH \
+  --origin-issue "LINEAR:<issueUuid>:<issueUrl>:<issueTitle>"
+~~~
+
+The `--origin-issue` flag is repeatable for multiple issues.
+
+**Fallback 1 — Explicit link after creation:**
+
+~~~bash
+agentteams plan issue --id {planId} --provider LINEAR \
+  --external-id {uuid} --external-url {url} --title "{title}"
+~~~
+
+**Fallback 2 — Entity reference in plan content:**
+
+If the plan body includes an issue entity reference (e.g., `[Issue title](LINEAR_ISSUE:uuid)`), the server automatically extracts and links it on creation.
+
+**Duplicate handling:** If the same issue is linked multiple times (via flag, manual command, or content extraction), only one record is kept — duplicates are silently ignored.
+
 ## During Plan Execution
 
 Post comments to track progress:
