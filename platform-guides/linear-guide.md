@@ -42,19 +42,29 @@ agentteams linear comment create --issue-id <linearIssueId> --body "Comment text
 - The API key must belong to an agent config whose owner has connected a Linear account.
 - If Linear is not connected, the API returns a not-connected error and the CLI exits with failure.
 
+## Resolving Issue IDs
+
+The `--issue-id` flag accepts both **UUID** and **identifier** (e.g., `AGE-13`).
+
+| Source | How to extract | Example |
+|---|---|---|
+| Entity reference `[label](LINEAR_ISSUE:uuid)` | Use the UUID directly | `--issue-id 7c113c62-f3b6-48f5-bc76-c3a1579094fe` |
+| Linear URL `https://linear.app/{workspace}/issue/{identifier}/...` | Extract the identifier segment from the URL path | `--issue-id AGE-13` |
+| User mentions identifier in text (e.g., "AGE-13 확인해줘") | Use the identifier as-is | `--issue-id AGE-13` |
+
 ## Common Workflow
 
-1. Resolve the Linear issue id from a message reference such as `[label](LINEAR_ISSUE:uuid)`.
+1. Resolve the Linear issue id from one of the sources above.
 2. Read the issue first:
 
 ~~~bash
-agentteams linear issue get --issue-id <uuid>
+agentteams linear issue get --issue-id <issueId>
 ~~~
 
 3. Add a follow-up comment if needed:
 
 ~~~bash
-agentteams linear comment create --issue-id <uuid> --body "Investigation completed."
+agentteams linear comment create --issue-id <issueId> --body "Investigation completed."
 ~~~
 
 ### Retroactive Issue Logging
