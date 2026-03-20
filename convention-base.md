@@ -123,6 +123,7 @@ Before writing or updating **platform documents** (plans, reports, conventions, 
 | Convention (create) | `.agentteams/platform/convention-authoring-guide.md` |
 | Convention (update/delete) | `.agentteams/platform/convention-ud-guide.md` |
 | Co-action (handoff) | `.agentteams/platform/co-action-guide.md` |
+| Linear (issue/comment) | `.agentteams/platform/linear-guide.md` |
 
 ---
 
