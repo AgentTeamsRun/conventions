@@ -27,6 +27,16 @@ agentteams linear issue create --team-id <linearTeamId> --title "Issue title" [-
 - `--state` is optional. Accepts a state name (e.g., "Backlog", "Todo", "In Progress", "Done", "Canceled"). The name is matched case-insensitively against the team's workflow states. If omitted, the team's default state is used.
 - Returns the created issue id, identifier, title, and URL.
 
+### Update Issue State
+
+~~~bash
+agentteams linear issue update --issue-id <linearIssueId> --state "In Progress"
+~~~
+
+- Changes the status of an existing Linear issue.
+- `--issue-id` accepts both UUID and identifier (e.g., `AGE-13`).
+- `--state` accepts a state name matched case-insensitively against the issue's team workflow states.
+
 ### Create a Comment
 
 ~~~bash
