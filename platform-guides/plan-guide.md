@@ -88,11 +88,22 @@ Plans may contain entity references in `[label](type:id)` or `[label](type:id:pa
 
 When creating a plan based on an external issue (GitHub, GitLab, Linear), link the origin issue so the platform can track the relationship and sync status.
 
+**Supported providers:** `LINEAR`, `GITHUB`, `GITLAB`
+
 **Preferred method — CLI flag on creation:**
 
 ~~~bash
+# Linear
 agentteams plan create --file plan.md --type FEATURE --priority HIGH \
   --origin-issue "LINEAR:<issueUuid>:<issueUrl>:<issueTitle>"
+
+# GitHub
+agentteams plan create --file plan.md --type BUG_FIX --priority HIGH \
+  --origin-issue "GITHUB:<owner/repo#number>:<issueUrl>:<issueTitle>"
+
+# GitLab
+agentteams plan create --file plan.md --type ISSUE --priority MEDIUM \
+  --origin-issue "GITLAB:<projectPath#iid>:<issueUrl>:<issueTitle>"
 ~~~
 
 The `--origin-issue` flag is repeatable for multiple issues.
@@ -100,13 +111,13 @@ The `--origin-issue` flag is repeatable for multiple issues.
 **Fallback 1 — Explicit link after creation:**
 
 ~~~bash
-agentteams plan issue --id {planId} --provider LINEAR \
-  --external-id {uuid} --external-url {url} --title "{title}"
+agentteams plan issue --id {planId} --provider <LINEAR|GITHUB|GITLAB> \
+  --external-id {id} --external-url {url} --title "{title}"
 ~~~
 
 **Fallback 2 — Entity reference in plan content:**
 
-If the plan body includes an issue entity reference (e.g., `[Issue title](LINEAR_ISSUE:uuid)`), the server automatically extracts and links it on creation.
+If the plan body includes an issue entity reference (e.g., `[Issue title](LINEAR_ISSUE:uuid)`, `[Issue title](GITHUB_ISSUE:owner/repo#number)`), the server automatically extracts and links it on creation.
 
 **Duplicate handling:** If the same issue is linked multiple times (via flag, manual command, or content extraction), only one record is kept — duplicates are silently ignored.
 
