@@ -2,13 +2,45 @@
 
 > ⚠️ This file is automatically deployed from the server. Do not edit it directly.
 
-A post mortem is a written analysis of an incident, focusing on root cause and prevention.
+A post mortem is a written analysis of an incident or a recurring development-process issue, focusing on root cause and prevention.
+
+## Scope
+
+Post mortems cover two categories:
+
+### 1. Service Incidents
+
+User-facing outages, regressions, or degraded behavior — the traditional post mortem scope.
+
+### 2. Development Execution Issues
+
+Issues that surfaced during development execution and are likely to recur if left unaddressed. These are **not** user-visible incidents but affect reliability, velocity, or correctness of the development process itself.
+
+**Include when all three conditions are met:**
+
+1. The issue is **reproducible or systemic** — not a one-off typo or local misconfiguration.
+2. The issue **blocked or significantly delayed** the planned work.
+3. The issue can be **prevented by a process, tooling, or environment change**.
+
+**Examples:**
+
+- Database migration failure due to missing prerequisite state or incompatible schema assumptions
+- Missing or version-mismatched CLI tool / dependency that the workflow assumes is present
+- Environment variable or configuration absent from a required environment (staging, CI, etc.)
+- Verification step (typecheck, test, lint) that passed locally but failed in CI due to environment differences
+- Unexpected behavioral regression discovered during execution, not caught by existing tests
+
+**Do NOT create a post mortem for:**
+
+- One-off typos, syntax errors, or trivial local mistakes that were fixed immediately
+- Known limitations already documented elsewhere
+- Issues that only affect a single developer's local setup with no recurrence risk
 
 ## Goals
 
 - Capture what happened and when
 - Identify the root cause (not symptoms)
-- Document the impact (users, revenue, SLA, operations)
+- Document the impact (users, revenue, SLA, operations, or development velocity)
 - Define concrete action items to prevent recurrence
 
 ## Before You Start
@@ -50,6 +82,9 @@ Use this structure for the `--content` field or the `--file` content:
 ## Summary
 <what happened — 1-2 sentences, be specific>
 
+## Category
+<Service Incident | Development Execution Issue>
+
 ## Timeline
 - HH:MM - <event 1>
 - HH:MM - <event 2>
@@ -58,7 +93,7 @@ Use this structure for the `--content` field or the `--file` content:
 <specific cause, not symptoms — describe the causal chain>
 
 ## Impact
-<who/what was affected and for how long>
+<who/what was affected and for how long — for development execution issues, describe the delay or blocked work>
 
 ## What Went Wrong
 - <contributing factor 1>
@@ -66,6 +101,9 @@ Use this structure for the `--content` field or the `--file` content:
 
 ## What Went Well
 - <what helped limit the damage or speed up recovery>
+
+## Prevention
+- <specific process, tooling, or environment change to prevent recurrence>
 ~~~
 
 ## Post Mortem File Naming

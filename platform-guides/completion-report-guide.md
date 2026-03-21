@@ -170,10 +170,18 @@ agentteams coaction link-completion-report --id {coActionId} --completion-report
 
 Create a post-mortem if **any** of the following apply:
 
+**Service Incidents:**
+
 - A failure, bug, or regression occurred during the work
-- Unexpected behavior required significant debugging time
-- A deployment or migration failure occurred
 - Existing functionality was unintentionally affected
+
+**Development Execution Issues** (when reproducible, blocking, and preventable):
+
+- A database migration failed due to missing state or incompatible assumptions
+- A required CLI tool or dependency was missing or version-mismatched
+- An environment variable or configuration was absent from a required environment
+- A verification step (typecheck, test, lint) passed locally but failed in CI
+- Unexpected behavior required significant debugging time
 
 ~~~bash
 agentteams postmortem create \
