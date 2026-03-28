@@ -18,6 +18,7 @@
 > **Type**: <!-- FEATURE / BUG_FIX / ISSUE / REFACTOR / CHORE -->
 > **Parallel Execution**: <!-- YES / NO -->
 > **Critical Path**: <!-- Task X → Task Y → ... -->
+> **Dependencies**: <!-- blocking plan IDs if creating multiple plans, or "none" -->
 
 ---
 

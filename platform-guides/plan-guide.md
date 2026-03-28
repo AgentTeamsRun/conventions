@@ -22,6 +22,10 @@ This guide defines how to **write** a high-quality plan. For execution details (
 2. **Write plan body** — follow Plan Tiers below to pick the right structure
 3. **Gap analysis** — SHOULD run Metis review; use the self-check below if unavailable
 4. **Register** — `agentteams plan create --file {path} --type {type} --priority {level}`
+5. **Link dependencies** — when creating multiple plans at once and one plan must finish before another can start, link them after creation:
+   ~~~bash
+   agentteams dependency create --plan-id {blockedPlanId} --blocking-plan-id {blockingPlanId}
+   ~~~
 
 Repository linkage note:
 
@@ -120,6 +124,23 @@ agentteams plan issue --id {planId} --provider <LINEAR|GITHUB|GITLAB> \
 If the plan body includes an issue entity reference (e.g., `[Issue title](LINEAR_ISSUE:uuid)`, `[Issue title](GITHUB_ISSUE:owner/repo#number)`), the server automatically extracts and links it on creation.
 
 **Duplicate handling:** If the same issue is linked multiple times (via flag, manual command, or content extraction), only one record is kept — duplicates are silently ignored.
+
+## Plan Dependencies
+
+When creating multiple plans at once, use dependencies to define execution order. A blocked plan should not start until its blocking plans are completed.
+
+~~~bash
+# Add dependency (blockedPlan waits for blockingPlan to finish)
+agentteams dependency create --plan-id {blockedPlanId} --blocking-plan-id {blockingPlanId}
+
+# List dependencies for a plan
+agentteams dependency list --plan-id {planId}
+
+# Remove a dependency
+agentteams dependency delete --plan-id {planId} --dep-id {depId}
+~~~
+
+Typical flow: create all plans first, then link dependencies using the returned IDs.
 
 ## During Plan Execution
 
