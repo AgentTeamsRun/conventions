@@ -119,6 +119,16 @@ Wave 2 (Wave 1 complete):
   - **Blocks**: <!-- Task N or none -->
   - **Blocked By**: <!-- Task N or none -->
 
+  **Required Conventions**:
+
+  <!-- Project conventions the executing agent MUST read before starting this task. -->
+  <!-- These are project-level rule files (e.g., routes.md, schema.md, frontend.md) that define -->
+  <!-- coding standards, naming rules, or architectural patterns relevant to this task. -->
+  <!-- The agent should load and follow these conventions throughout the entire task execution. -->
+  <!-- If none are required, write "none". -->
+
+  - <!-- convention file — why it's required for this task -->
+
   **References**:
 
   - <!-- file:lines — description -->
