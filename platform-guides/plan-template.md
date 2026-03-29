@@ -96,7 +96,7 @@ Wave 2 (Wave 1 complete):
 
 ---
 
-- 1. Task title
+### 1. Task title
 
   **What to do**:
 
