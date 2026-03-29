@@ -37,19 +37,24 @@ For standard execution flows, use lifecycle shortcuts instead of manual multi-st
 
 ~~~bash
 # Start plan lifecycle
-agentteams plan start --id {planId}
+agentteams plan start --id {planId} \
+  --runner-type <runner-type> --model <model-id>
 
 # Finish plan lifecycle
-agentteams plan finish --id {planId}
+agentteams plan finish --id {planId} \
+  --runner-type <runner-type> --model <model-id>
 
 # Finish and include completion report with metrics
 agentteams plan finish --id {planId} \
+  --runner-type <runner-type> --model <model-id> \
   --report-title "<what you did and why, in one sentence>" \
   --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
   --quality-score <0-100, see Quality Score dimensions> \
   --report-status <COMPLETED | PARTIAL | FAILED>
 
 ~~~
+
+> `--runner-type` and `--model` are optional. They snapshot the runner engine and model ID used for this execution into the Plan and CompletionReport.
 
 ## Plan Start → Execution Flow
 
@@ -63,7 +68,8 @@ agentteams plan download --id {planId}
 agentteams comment list --plan-id {planId}
 
 # 3. Start lifecycle
-agentteams plan start --id {planId}
+agentteams plan start --id {planId} \
+  --runner-type <runner-type> --model <model-id>
 ~~~
 
 **Decision after comment check:**
