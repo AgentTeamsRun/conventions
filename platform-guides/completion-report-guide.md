@@ -78,6 +78,7 @@ agentteams report create \
   --plan-id {planId} \
   --title "<what you did and why, in one sentence>" \
   --file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
+  --runner-type <runner-type> --model <model-id> \
   --quality-score <0-100> \
   --status <COMPLETED | PARTIAL | FAILED>
 ~~~
@@ -88,6 +89,7 @@ If you were not working under a plan, omit the plan id:
 agentteams report create \
   --title "<what you did and why, in one sentence>" \
   --file .agentteams/cli/temp/<feature-or-fix-name>-report.md \
+  --runner-type <runner-type> --model <model-id> \
   --quality-score <0-100> \
   --status <COMPLETED | PARTIAL | FAILED>
 ~~~

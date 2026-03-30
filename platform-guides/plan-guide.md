@@ -54,7 +54,21 @@ agentteams plan finish --id {planId} \
 
 ~~~
 
-> `--runner-type` and `--model` are optional. They snapshot the runner engine and model ID used for this execution into the Plan and CompletionReport.
+> `--runner-type` and `--model` are **required**. They snapshot the runner engine and model ID used for this execution into the Plan and CompletionReport.
+
+## Runner Type & Model Reference
+
+`--runner-type` and `--model` are **required** for `plan start`, `plan finish`, and `report create`. They record which engine and model executed the work.
+
+| Runner Type | Description |
+|---|---|
+| `CLAUDE_CODE` | Claude Code CLI |
+| `CODEX` | OpenAI Codex CLI |
+| `GEMINI` | Google Gemini CLI |
+| `AMP` | Amp Code |
+| `OPENCODE` | OpenCode |
+
+`--model` accepts any model ID string used by the runner engine (e.g., `claude-opus-4-6`, `o3`, `gemini-2.5-pro`).
 
 ## Plan Start → Execution Flow
 
