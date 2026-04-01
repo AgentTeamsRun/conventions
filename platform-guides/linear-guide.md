@@ -37,6 +37,16 @@ agentteams linear issue update --issue-id <linearIssueId> --state "In Progress"
 - `--issue-id` accepts both UUID and identifier (e.g., `AGE-13`).
 - `--state` accepts a state name matched case-insensitively against the issue's team workflow states.
 
+### List Comments
+
+~~~bash
+agentteams linear comment list --issue-id <linearIssueId>
+~~~
+
+- Returns all comments on the specified issue.
+- Each comment includes `id`, `body`, `user` (author name, nullable), `createdAt`, and `updatedAt`.
+- Use `--format json` when another tool needs structured output.
+
 ### Create a Comment
 
 ~~~bash
@@ -71,7 +81,13 @@ The `--issue-id` flag accepts both **UUID** and **identifier** (e.g., `AGE-13`).
 agentteams linear issue get --issue-id <issueId>
 ~~~
 
-3. Add a follow-up comment if needed:
+3. Check existing comments:
+
+~~~bash
+agentteams linear comment list --issue-id <issueId>
+~~~
+
+4. Add a follow-up comment if needed:
 
 ~~~bash
 agentteams linear comment create --issue-id <issueId> --body "Investigation completed."
