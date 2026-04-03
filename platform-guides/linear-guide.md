@@ -18,11 +18,15 @@ agentteams linear issue get --issue-id <linearIssueId>
 ### Create an Issue
 
 ~~~bash
-agentteams linear issue create --team-id <linearTeamId> --title "Issue title" [--description "Details"] [--state "Done"]
+agentteams linear issue create --title "Issue title" [--team-id <linearTeamId>] [--description "Details"] [--state "Done"]
 ~~~
 
-- Creates a new Linear issue in the specified team.
-- `--team-id` and `--title` are required.
+- Creates a new Linear issue.
+- `--title` is required.
+- `--team-id` is optional. When omitted, the API resolves the team from the project's connected Linear team metadata:
+  - 1 team connected: automatically used.
+  - 0 teams connected: returns 400 error with guidance to connect a team or specify `--team-id`.
+  - 2+ teams connected: returns 400 error asking to specify `--team-id`.
 - `--description` is optional. Supports markdown.
 - `--state` is optional. Accepts a state name (e.g., "Backlog", "Todo", "In Progress", "Done", "Canceled"). The name is matched case-insensitively against the team's workflow states. If omitted, the team's default state is used.
 - Returns the created issue id, identifier, title, and URL.
@@ -98,7 +102,7 @@ agentteams linear comment create --issue-id <issueId> --body "Investigation comp
 When the user asks to log completed work as a Linear issue (e.g., "이슈 등록하고 완료로 처리해줘"), create the issue with `--state "Done"`:
 
 ~~~bash
-agentteams linear issue create --team-id <teamId> --title "Fix: auth token refresh" --description "Added auto-refresh for expired Linear OAuth tokens" --state "Done"
+agentteams linear issue create --title "Fix: auth token refresh" --description "Added auto-refresh for expired Linear OAuth tokens" --state "Done"
 ~~~
 
 ## Notes
