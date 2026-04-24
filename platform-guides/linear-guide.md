@@ -18,7 +18,7 @@ agentteams linear issue get --issue-id <linearIssueId>
 ### Create an Issue
 
 ~~~bash
-agentteams linear issue create --title "Issue title" [--team-id <linearTeamId>] [--description "Details"] [--state "Done"]
+agentteams linear issue create --title "Issue title" [--team-id <linearTeamId>] [--description "Details"] [--state "Done"] [--parent-id <linearIssueUuid>]
 ~~~
 
 - Creates a new Linear issue.
@@ -29,7 +29,14 @@ agentteams linear issue create --title "Issue title" [--team-id <linearTeamId>] 
   - 2+ teams connected: returns 400 error asking to specify `--team-id`.
 - `--description` is optional. Supports markdown.
 - `--state` is optional. Accepts a state name (e.g., "Backlog", "Todo", "In Progress", "Done", "Canceled"). The name is matched case-insensitively against the team's workflow states. If omitted, the team's default state is used.
+- `--parent-id` is optional. Creates the issue as a sub-issue under the given parent. Only Linear issue **UUID** is accepted — identifiers such as `AGE-33` are not supported here.
 - Returns the created issue id, identifier, title, and URL.
+
+#### Create a Sub-issue
+
+~~~bash
+agentteams linear issue create --title "Child task" --parent-id 00000000-0000-0000-0000-0000000000ab
+~~~
 
 ### Update Issue State
 
