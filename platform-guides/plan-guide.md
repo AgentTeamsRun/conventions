@@ -21,7 +21,7 @@ This guide defines how to **write** a high-quality plan. For execution details (
 1. **Clarify requirements** — explore the codebase, interview the requester if needed
 2. **Write plan body** — follow Plan Tiers below to pick the right structure
 3. **Gap analysis** — SHOULD run Metis review; use the self-check below if unavailable
-4. **Register** — `agentteams plan create --file {path} --type {type} --priority {level}`
+4. **Register** — `agentteams plan create --file {path} --type {type} --priority {level} --runner-type {runner-type} --model {model-id}`
 5. **Link dependencies** — when creating multiple plans at once and one plan must finish before another can start, link them after creation:
    ~~~bash
    agentteams dependency create --plan-id {blockedPlanId} --blocking-plan-id {blockingPlanId}
@@ -37,12 +37,10 @@ For standard execution flows, use lifecycle shortcuts instead of manual multi-st
 
 ~~~bash
 # Start plan lifecycle
-agentteams plan start --id {planId} \
-  --runner-type <runner-type> --model <model-id>
+agentteams plan start --id {planId}
 
 # Finish plan lifecycle
-agentteams plan finish --id {planId} \
-  --runner-type <runner-type> --model <model-id>
+agentteams plan finish --id {planId}
 
 # Finish and include completion report with metrics
 agentteams plan finish --id {planId} \
@@ -54,11 +52,14 @@ agentteams plan finish --id {planId} \
 
 ~~~
 
-> `--runner-type` and `--model` are **required**. They snapshot the runner engine and model ID used for this execution into the Plan and CompletionReport.
-
 ## Runner Type & Model Reference
 
-`--runner-type` and `--model` are **required** for `plan start`, `plan finish`, and `report create`. They record which engine and model executed the work.
+Two snapshots, two sources:
+
+- `Plan.runnerType` / `Plan.model` — **creator** snapshot. Recorded by `plan create` (and `plan quick`). Required at creation time.
+- `CompletionReport.runnerType` / `CompletionReport.model` — **executor** snapshot. Recorded by `report create` (and by `plan finish` when generating a report). Required when creating a report.
+
+`--runner-type` and `--model` are therefore **required** for `plan create`, `plan quick`, and `report create`. `plan start` and `plan finish` (without a report) do not accept them.
 
 | Runner Type | Description |
 |---|---|
@@ -82,8 +83,7 @@ agentteams plan download --id {planId}
 agentteams comment list --plan-id {planId}
 
 # 3. Start lifecycle
-agentteams plan start --id {planId} \
-  --runner-type <runner-type> --model <model-id>
+agentteams plan start --id {planId}
 ~~~
 
 **Decision after comment check:**

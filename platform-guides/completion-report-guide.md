@@ -71,6 +71,8 @@ agentteams plan finish --id {planId} \
 
 > Git metrics (`commitHash`, `branchName`, `filesModified`, `linesAdded`, `linesDeleted`) are auto-collected. Use `--no-git` to disable. Manual overrides: `--duration-seconds`, `--commit-start`, `--commit-end`, `--pull-request-id`.
 
+> `--runner-type` and `--model` on `report create` are the **executor** snapshot — the runner/model that actually produced this report. This is independent of `Plan.runnerType` / `Plan.model`, which is the **creator** snapshot recorded at `plan create`. The two values can differ (e.g., a plan written by Claude but executed by Codex).
+
 If you were working under a plan, link the report to the plan:
 
 ~~~bash
