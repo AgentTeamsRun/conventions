@@ -1,7 +1,3 @@
----
-trigger: -
-description: Reference when setting up initial conventions for a new project or migrating existing rule files.
----
 # Convention Setup Guide
 
 > This guide helps you decide **what to turn into Conventions** and how to organize them.
