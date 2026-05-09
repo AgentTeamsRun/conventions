@@ -40,6 +40,18 @@
 
 <!-- Gaps identified by Metis review (or self-check results) -->
 
+### Conventions Referenced
+
+<!--
+Required. List `.agentteams/rules/*.md` files you actually consulted while
+drafting this plan — do not guess. Same format as completion reports so the
+platform can auto-link plan-stage convention usage to execution-stage usage.
+
+Example:
+- .agentteams/rules/frontend.md
+- .agentteams/rules/pr-workflow.md - 브랜치 네이밍 규칙
+-->
+
 ---
 
 ## Work Objectives

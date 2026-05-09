@@ -186,12 +186,13 @@ Not every plan needs the same structure. Pick the tier that matches your task si
 
 - `## TL;DR` — 1–2 sentence summary, deliverables
 - `## TODOs` — What to do + Acceptance Criteria per task
+- `### Conventions Referenced` (under Context, or top-level if Context omitted) — `.agentteams/rules/*.md` files you consulted while planning. Same format as completion reports. Required at every tier — do not guess.
 
 ### Standard (2–3 tasks, known scope)
 
 Everything in Minimal, plus:
 
-- `## Context` — Original Request / Research Findings
+- `## Context` — Original Request / Research Findings / Conventions Referenced
 - `## Work Objectives` — Deliverables / Definition of Done / Must Have / Must NOT Have
 - `## Verification Strategy` — QA tool mapping (API→typecheck+test, CLI→test, Web→build)
 - TODOs add: Must NOT do / References
