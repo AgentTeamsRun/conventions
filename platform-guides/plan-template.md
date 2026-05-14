@@ -68,6 +68,9 @@ Example:
 
 - <!-- Criterion 1 -->
 - <!-- Criterion 2 -->
+- Completion Report is created, then Co-Action and Post-Mortem needs are reviewed immediately.
+- Co-Action is created and linked when implicit knowledge, design decisions, follow-up work, known constraints, or handoff context exist.
+- Post-Mortem is created only when a reproducible or systemic failure, regression, or unexpected execution issue significantly delayed or blocked the work and has a preventable cause.
 
 ### Must Have
 
@@ -175,6 +178,7 @@ Wave 2 (Wave 1 complete):
 
   1. <!-- verification command 1 -->
   2. <!-- verification command 2 -->
+  3. Create the Completion Report, then immediately review and create any required Co-Action or Post-Mortem linked documents.
 
   Output: `<!-- result format -->`
 

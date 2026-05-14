@@ -172,6 +172,13 @@ Post comments to track progress:
 
 ## After Completing or Cancelling a Plan
 
+When completing a plan, do not treat the completion report as the final step by itself.
+
+1. Write or generate the completion report.
+2. Immediately review whether a Co-Action is needed. Create and link one when the work produced implicit knowledge, durable design decisions, follow-up work, known constraints, or handoff context that cannot be inferred from the code alone.
+3. Immediately review whether a Post-Mortem is needed. Create one only when a failure, regression, or unexpected execution issue occurred and the issue is reproducible or systemic, significantly delayed or blocked the work, and can be prevented by a process, tooling, or environment change.
+4. Clean up the local runbook after required linked documents have been created or explicitly ruled out.
+
 Clean up the local runbook:
 
 ~~~bash
