@@ -26,6 +26,15 @@ This guide defines guardrails for AI-authored HTML summaries of plans. Use it wh
 - Use semantic HTML where possible. Keep CSS local to the document and avoid relying on host app styles.
 - Do not include noisy implementation metadata such as source hashes, cache keys, hidden prompts, model scratchpads, or internal runner logs in the visible document.
 
+## Theme Safety (Light and Dark Mode)
+
+- Do not rely on the host app's `body` background, theme class, or CSS custom properties for colors. The document must be self-contained.
+- Declare `color-scheme: light dark` on `:root` or `html` so the browser picks the appropriate system scrollbar and form control colors.
+- Define explicit background, text, border, and link colors for both light and dark modes using `prefers-color-scheme` media queries. Do not leave either mode at browser-default.
+- Avoid pure `#000000` on `#ffffff` or the reverse in dark mode — use near-black and near-white (e.g., `#1a1a1a` / `#e8e8e8`) to reduce eye strain.
+- Ensure information-bearing elements — links, code blocks, badges, table rows, callout boxes — remain visually distinguishable in both modes. Do not rely solely on color to convey meaning.
+- Do not hardcode only a light-mode palette. Any CSS variable, class, or inline style that sets color must account for dark mode as well.
+
 ## Upload Workflow
 
 1. Read the source plan and any referenced runbook context.
@@ -50,3 +59,4 @@ cat .agentteams/cli/temp/plan-summary.html | agentteams plan upload-html --id {p
 - No scripts, trackers, forms, auth flows, or remote dependencies were added.
 - The document remains useful if rendered in a sandboxed iframe.
 - The source plan Markdown/Tiptap remains the canonical execution document.
+- Light and dark modes are both explicitly styled; the document does not depend on the host app's theme.
