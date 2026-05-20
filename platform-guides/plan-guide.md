@@ -66,6 +66,7 @@ Two snapshots, two sources:
 | `CLAUDE_CODE` | Claude Code CLI |
 | `CODEX` | OpenAI Codex CLI |
 | `GEMINI` | Google Gemini CLI |
+| `ANTIGRAVITY` | Google Antigravity CLI |
 | `AMP` | Amp Code |
 | `OPENCODE` | OpenCode |
 
