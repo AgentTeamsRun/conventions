@@ -28,6 +28,24 @@ The review request should clearly separate:
 - Original work context: plan/report/commit/diff/test evidence
 - Reviewer execution context: reviewer agent/session/model and review instructions
 
+## Creating a Review Record
+
+Use the dedicated CLI command to register a completed review. The runner and model that performed the review are required execution-environment snapshots.
+
+```bash
+agentteams code-review create \
+  --title "<review title>" \
+  --target-type LOCAL_DIFF \
+  --target-ref "<branch, PR, MR, or commit range>" \
+  --diff-file .agentteams/cli/temp/<review-diff-summary>.md \
+  --test-file .agentteams/cli/temp/<review-test-summary>.md \
+  --reviewer-context "<review instructions and source context>" \
+  --runner-type <runner-type> \
+  --model <model-id>
+```
+
+Do not use reviewer names, agent names, or author names as substitutes for `--runner-type` or `--model`. If either value is unknown, stop and ask for the correct execution environment before creating the record.
+
 ## Severity
 
 Use these severities consistently:
