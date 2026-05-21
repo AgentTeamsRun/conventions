@@ -34,6 +34,128 @@ This guide defines guardrails for AI-authored HTML summaries of plans. Use it wh
 - Avoid pure `#000000` on `#ffffff` or the reverse in dark mode — use near-black and near-white (e.g., `#1a1a1a` / `#e8e8e8`) to reduce eye strain.
 - Ensure information-bearing elements — links, code blocks, badges, table rows, callout boxes — remain visually distinguishable in both modes. Do not rely solely on color to convey meaning.
 - Do not hardcode only a light-mode palette. Any CSS variable, class, or inline style that sets color must account for dark mode as well.
+- When the host app injects a theme signal via `<html data-theme="…">`, treat attribute selectors like `[data-theme="night"]`, `[data-theme="dark"]` as the **primary** theme signal and keep `prefers-color-scheme` as a fallback. Some host themes declare `color-scheme: light` even when the OS is dark, which prevents `prefers-color-scheme: dark` from matching inside the iframe. Define color *values* only in your own CSS variables — never pull them from host CSS variables (e.g. `--p`, `--b1`); only consume the `data-theme` *signal*.
+- Keep the `body` background `transparent`; let only cards, panels, and callouts paint their own `--surface`. This way the preview merges into the host modal/page background instead of looking like a boxed-in island.
+
+## Visual Design Language
+
+The HTML preview is a **dashboard-shaped summary** of a plan, not a styled rendering of its Markdown. The tokens, components, and layout rules below give every preview a consistent skeleton so different agents can fill it in without each reinventing visual decisions.
+
+### Design Tokens
+
+Define all design values as CSS custom properties on `:root`. Resolve theme in three layers: light defaults → `prefers-color-scheme: dark` fallback → host `[data-theme]` attribute selector (primary signal). The light values are the defaults; dark values are duplicated across the fallback and attribute-selector blocks because CSS cannot share value lists between selectors. Do not import color *values* from host CSS variables.
+
+~~~css
+:root {
+  color-scheme: light dark;
+  --max-w: 800px; /* preferred range: 720–960 */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --fs-caption: 11px; --fs-small: 13px; --fs-body: 15px;
+  --fs-h3: 18px;
+  --fs-h2: clamp(20px, 3.5vw, 22px);
+  --fs-h1: clamp(24px, 5vw, 28px);
+  --lh-body: 1.55; --lh-heading: 1.2;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px;
+  /* Light palette */
+  --bg: #fbfbfa; --surface: #ffffff; --surface-2: #f4f4f2;
+  --border: #e6e6e2; --border-strong: #d4d4ce;
+  --text: #1a1a1a; --muted: #555; --subtle: #888;
+  --accent: #2b6cb0;  --accent-soft: #e3eef9;
+  --danger: #b42318;  --danger-soft: #fdeceb;
+  --warn:   #b75e09;  --warn-soft:   #fdf2e3;
+  --success:#1f7a3a;  --success-soft:#e6f4ea;
+  --code-bg: #f4f4f2;
+}
+
+/* Fallback when the host does not signal a theme. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:#141414; --surface:#1c1c1c; --surface-2:#232323;
+    --border:#2e2e2e; --border-strong:#3d3d3d;
+    --text:#e8e8e8; --muted:#a8a8a8; --subtle:#808080;
+    --accent:#82b8e6;  --accent-soft:#1d2c3a;
+    --danger:#f0857a;  --danger-soft:#3a1b18;
+    --warn:  #e0a464;  --warn-soft:  #3a2a14;
+    --success:#7dc795; --success-soft:#16301d;
+    --code-bg:#1c1c1c;
+  }
+}
+
+/* Primary signal: host theme attribute (DaisyUI dark theme names). */
+:root[data-theme="night"],    :root[data-theme="dark"],
+:root[data-theme="dim"],      :root[data-theme="sunset"],
+:root[data-theme="black"],    :root[data-theme="luxury"],
+:root[data-theme="business"], :root[data-theme="coffee"],
+:root[data-theme="forest"],   :root[data-theme="halloween"],
+:root[data-theme="dracula"],  :root[data-theme="abyss"] {
+  color-scheme: dark;
+  --bg:#141414; --surface:#1c1c1c; --surface-2:#232323;
+  --border:#2e2e2e; --border-strong:#3d3d3d;
+  --text:#e8e8e8; --muted:#a8a8a8; --subtle:#808080;
+  --accent:#82b8e6;  --accent-soft:#1d2c3a;
+  --danger:#f0857a;  --danger-soft:#3a1b18;
+  --warn:  #e0a464;  --warn-soft:  #3a2a14;
+  --success:#7dc795; --success-soft:#16301d;
+  --code-bg:#1c1c1c;
+}
+
+body {
+  background: transparent;
+  color: var(--text);
+  font: var(--fs-body)/var(--lh-body) var(--font-sans);
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: var(--s5);
+}
+~~~
+
+### Component Patterns
+
+One canonical markup per pattern — combine them; do not invent variants.
+
+- **Hero** — `<header><p class="eyebrow">…</p><h1>…</h1><p class="lead">…</p></header>`
+- **Metric grid** — `<section class="metrics"><div class="metric"><span class="label">Tasks</span><span class="value">12</span></div>…</section>` (4 or 6 cells, top of page)
+- **Task / Wave flow** — `<ol class="flow"><li class="node">…</li>…</ol>` with `→` between nodes; collapses to a vertical stack at ≤640px
+- **Compare grid** — `<section class="compare"><div class="pro">✓ …</div><div class="con">✕ …</div></section>` using `--success-soft` / `--danger-soft`
+- **Card / callout** — `<aside class="card">…</aside>` (`--surface` bg, 1px `--border`, radius 8)
+- **Status badge** — `<span class="badge badge-accent">…</span>`; four variants only: `accent` / `danger` / `warn` / `success`
+- **Code / command block** — `<pre><code>$ agentteams …</code></pre>` (`--code-bg`, `var(--font-mono)`, `overflow-x: auto`; optional `$ ` prompt prefix)
+- **Checklist with progress** — `<section class="dod"><header>DoD <span>0/5 · 0%</span><div class="bar"><i style="width:0%"></i></div></header><ul>…</ul></section>`
+- **File list** — `<ul class="files"><li><code>path/to/file.ts</code> <span class="tag">M</span></li>…</ul>` (word-break on narrow widths)
+- **Risk / guardrail card** — `<aside class="risk"><strong>label</strong> <span>one-line body</span></aside>` (`--warn-soft` bg)
+
+### Layout Rules
+
+- Card / callout *types* per page: 3 or fewer.
+- Color emphasis only when it carries status meaning. No decorative gradients, drop shadows, or emojis (status glyphs `✓ ✕ → ⚠` are fine when they convey meaning).
+- Content max width follows `--max-w`; container is centered.
+- Use only two font weights: 400 and 600.
+- **Body background stays `transparent`** — only cards, panels, and callouts paint their own `--surface`. This lets the preview blend into the host modal / page background instead of looking like a boxed-in island.
+- Mobile: the main grids (metrics, flow, compare, file list, risk grid) collapse to a single column at ≤640px. `h1` / `h2` use `clamp()` to scale down. Page padding shrinks (e.g. `--s4`).
+- Apply `min-width: 0` to grid / flex children so they cannot exceed the parent's width.
+- One `<h1>` per document. Section headings are `<h2>`.
+
+### Differentiation from Markdown
+
+The HTML preview must **not** be a one-to-one rendering of the source Markdown. Markdown remains the canonical plan body; HTML is a dashboard-shaped summary of the *decision surface*.
+
+*Anti-patterns (do not do)*:
+
+- Mapping every Markdown section to `<h2>` + card.
+- Copying every bullet from the source body into the preview.
+- Information form limited to text + lists.
+- A "whole-body HTML page" that mirrors the Markdown end to end.
+- **Meta label boxes / footers** — `plan id`, "AI-curated · summary/preview only", "source: …" pointers. The host UI already supplies this context; rendering it inside the preview is noise.
+
+*Required forms (use at least one)*:
+
+- **Top metric grid** — Tasks / Files / Commits / Waves / Effort / Tier shown as label + large number.
+- **Task / Wave flow diagram** — nodes + arrows visualizing dependencies (impossible to express in Markdown).
+- **Compare grid** — Have ↔ Not, Before ↔ After (impossible to express in Markdown).
+- **Progress visualization** — DoD checklists rendered with a `0/N · 0%` counter and a progress bar.
+- **Information compression** — keep only the decision surface (critical path, key guardrails, 3–5 DoD items). Do not move every bullet from the source body.
+- **Delegate the body to Markdown** — references, step-by-step detail, and full prose belong in the Markdown plan, not the HTML preview. Do not draw a "see Markdown" pointer box; a short, dense page is self-explanatory.
 
 ## Upload Workflow
 
@@ -60,3 +182,6 @@ cat .agentteams/cli/temp/plan-summary.html | agentteams plan upload-html --id {p
 - The document remains useful if rendered in a sandboxed iframe.
 - The source plan Markdown/Tiptap remains the canonical execution document.
 - Light and dark modes are both explicitly styled; the document does not depend on the host app's theme.
+- The Visual Design Language tokens, component patterns, and layout rules are honored.
+- The preview is a dashboard-shaped summary, not a Markdown one-to-one rendering — at least one of {metric grid, flow diagram, compare grid, progress visualization} is present.
+- The `body` background is `transparent` and the preview renders in dark mode under host dark themes such as `[data-theme="night"]`.
