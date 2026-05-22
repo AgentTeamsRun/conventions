@@ -40,11 +40,14 @@ agentteams code-review create \
   --diff-file .agentteams/cli/temp/<review-diff-summary>.md \
   --test-file .agentteams/cli/temp/<review-test-summary>.md \
   --reviewer-context "<review instructions and source context>" \
+  --findings-file .agentteams/cli/temp/<review-findings>.json \
   --runner-type <runner-type> \
   --model <model-id>
 ```
 
 Do not use reviewer names, agent names, or author names as substitutes for `--runner-type` or `--model`. If either value is unknown, stop and ask for the correct execution environment before creating the record.
+
+Passing `--findings-file` with a non-empty array registers the review as `COMPLETED` with the findings attached in the same call. Omitting `--findings-file` (or pointing it at an empty array) registers the review as `PENDING` — use this only when the reviewer agent has not yet produced findings.
 
 ## Severity
 
@@ -67,6 +70,27 @@ Each finding must include:
 - Suggestion: concrete fix direction
 
 Prefer actionable findings over broad commentary. Do not include items that cannot be verified from the diff, repository context, or stated requirements.
+
+### Findings JSON File Format
+
+`--findings-file` expects a JSON array. Each item must include the six required fields below; `lineStart` / `lineEnd` are optional.
+
+```json
+[
+  {
+    "severity": "P1",
+    "title": "Missing permission check",
+    "filePath": "api/src/routes/example.ts",
+    "lineStart": 42,
+    "lineEnd": 45,
+    "problem": "The route accepts project data without checking membership.",
+    "impact": "A member could access another project's data.",
+    "suggestion": "Call requireProjectMemberAccess before the handler."
+  }
+]
+```
+
+Required fields per item: `severity`, `title`, `filePath`, `problem`, `impact`, `suggestion`. The CLI rejects the file with a clear error when any required field is missing or the top-level value is not an array.
 
 ## Creating Plans From Findings
 
