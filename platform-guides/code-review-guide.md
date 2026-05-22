@@ -47,7 +47,13 @@ agentteams code-review create \
 
 Do not use reviewer names, agent names, or author names as substitutes for `--runner-type` or `--model`. If either value is unknown, stop and ask for the correct execution environment before creating the record.
 
-Passing `--findings-file` with a non-empty array registers the review as `COMPLETED` with the findings attached in the same call. Omitting `--findings-file` (or pointing it at an empty array) registers the review as `PENDING` — use this only when the reviewer agent has not yet produced findings.
+Review status is decided by whether the reviewer has produced a result:
+
+- Omit `--findings-file`: review is registered as `PENDING`. Use only when the reviewer agent has not yet produced findings.
+- `--findings-file` pointing at an empty array (`[]`): review is registered as `COMPLETED` with `findingCount: 0` and a `completedAt` timestamp. Use this when the reviewer ran and explicitly found no issues.
+- `--findings-file` with a non-empty array: review is registered as `COMPLETED` with the findings attached.
+
+Do not omit `--findings-file` to represent a "no issues found" result — that incorrectly leaves the review in `PENDING`.
 
 ## Severity
 
