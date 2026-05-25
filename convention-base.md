@@ -14,14 +14,16 @@ Rules for interacting with the AgentTeams platform (CLI, plans, reports, convent
 
 User messages from the AgentTeams web UI may contain entity references in `[label](type:id)` or `[label](type:id:path)` format.
 
-- **ID prefix stripping (IMPORTANT)**: The `id` part includes a type prefix (`plan_`, `cr_`, `ca_`, `conv_`, `pm_`). Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
+- **ID prefix stripping (IMPORTANT)**: The `id` part includes a type prefix (`plan_`, `cr_`, `cdr_`, `ca_`, `conv_`, `pm_`, `doc_`). Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
   - Example: `[Safari pull-to-refresh](plan:plan_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
-  - Full prefix list: `plan_` · `cr_` · `ca_` · `conv_` · `pm_`
+  - Full prefix list: `plan_` · `cr_` · `cdr_` · `ca_` · `conv_` · `pm_` · `doc_`
 - Resolution by type:
   - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
   - `completionReport:id` → Download with `agentteams report download --id {id}` and read the local file
   - `postMortem:id` → Download with `agentteams postmortem download --id {id}` and read the local file
   - `coAction:id` → Download with `agentteams coaction download --id {id}` and read the local file
+  - `codeReview:id` → Fetch the review record with `agentteams code-review get --id {id}` and use the response as context
+  - `document:id` → Download with `agentteams document download --id {id}` and read the local file
   - `LINEAR_ISSUE:uuid` → Fetch issue details with `agentteams linear issue get --issue-id {uuid}` and use the response as context. No prefix stripping needed — the value after `LINEAR_ISSUE:` is the raw Linear issue UUID.
   - `GITHUB_ISSUE:owner/repo#number` → GitHub issue. Use `gh issue view {number} --repo {owner/repo}` or GitHub API to fetch details. No prefix stripping needed.
   - `GITHUB_PR:owner/repo#number` → GitHub pull request. Use `gh pr view {number} --repo {owner/repo}` or GitHub API to fetch details. No prefix stripping needed.
@@ -30,7 +32,7 @@ User messages from the AgentTeams web UI may contain entity references in `[labe
 
 ## CLI Output Rules
 
-> ⚠️ When creating, updating, or deleting platform documents (plans, conventions, reports, postmortems, co-actions), do not stop at writing local files — always register the result to the server via the CLI.
+> ⚠️ When creating, updating, or deleting platform records (plans, conventions, reports, postmortems, co-actions, code reviews, documents), do not stop at writing local files — always register the result to the server via the CLI.
 
 > ⚠️ **Always display `webUrl`**: When a CLI command output contains a `webUrl` field, you **must** show it to the user as a clickable markdown link (e.g., `[View in AgentTeams](https://...)`) — not as raw text or inline code. Do not omit or summarize it away — the URL is the primary way users navigate to the created or updated entity.
 
@@ -77,6 +79,7 @@ For report file structure, quality score dimensions, and status rules, see `.age
 
 - Completion report is automatically created when `plan finish` is executed
 - If handoff to another agent is needed, also create a co-action (see `.agentteams/platform/co-action-guide.md`)
+- If the change has risk signals (cross-workspace, schema/auth/billing/quota/deployment, large diffs, failed verification), recommend a code review as a separate explicit action (see `.agentteams/platform/code-review-guide.md`). Keep code review decisions independent from co-action and post-mortem decisions.
 
 ### Without a Plan
 
@@ -114,11 +117,11 @@ Use `agentteams search` to find entities (plans, co-actions, reports, post-morte
 agentteams search --query "<keyword>" --format json
 ```
 
-## Guide Checks Before Writing Documents
+## Guide Checks Before Writing Platform Records
 
-Before writing or updating **platform documents** (plans, reports, conventions, postmortems), read the matching guide:
+Before writing or updating **platform records** (plans, reports, conventions, postmortems, code reviews, documents), read the matching guide:
 
-| Document type | Guide to read |
+| Record type | Guide to read |
 |---|---|
 | Plan execution | `.agentteams/platform/plan-guide.md` |
 | New plan | `.agentteams/platform/plan-template.md` |
@@ -127,6 +130,8 @@ Before writing or updating **platform documents** (plans, reports, conventions, 
 | Convention (create) | `.agentteams/platform/convention-authoring-guide.md` |
 | Convention (update/delete) | `.agentteams/platform/convention-ud-guide.md` |
 | Co-action (handoff) | `.agentteams/platform/co-action-guide.md` |
+| Code review (independent verification) | `.agentteams/platform/code-review-guide.md` |
+| Document (human-facing artifact) | `.agentteams/platform/document-guide.md` |
 | Linear (issue/comment) | `.agentteams/platform/linear-guide.md` |
 
 ---

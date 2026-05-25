@@ -2,10 +2,63 @@
 
 > ⚠️ This file is automatically deployed from the server. Do not edit it directly.
 
-Documents are human-facing artifacts.
+Documents are human-facing artifacts. Use Documents for long-lived written content that a person will read, edit, or share in the Web Tiptap editor.
 
-- Use Documents for long-lived written content that a person will read, edit, or share.
-- Create or edit a Document only when the user explicitly asks for a document, draft, write-up, summary, memo, guide, or similar human-readable artifact.
-- Do not treat Documents as an automatic AI knowledge base or retrieval source.
-- Use Plans for tracked work, Completion Reports for execution results, Post-Mortems for failure analysis, and Documents for general-purpose written artifacts.
-- Write Documents in Markdown structure so they remain editable in the Web Tiptap editor.
+## When to Create a Document
+
+Create or edit a Document when the user explicitly asks for a human-readable artifact:
+
+- Korean triggers: 문서, 메모, 글, 초안, 원고, 노트, 요약, 회의록, 공지, 설명서
+- English triggers: document, doc, memo, draft, write-up, note, summary, minutes, announcement
+- Any request that asks to write or revise long-lived prose for humans
+
+Do **not** create a Document for:
+
+- Coding conventions, naming rules, or architecture guidance → use **Convention**
+- Trackable work units or TODOs → use **Plan**
+- Execution results tied to a plan → use **Completion Report**
+- Failure analysis → use **Post-Mortem**
+- Agent-to-agent handoffs → use **Co-Action**
+
+## Choosing Between Document and Convention
+
+| User intent | Choose | Why |
+|---|---|---|
+| Coding rules, naming, architecture rules | Convention | Auto-loaded as rules for agents |
+| Human-readable guide, memo, summary, draft | Document | Editable and shareable in the Tiptap editor |
+| Work plan or TODO | Plan | State transitions and execution tracking |
+| Work outcome report | Completion Report | Bound to a plan's completion |
+
+## Creating a Document
+
+Use the dedicated CLI to register the document on the server. The body comes from a local markdown file.
+
+```bash
+# Create a new document
+agentteams document create \
+  --title "<document title>" \
+  --file .agentteams/cli/temp/<doc-slug>.md \
+  --tags "<comma,separated,tags>"
+
+# Update an existing document
+agentteams document update --id <documentId> \
+  --file .agentteams/cli/temp/<doc-slug>.md
+
+# Download (fetch) a document
+agentteams document download --id <documentId>
+
+# List documents
+agentteams document list --query "<keyword>"
+```
+
+Tags are optional, comma-separated, and capped at 10 entries. If `--title` is omitted on create, the file name is used.
+
+## Markdown Structure Tips
+
+Write Documents in Tiptap-compatible markdown so they remain editable in the web editor:
+
+- Use `#` / `##` for headings.
+- Use `-` for unordered lists.
+- Use fenced code blocks with triple backticks.
+- Use GFM table syntax for tables.
+- Avoid raw HTML — the Tiptap editor strips most inline HTML.
