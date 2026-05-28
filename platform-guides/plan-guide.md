@@ -100,9 +100,9 @@ The phrase "start the plan" is an explicit approval signal — do not stop after
 
 Plans may contain entity references in `[label](type:id)` or `[label](type:id:path)` format. Resolve them as follows:
 
-1. **ID prefix stripping (IMPORTANT)**: The `id` part may include a type prefix such as `plan_`, `cr_`, `ca_`, `conv_`, or `pm_`. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
-   - Example: `[My Plan](plan:plan_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
-   - Full prefix list: `plan_` · `cr_` · `ca_` · `conv_` · `pm_`
+1. **ID prefix stripping (IMPORTANT)**: The `id` part may include a type prefix such as `agentteams_plan_`, `agentteams_cr_`, `agentteams_ca_`, `agentteams_conv_`, or `agentteams_pm_`. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
+   - Example: `[My Plan](plan:agentteams_plan_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
+   - Full prefix list: `agentteams_plan_` · `agentteams_cr_` · `agentteams_ca_` · `agentteams_conv_` · `agentteams_pm_`
 2. Resolution by type:
    - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
    - `completionReport:id` → Download with `agentteams report download --id {id}` and read the local file

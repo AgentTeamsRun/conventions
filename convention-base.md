@@ -14,9 +14,9 @@ Rules for interacting with the AgentTeams platform (CLI, plans, reports, convent
 
 User messages from the AgentTeams web UI may contain entity references in `[label](type:id)` or `[label](type:id:path)` format.
 
-- **ID prefix stripping (IMPORTANT)**: The `id` part includes a type prefix (`plan_`, `cr_`, `cdr_`, `ca_`, `conv_`, `pm_`, `doc_`). Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
-  - Example: `[Safari pull-to-refresh](plan:plan_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
-  - Full prefix list: `plan_` · `cr_` · `cdr_` · `ca_` · `conv_` · `pm_` · `doc_`
+- **ID prefix stripping (IMPORTANT)**: The `id` part includes a type prefix (`agentteams_plan_`, `agentteams_cr_`, `agentteams_cdr_`, `agentteams_ca_`, `agentteams_conv_`, `agentteams_pm_`, `agentteams_doc_`). Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
+  - Example: `[Safari pull-to-refresh](plan:agentteams_plan_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
+  - Full prefix list: `agentteams_plan_` · `agentteams_cr_` · `agentteams_cdr_` · `agentteams_ca_` · `agentteams_conv_` · `agentteams_pm_` · `agentteams_doc_`
 - Resolution by type:
   - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
   - `completionReport:id` → Download with `agentteams report download --id {id}` and read the local file
