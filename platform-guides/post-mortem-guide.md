@@ -68,6 +68,21 @@ Issues that surfaced during development execution and are likely to recur if lef
 - Avoid blame; focus on systems and process
 - Include what detection/monitoring failed and how to improve it
 
+## Diagrams (Mermaid)
+
+A fenced ` ```mermaid ` code block renders as a diagram in the web viewer; in raw markdown and CLI output it stays as plain text, so keep the timeline readable on its own too. Use a `gantt` or `sequenceDiagram` to visualize the incident timeline or the chain of events.
+
+~~~markdown
+```mermaid
+gantt
+  title Incident Timeline
+  dateFormat HH:mm
+  Trigger     :09:00, 5m
+  Detection   :09:05, 10m
+  Mitigation  :09:15, 30m
+```
+~~~
+
 ## Action Items
 
 - Make action items concrete and testable.

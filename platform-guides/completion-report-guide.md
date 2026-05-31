@@ -48,6 +48,20 @@ Write the report file with this structure:
 - <list .agentteams/rules/*.md files you actually referenced — do not guess>
 ~~~
 
+## Diagrams (Mermaid)
+
+A fenced ` ```mermaid ` code block renders as a diagram in the web viewer; in raw markdown and CLI output it stays as plain text, so keep the surrounding prose understandable on its own. Use a `flowchart` or `sequenceDiagram` to convey the change flow when it helps a reader follow what moved through the system.
+
+~~~markdown
+```mermaid
+sequenceDiagram
+  Client->>API: request
+  API->>DB: query
+  DB-->>API: rows
+  API-->>Client: response
+```
+~~~
+
 ## Report File Naming
 
 Use `{first 8 characters of planId}-report.md`. Example: if planId is `57a51ec2-cf70-...`, the file name is `57a51ec2-report.md`.

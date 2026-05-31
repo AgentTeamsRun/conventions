@@ -98,6 +98,18 @@ Prefer actionable findings over broad commentary. Do not include items that cann
 
 Required fields per item: `severity`, `title`, `filePath`, `problem`, `impact`, `suggestion`. The CLI rejects the file with a clear error when any required field is missing or the top-level value is not an array.
 
+## Diagrams (Mermaid)
+
+A fenced ` ```mermaid ` code block renders as a diagram in the web viewer wherever review prose is shown; in raw markdown and CLI output it stays as plain text. Use a `flowchart` or `sequenceDiagram` when a diagram explains a regression path or control flow more clearly than words.
+
+~~~markdown
+```mermaid
+flowchart TD
+  Request --> Handler
+  Handler -->|missing check| Data[(Other project data)]
+```
+~~~
+
 ## Creating Plans From Findings
 
 Finding-to-plan conversion is human-in-the-loop:

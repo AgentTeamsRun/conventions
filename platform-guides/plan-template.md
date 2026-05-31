@@ -105,6 +105,18 @@ Wave 2 (Wave 1 complete):
 └── Task 3: description [category]
 ~~~
 
+### Diagrams (Mermaid)
+
+A fenced ` ```mermaid ` code block renders as a diagram in the web viewer; in raw markdown and CLI output it stays as plain text. Use a `flowchart` to show waves and task dependencies at a glance.
+
+~~~markdown
+```mermaid
+flowchart LR
+  T1[Task 1] --> T3[Task 3]
+  T2[Task 2] --> T3
+```
+~~~
+
 ---
 
 ## TODOs

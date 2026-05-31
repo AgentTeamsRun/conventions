@@ -47,6 +47,17 @@ Write the co-action content with these sections. Include only sections that have
 - <incomplete items with context on where they left off>
 ~~~
 
+## Diagrams (Mermaid)
+
+A fenced ` ```mermaid ` code block renders as a diagram in the web viewer; in raw markdown and CLI output it stays as plain text, so keep the prose self-contained. Use a `flowchart` to map how components relate or how a flow moves between systems when a picture transfers the knowledge faster than words.
+
+~~~markdown
+```mermaid
+flowchart LR
+  CLI --> API --> Queue --> Worker
+```
+~~~
+
 ## Section Writing Tips
 
 ### Key Discoveries

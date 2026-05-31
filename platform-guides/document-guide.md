@@ -61,4 +61,16 @@ Write Documents in Tiptap-compatible markdown so they remain editable in the web
 - Use `-` for unordered lists.
 - Use fenced code blocks with triple backticks.
 - Use GFM table syntax for tables.
+- Use a fenced `mermaid` code block for diagrams — it renders in the web viewer (see below).
 - Avoid raw HTML — the Tiptap editor strips most inline HTML.
+
+## Diagrams (Mermaid)
+
+A fenced ` ```mermaid ` code block renders as a diagram in the web viewer. In raw markdown and CLI output it stays as plain text, so keep the surrounding prose understandable on its own. Common diagram types: `flowchart`, `sequenceDiagram`, `erDiagram`, `gantt`, `stateDiagram-v2`.
+
+~~~markdown
+```mermaid
+flowchart LR
+  Draft --> Review --> Publish
+```
+~~~

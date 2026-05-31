@@ -86,6 +86,7 @@ Example:
 - **Task list**: execution/verification checklist
 - **Table**: summarize options/values/exceptions
 - **Code block**: runnable examples or command snippets (use language tags when possible)
+- **Mermaid block**: a fenced ` ```mermaid ` code block renders as a diagram in the web viewer (e.g. `flowchart`, `sequenceDiagram`); in raw markdown and CLI output it stays as plain text, so keep nearby prose self-contained.
 
 ### Inline
 
