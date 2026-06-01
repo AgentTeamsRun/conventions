@@ -247,6 +247,15 @@ If Metis is unavailable, self-check:
 - If you introduced a new endpoint: add at least one request-level test.
 - If you changed a template: update its tests to match.
 
+## Test-First Planning
+
+Bake verification into the plan at writing time, not as a trailing afterthought:
+
+- Write each task's **Acceptance Criteria as verifiable tests** — what you would assert to prove the task is done. A criterion that cannot be expressed as a check is underspecified.
+- For `BUG_FIX` plans, make the first task a **failing test that reproduces the bug**; a later task makes it pass. This proves both that the bug existed and that it is gone.
+- For `FEATURE` work, plan the test in the **same task** as the code it covers — not as a separate trailing "write tests" task that gets dropped under time pressure.
+- The connected project's testing convention is the source of truth for framework, file location, and run command. This guide governs *that* you plan tests, not *how* they are written.
+
 ## Common Pitfalls
 
 - Skipping tests because changes "look small"

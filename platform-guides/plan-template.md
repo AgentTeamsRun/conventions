@@ -89,6 +89,7 @@ Example:
 ### QA Policy
 
 - <!-- Tool/command mapping: API→typecheck+test, CLI→test, Web→build+playwright -->
+- <!-- Test-first: list the tests that prove each Definition of Done item. For BUG_FIX, include a failing reproduction test that a later task makes pass. -->
 
 ---
 
@@ -162,7 +163,7 @@ flowchart LR
 
   **Acceptance Criteria**:
 
-  - <!-- Verifiable criterion -->
+  - <!-- Verifiable criterion — prefer one expressed as a test assertion (what you'd check to prove this task is done) -->
 
   **QA Scenarios**:
 
