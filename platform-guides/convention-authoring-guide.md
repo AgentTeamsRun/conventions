@@ -113,7 +113,16 @@ Use these prefixes consistently across documents (include a trailing space after
 - `💡 `: tip/reference
 - `🎯 `: goal/intent
 
-## 5) Useful Commands
+## 5) Single source of truth (no duplication)
+
+A convention must not duplicate facts whose authoritative source lives elsewhere. Duplicated values and policy inevitably drift out of sync with their source and erode trust in the convention.
+
+- Define only what the convention **owns**: implementation patterns, naming, and process — rules that have no other authoritative source.
+- For values or policy whose source of truth is **code or a Document, link to it instead of restating it** (e.g. reference the constant in source code; reference the Document for policy and rationale).
+- Heuristic: *"If this changes, must I edit it in two places?"* If yes, it is duplication — remove it from the convention and replace it with a pointer.
+- Ownership split: **values/logic → code**, **human-facing policy/rationale → Document**, **patterns/naming/process → convention**.
+
+## 6) Useful Commands
 
 ~~~bash
 # Create a new convention
