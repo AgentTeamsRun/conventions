@@ -1,9 +1,10 @@
-# Plan Template (Full Tier)
+# Plan Template (FULL Tier)
 
 > ⚠️ This file is automatically deployed from the server. Do not edit it directly.
 
-> This template is for **Full tier** plans (4+ tasks, multi-wave, unfamiliar domain).
-> For Minimal or Standard plans, refer to the Plan Tiers section in `plan-guide.md` and extract only the sections you need.
+> This template is for **FULL complexity** plans (4+ tasks, multi-wave, or risk signals).
+> Set `--complexity FULL` at creation and author the **rich** HTML preview (`html-summary-guide.md`).
+> For MINIMAL or STANDARD plans, refer to the Plan Complexity section in `plan-guide.md`, extract only the sections you need, and author the **lite** preview (`plan-preview-lite-guide.md`) instead.
 
 ## TL;DR
 
@@ -16,6 +17,7 @@
 >
 > **Estimated Effort**: <!-- Short / Medium / Long -->
 > **Type**: <!-- FEATURE / BUG_FIX / ISSUE / REFACTOR / CHORE -->
+> **Complexity**: FULL <!-- MINIMAL / STANDARD / FULL — must match --complexity at create -->
 > **Parallel Execution**: <!-- YES / NO -->
 > **Critical Path**: <!-- Task X → Task Y → ... -->
 > **Dependencies**: <!-- blocking plan IDs if creating multiple plans, or "none" -->

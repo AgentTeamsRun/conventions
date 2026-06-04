@@ -19,9 +19,9 @@ This guide defines how to **write** a high-quality plan. For execution details (
 ## Plan Writing Workflow
 
 1. **Clarify requirements** — explore the codebase, interview the requester if needed
-2. **Write plan body** — follow Plan Tiers below to pick the right structure
+2. **Write plan body** — judge the plan's **complexity** (see Plan Complexity below) and follow the structure for that tier
 3. **Gap analysis** — SHOULD run Metis review; use the self-check below if unavailable
-4. **Register** — `agentteams plan create --file {path} --type {type} --priority {level} --runner-type {runner-type} --model {model-id}`
+4. **Register** — `agentteams plan create --file {path} --type {type} --complexity {MINIMAL|STANDARD|FULL} --priority {level} --runner-type {runner-type} --model {model-id}` — an HTML preview is also required (see Plan Complexity → Preview)
 5. **Link dependencies** — when creating multiple plans at once and one plan must finish before another can start, link them after creation:
    ~~~bash
    agentteams dependency create --plan-id {blockedPlanId} --blocking-plan-id {blockingPlanId}
@@ -186,39 +186,55 @@ Clean up the local runbook:
 agentteams plan cleanup --id {planId}
 ~~~
 
-## Plan Tiers — Pick the Right Level
+## Plan Complexity — A Stored Field, Not Just a Document Concept
 
-Not every plan needs the same structure. Pick the tier that matches your task size.
+Every plan carries a **complexity** tier (`MINIMAL` / `STANDARD` / `FULL`) that is **stored on the plan in the database**, not merely implied by how the body is written. You set it at creation time with `--complexity`; the server records it as both `estimatedComplexity` (the immutable snapshot of your first judgment) and `complexity` (the effective, adjustable value). The stored value drives plan simplification (which preview template is used) and the user-triggered re-investigation loop, so judging it honestly matters.
 
-### Minimal (1 task, 1–2 files, <30 min)
+### Judging the Tier
 
-- `## TL;DR` — 1–2 sentence summary, deliverables
-- `## TODOs` — What to do + Acceptance Criteria per task
-- `### Conventions Referenced` (under Context, or top-level if Context omitted) — `.agentteams/rules/*.md` files you consulted while planning. Same format as completion reports. Required at every tier — do not guess.
+| Tier | When |
+|---|---|
+| `MINIMAL` | 1 task · 1–2 files · single domain · no risk signals |
+| `STANDARD` | 2–3 tasks · known, bounded scope |
+| `FULL` | 4+ tasks · multi-wave, **or** any risk signal: schema / auth / billing / quota / deployment change · cross-workspace edits · large diff · unfamiliar domain |
 
-### Standard (2–3 tasks, known scope)
+> When unsure between two tiers, pick the higher one. Under-scoping a FULL plan as MINIMAL is the failure mode this field exists to prevent.
 
-Everything in Minimal, plus:
+### Body Structure per Tier
 
-- `## Context` — Original Request / Research Findings / Conventions Referenced
-- `## Work Objectives` — Deliverables / Definition of Done / Must Have / Must NOT Have
-- `## Verification Strategy` — QA tool mapping (API→typecheck+test, CLI→test, Web→build)
-- TODOs add: Must NOT do / References
+The tier determines how much structure the plan body needs.
 
-### Full (4+ tasks, multi-wave, unfamiliar domain)
+- **MINIMAL** — `## TL;DR` (1–2 sentence summary + deliverables) · `## TODOs` (What to do + Acceptance Criteria per task)
+- **STANDARD** — everything in MINIMAL, plus `## Context` (Original Request / Research Findings) · `## Work Objectives` (Deliverables / Definition of Done / Must Have / Must NOT Have) · `## Verification Strategy` (QA tool mapping: API→typecheck+test, CLI→test, Web→build) · TODOs add Must NOT do / References
+- **FULL** — everything in STANDARD, plus Context adds Interview Summary / Metis Review · `## Execution Strategy` (Parallel Waves / Dependency Matrix / Agent Dispatch) · TODOs add Agent Profile / Parallelization / QA Scenarios / Commit plan
 
-Everything in Standard, plus:
+`### Conventions Referenced` — `.agentteams/rules/*.md` files you consulted while planning — is **required at every tier**. Do not guess. Place it under Context, or top-level when Context is omitted.
 
-- Context adds: Interview Summary / Metis Review
-- `## Execution Strategy` — Parallel Waves / Dependency Matrix / Agent Dispatch
-- TODOs add: Agent Profile / Parallelization / QA Scenarios / Commit plan
+> `plan-template.md` provides a copyable FULL-tier template. For MINIMAL/STANDARD, extract only the sections you need.
 
-> When unsure, start with Standard. Upgrade to Full when tasks reach 4+.
-> `plan-template.md` provides a copyable Full-tier template. For Minimal/Standard, extract only the sections you need.
+### Preview — Complexity Selects the Template
+
+The HTML preview is **mandatory at every tier** (there is no escape hatch), but the complexity selects which template to author:
+
+| Complexity | Preview template |
+|---|---|
+| `MINIMAL` / `STANDARD` | **lite** — see `plan-preview-lite-guide.md` (title + TL;DR + changes + verification) |
+| `FULL` | **rich** — see `html-summary-guide.md` (dashboard: metric grid, wave-flow, DoD progress) |
+
+The preview is always authored by an AI agent and uploaded in the same `plan create` / preview-affecting `plan update` command.
+
+### Immutability & Change History
+
+- `estimatedComplexity` is set once at creation and is **never changed** by updates — it preserves the original AI judgment for later comparison.
+- `complexity` can be changed via `plan update --complexity <tier> [--complexity-reason "<why>"]`. When it changes, the server **automatically** records a `MODIFICATION` comment (`complexity: A→B · reason: …`) on every path (CLI or web) — you do not create this comment yourself.
+
+### Raising Complexity → Re-investigation Loop
+
+When a user judges the scope is larger than the plan assumes, they raise `complexity` (typically MINIMAL/STANDARD → FULL). This is the signal to **investigate more deeply and rewrite the plan body at the higher tier** (and regenerate the rich preview). The plan's status is unchanged by a complexity change — it is not a new plan, just a re-scoped one.
 
 ## Task Required Elements
 
-Full tier requires all items. Standard tier requires ★ items only.
+FULL tier requires all items. STANDARD tier requires ★ items only. MINIMAL needs ★ What to do + ★ Acceptance Criteria.
 
 - ★ What to do / Must NOT do
 - Recommended Agent Profile (category + skills + reason)
@@ -269,4 +285,6 @@ Bake verification into the plan at writing time, not as a trailing afterthought:
 
 ## References
 
-- `plan-template.md` — copyable Full-tier plan template
+- `plan-template.md` — copyable FULL-tier plan template
+- `html-summary-guide.md` — rich HTML preview (FULL plans)
+- `plan-preview-lite-guide.md` — lite HTML preview (MINIMAL/STANDARD plans)
