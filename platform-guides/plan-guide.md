@@ -219,7 +219,7 @@ The HTML preview is **mandatory at every tier** (there is no escape hatch), but 
 | Complexity | Preview template |
 |---|---|
 | `MINIMAL` / `STANDARD` | **lite** — see `plan-preview-lite-guide.md` (title + TL;DR + changes + verification) |
-| `FULL` | **rich** — see `html-summary-guide.md` (dashboard: metric grid, wave-flow, DoD progress) |
+| `FULL` | **rich** — see `plan-preview-guide.md` (dashboard: metric grid, wave-flow, DoD progress) |
 
 The preview is always authored by an AI agent and uploaded in the same `plan create` / preview-affecting `plan update` command.
 
@@ -286,5 +286,5 @@ Bake verification into the plan at writing time, not as a trailing afterthought:
 ## References
 
 - `plan-template.md` — copyable FULL-tier plan template
-- `html-summary-guide.md` — rich HTML preview (FULL plans)
+- `plan-preview-guide.md` — rich HTML preview (FULL plans)
 - `plan-preview-lite-guide.md` — lite HTML preview (MINIMAL/STANDARD plans)

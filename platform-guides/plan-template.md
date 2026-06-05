@@ -3,7 +3,7 @@
 > ⚠️ This file is automatically deployed from the server. Do not edit it directly.
 
 > This template is for **FULL complexity** plans (4+ tasks, multi-wave, or risk signals).
-> Set `--complexity FULL` at creation and author the **rich** HTML preview (`html-summary-guide.md`).
+> Set `--complexity FULL` at creation and author the **rich** HTML preview (`plan-preview-guide.md`).
 > For MINIMAL or STANDARD plans, refer to the Plan Complexity section in `plan-guide.md`, extract only the sections you need, and author the **lite** preview (`plan-preview-lite-guide.md`) instead.
 
 ## TL;DR

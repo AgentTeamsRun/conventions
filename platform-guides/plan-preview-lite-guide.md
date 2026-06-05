@@ -2,17 +2,17 @@
 
 > ⚠️ This file is automatically deployed from the server. Do not edit it directly.
 
-This guide defines the **lite** HTML preview used for `MINIMAL` and `STANDARD` complexity plans. It is the small-plan counterpart to the rich dashboard preview in `html-summary-guide.md`. A FULL plan uses the rich preview; a MINIMAL/STANDARD plan uses this lite one. The preview is mandatory at every tier — there is no escape hatch.
+This guide defines the **lite** HTML preview used for `MINIMAL` and `STANDARD` complexity plans. It is the small-plan counterpart to the rich dashboard preview in `plan-preview-guide.md`. A FULL plan uses the rich preview; a MINIMAL/STANDARD plan uses this lite one. The preview is mandatory at every tier — there is no escape hatch.
 
 ## When to Use This
 
 - The plan's stored `complexity` is `MINIMAL` or `STANDARD`.
 - The decision surface is small enough that a dashboard (metric grids, wave-flow diagrams, DoD progress bars) would be overkill and would invent structure the plan does not have.
-- If the plan is `FULL`, stop and use `html-summary-guide.md` instead.
+- If the plan is `FULL`, stop and use `plan-preview-guide.md` instead.
 
 ## Purpose & Safety
 
-The lite preview follows the **same factual, HTML, and theme safety rules** as the rich preview — re-read those sections in `html-summary-guide.md`. In short:
+The lite preview follows the **same factual, HTML, and theme safety rules** as the rich preview — re-read those sections in `plan-preview-guide.md`. In short:
 
 - HTML is a human-facing **summary**, never a replacement for the canonical Markdown/Tiptap plan body.
 - Do not invent facts, statuses, owners, file paths, or verification results. Omit or mark anything not derivable from the source.
@@ -33,7 +33,7 @@ Keep the whole document scannable in a few seconds. If you find yourself adding 
 
 ## Design Tokens — Reuse the Rich Preview's CSS
 
-Do **not** invent a new palette. Reuse the exact `:root` design tokens, the three-layer theme resolution (light defaults → `prefers-color-scheme: dark` → host `[data-theme]` attribute), and the `body` rules defined in `html-summary-guide.md` → *Design Tokens*. The lite preview is visually consistent with the rich one; it just uses fewer components.
+Do **not** invent a new palette. Use the exact `:root` design tokens, the three-layer theme resolution (light defaults → `prefers-color-scheme: dark` → host `[data-theme]` attribute), and the `body` rules from `plan-preview-guide.md` → *Design Tokens*. These are inlined verbatim in the *Reference Skeleton* below, so the lite preview is theme-correct on its own and visually consistent with the rich one — it just uses fewer components. The full theme layer is mandatory: without it, a transparent `body` over a host dark theme renders default black text and is unreadable.
 
 From the shared token set, a lite preview typically uses only:
 
@@ -46,7 +46,7 @@ Avoid the metric grid, wave-flow, compare grid, and DoD progress bar — those a
 
 ## Reference Skeleton
 
-A minimal, self-contained shape (fill the shared tokens from `html-summary-guide.md` into `:root`):
+A minimal, self-contained shape. The shared design tokens and the three-layer theme resolution are inlined below — identical to `plan-preview-guide.md` → *Design Tokens*; keep the values in sync. Copying this skeleton as-is already yields correct light and dark rendering:
 
 ~~~html
 <!doctype html>
@@ -55,7 +55,66 @@ A minimal, self-contained shape (fill the shared tokens from `html-summary-guide
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* :root tokens + theme layers + body rules — copy from html-summary-guide.md */
+    /* Shared design tokens — identical to plan-preview-guide.md. Keep values in sync. */
+    :root {
+      color-scheme: light dark;
+      --max-w: 800px;
+      --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+      --fs-caption: 11px; --fs-small: 13px; --fs-body: 15px;
+      --fs-h3: 18px;
+      --fs-h2: clamp(20px, 3.5vw, 22px);
+      --fs-h1: clamp(24px, 5vw, 28px);
+      --lh-body: 1.55; --lh-heading: 1.2;
+      --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px;
+      /* Light palette */
+      --bg: #fbfbfa; --surface: #ffffff; --surface-2: #f4f4f2;
+      --border: #e6e6e2; --border-strong: #d4d4ce;
+      --text: #1a1a1a; --muted: #555; --subtle: #888;
+      --accent: #2b6cb0;  --accent-soft: #e3eef9;
+      --danger: #b42318;  --danger-soft: #fdeceb;
+      --warn:   #b75e09;  --warn-soft:   #fdf2e3;
+      --success:#1f7a3a;  --success-soft:#e6f4ea;
+      --code-bg: #f4f4f2;
+    }
+    /* Fallback when the host does not signal a theme. */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:#141414; --surface:#1c1c1c; --surface-2:#232323;
+        --border:#2e2e2e; --border-strong:#3d3d3d;
+        --text:#e8e8e8; --muted:#a8a8a8; --subtle:#808080;
+        --accent:#82b8e6;  --accent-soft:#1d2c3a;
+        --danger:#f0857a;  --danger-soft:#3a1b18;
+        --warn:  #e0a464;  --warn-soft:  #3a2a14;
+        --success:#7dc795; --success-soft:#16301d;
+        --code-bg:#1c1c1c;
+      }
+    }
+    /* Primary signal: host theme attribute (DaisyUI dark theme names). */
+    :root[data-theme="night"],    :root[data-theme="dark"],
+    :root[data-theme="dim"],      :root[data-theme="sunset"],
+    :root[data-theme="black"],    :root[data-theme="luxury"],
+    :root[data-theme="business"], :root[data-theme="coffee"],
+    :root[data-theme="forest"],   :root[data-theme="halloween"],
+    :root[data-theme="dracula"],  :root[data-theme="abyss"] {
+      color-scheme: dark;
+      --bg:#141414; --surface:#1c1c1c; --surface-2:#232323;
+      --border:#2e2e2e; --border-strong:#3d3d3d;
+      --text:#e8e8e8; --muted:#a8a8a8; --subtle:#808080;
+      --accent:#82b8e6;  --accent-soft:#1d2c3a;
+      --danger:#f0857a;  --danger-soft:#3a1b18;
+      --warn:  #e0a464;  --warn-soft:  #3a2a14;
+      --success:#7dc795; --success-soft:#16301d;
+      --code-bg:#1c1c1c;
+    }
+    body {
+      background: transparent;
+      color: var(--text);
+      font: var(--fs-body)/var(--lh-body) var(--font-sans);
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: var(--s5);
+    }
     h1 { font-size: var(--fs-h1); line-height: var(--lh-heading); margin: 0 0 var(--s2); }
     .eyebrow { color: var(--subtle); font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 var(--s1); }
     .lead { color: var(--muted); margin: 0 0 var(--s5); }
@@ -91,7 +150,7 @@ A minimal, self-contained shape (fill the shared tokens from `html-summary-guide
 
 ## Upload Workflow
 
-Identical to the rich preview — the lite HTML is uploaded in the same `plan create` / preview-affecting `plan update` command via `--html-file` or `--html-stdin`. See `html-summary-guide.md` → *Upload Workflow* for the standalone `plan upload-html` form.
+Identical to the rich preview — the lite HTML is uploaded in the same `plan create` / preview-affecting `plan update` command via `--html-file` or `--html-stdin`. See `plan-preview-guide.md` → *Upload Workflow* for the standalone `plan upload-html` form.
 
 ## Pre-Upload Checklist
 
@@ -100,5 +159,5 @@ Identical to the rich preview — the lite HTML is uploaded in the same `plan cr
 - The summary matches the source plan's scope and current state; missing info is omitted or marked not specified.
 - No scripts, trackers, forms, auth flows, remote dependencies, or hidden metadata.
 - Light and dark modes are both explicitly styled; the `body` background is `transparent` and renders correctly under host dark themes such as `[data-theme="night"]`.
-- The shared design tokens from `html-summary-guide.md` are reused — no ad-hoc palette.
+- The shared design tokens from `plan-preview-guide.md` are reused — no ad-hoc palette.
 - The source plan Markdown/Tiptap remains the canonical execution document.
