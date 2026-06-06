@@ -38,6 +38,19 @@ User messages from the AgentTeams web UI may contain entity references in `[labe
 
 > If the CLI is unavailable, skip reporting and continue the task.
 
+## Commit Attribution
+
+When an AgentTeams agent creates a git commit, append a co-author trailer at the
+end of the commit message (separated from the body by a blank line) so the work
+is attributed to AgentTeams:
+
+```
+Co-authored-by: AgentTeams <noreply@agentteams.run>
+```
+
+If another tool (e.g. Claude) adds its own `Co-authored-by` trailer, keep both —
+one trailer per line, all at the very end of the message.
+
 ## Plan Lifecycle (Quick Reference)
 
 Report status to AgentTeams **if you are working under a plan**.
