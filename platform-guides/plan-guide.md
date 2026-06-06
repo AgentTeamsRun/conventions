@@ -21,7 +21,7 @@ This guide defines how to **write** a high-quality plan. For execution details (
 1. **Clarify requirements** — explore the codebase, interview the requester if needed
 2. **Write plan body** — judge the plan's **complexity** (see Plan Complexity below) and follow the structure for that tier
 3. **Gap analysis** — SHOULD run Metis review; use the self-check below if unavailable
-4. **Register** — `agentteams plan create --file {path} --type {type} --complexity {MINIMAL|STANDARD|FULL} --priority {level} --runner-type {runner-type} --model {model-id}` — an HTML preview is also required (see Plan Complexity → Preview)
+4. **Register** — `agentteams plan create --title "{title}" --file {path} --html-file {previewPath} --type {type} --complexity {MINIMAL|STANDARD|FULL} --priority {level} --runner-type {runner-type} --model {model-id}` — an HTML preview is required via `--html-file` or `--html-stdin` (see Plan Complexity → Preview)
 5. **Link dependencies** — when creating multiple plans at once and one plan must finish before another can start, link them after creation:
    ~~~bash
    agentteams dependency create --plan-id {blockedPlanId} --blocking-plan-id {blockingPlanId}
@@ -59,7 +59,7 @@ Two snapshots, two sources:
 - `Plan.runnerType` / `Plan.model` — **creator** snapshot. Recorded by `plan create` (and `plan quick`). Required at creation time.
 - `CompletionReport.runnerType` / `CompletionReport.model` — **executor** snapshot. Recorded by `report create` (and by `plan finish` when generating a report). Required when creating a report.
 
-`--runner-type` and `--model` are therefore **required** for `plan create`, `plan quick`, and `report create`. `plan start` and `plan finish` (without a report) do not accept them.
+`--runner-type` and `--model` are therefore **required** for `plan create`, `plan quick`, `report create`, and `plan finish` when attaching a completion report. They are not required for `plan start` or `plan finish` without a report.
 
 | Runner Type | Description |
 |---|---|
@@ -117,36 +117,29 @@ When creating a plan based on an external issue (GitHub, GitLab, Linear), link t
 
 **Supported providers:** `LINEAR`, `GITHUB`, `GITLAB`
 
-**Preferred method — CLI flag on creation:**
+**Preferred method — Explicit link after creation:**
 
 ~~~bash
 # Linear
-agentteams plan create --file plan.md --type FEATURE --priority HIGH \
-  --origin-issue "LINEAR:<issueUuid>:<issueUrl>:<issueTitle>"
+agentteams plan link-issue --id {planId} --provider LINEAR \
+  --external-id <issueUuid> --external-url <issueUrl> --title "{issueTitle}"
 
 # GitHub
-agentteams plan create --file plan.md --type BUG_FIX --priority HIGH \
-  --origin-issue "GITHUB:<owner/repo#number>:<issueUrl>:<issueTitle>"
+agentteams plan link-issue --id {planId} --provider GITHUB \
+  --external-id <owner/repo#number> --external-url <issueUrl> --title "{issueTitle}"
 
 # GitLab
-agentteams plan create --file plan.md --type ISSUE --priority MEDIUM \
-  --origin-issue "GITLAB:<projectPath#iid>:<issueUrl>:<issueTitle>"
+agentteams plan link-issue --id {planId} --provider GITLAB \
+  --external-id <projectPath#iid> --external-url <issueUrl> --title "{issueTitle}"
 ~~~
 
-The `--origin-issue` flag is repeatable for multiple issues.
+Repeat `agentteams plan link-issue` for multiple issues. `agentteams plan issue` exists as a short alias, but platform guides should prefer the official action shown in `agentteams plan --help`: `link-issue`.
 
-**Fallback 1 — Explicit link after creation:**
-
-~~~bash
-agentteams plan issue --id {planId} --provider <LINEAR|GITHUB|GITLAB> \
-  --external-id {id} --external-url {url} --title "{title}"
-~~~
-
-**Fallback 2 — Entity reference in plan content:**
+**Fallback — Entity reference in plan content:**
 
 If the plan body includes an issue entity reference (e.g., `[Issue title](LINEAR_ISSUE:uuid)`, `[Issue title](GITHUB_ISSUE:owner/repo#number)`), the server automatically extracts and links it on creation.
 
-**Duplicate handling:** If the same issue is linked multiple times (via flag, manual command, or content extraction), only one record is kept — duplicates are silently ignored.
+**Duplicate handling:** If the same issue is linked multiple times (via manual command or content extraction), only one record is kept — duplicates are silently ignored.
 
 ## Plan Dependencies
 

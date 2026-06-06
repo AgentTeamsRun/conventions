@@ -76,6 +76,7 @@ You can attach report content directly while finishing a plan:
 
 ~~~bash
 agentteams plan finish --id {planId} \
+  --runner-type <runner-type> --model <model-id> \
   --report-title "<what you did and why, in one sentence>" \
   --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
   --quality-score <0-100, see Quality Score section> \

@@ -61,6 +61,7 @@ agentteams plan start --id {planId}
 
 # Finish (with completion report)
 agentteams plan finish --id {planId} \
+  --runner-type <runner-type> --model <model-id> \
   --report-title "<what you did and why, in one sentence>" \
   --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
   --quality-score <0-100> \
@@ -103,8 +104,12 @@ Only execute the following flow when the user explicitly requests a completion r
    ```bash
    agentteams plan quick --title "<brief work summary>" \
      --content "<content following the format below>" \
-     --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE>
+     --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE> \
+     --runner-type <runner-type> \
+     --model <model-id> \
+     --agent <agent-name-or-id>
    ```
+   If `--agent` is omitted, `AGENTTEAMS_AGENT_NAME` must be set.
    Then follow the report creation steps in `.agentteams/platform/completion-report-guide.md`.
 3. If declined: create a standalone completion report (no plan link). See `.agentteams/platform/completion-report-guide.md`.
 4. If handoff to another agent is needed, also create a co-action (see `.agentteams/platform/co-action-guide.md`)
