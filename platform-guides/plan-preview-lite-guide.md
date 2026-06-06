@@ -24,7 +24,7 @@ The lite preview follows the **same factual, HTML, and theme safety rules** as t
 
 A lite preview is a single narrow column with exactly these blocks. Omit a block only if the source plan genuinely has nothing for it.
 
-1. **Title** — one `<h1>` with the plan title, optionally an eyebrow line for `type · complexity`.
+1. **Title** — one `<h1>` with the plan title, an eyebrow line for `type · complexity`, and an optional compact chip row (`.meta`) carrying `type` / `complexity` / `priority` / `status`. The chip row is an inline pill strip, **not** a metric grid.
 2. **TL;DR** — the plan's one-to-two sentence summary plus its deliverables as a short list.
 3. **Changes** — what this plan will change: the files/modules or concrete steps. A short list, not the full task breakdown.
 4. **Verification** — how the work is proven done: the acceptance criteria / tests / checks. A short list.
@@ -37,12 +37,13 @@ Do **not** invent a new palette. Use the exact `:root` design tokens, the three-
 
 From the shared token set, a lite preview typically uses only:
 
-- **Hero** — `<header><p class="eyebrow">type · COMPLEXITY</p><h1>…</h1><p class="lead">TL;DR sentence</p></header>`
-- **Card / callout** — `<aside class="card">…</aside>` for the Changes and Verification blocks (`--surface` bg, 1px `--border`, radius 8).
-- **File list** — `<ul class="files"><li><code>path/to/file.ts</code> <span class="tag">M</span></li>…</ul>` for the Changes block when it is file-oriented.
-- **Status badge** — `<span class="badge badge-accent">…</span>` only when it carries real status meaning.
+- **Hero** — `<header class="hero"><p class="eyebrow">type · COMPLEXITY</p><h1>…</h1><p class="lead">TL;DR sentence</p>…</header>`
+- **Meta chip row** — `<ul class="meta"><li class="chip">Type <b>FEATURE</b></li>…</ul>` — a compact inline pill strip for `type` / `complexity` / `priority` / `status`. Put `chip-accent` on the single chip that carries the most signal (usually priority). This is the lite counterpart to the rich preview's metric grid: same top-of-page anchoring role, far lighter. It is **not** a metric grid — no large numbers, no boxed cells.
+- **Card / callout** — `<aside class="card">…</aside>` for the Changes and Verification blocks (`--surface` bg, 1px `--border`, radius 10). The card title is a small uppercase label (`.card > h2`), not a big heading — this is what gives the lite preview a dashboard feel instead of a Markdown-rendering feel.
+- **File list** — `<ul class="files"><li><code>path/to/file.ts</code> <span class="tag tag-m">M</span> <span class="desc">— what changes</span></li>…</ul>` for the Changes block when it is file-oriented. Tag variants: `tag-m` (modified), `tag-a` (added), `tag-d` (deleted).
+- **Checklist** — `<ul class="checks"><li>…</li></ul>` for the Verification block; each item renders with a `✓` marker. A plain `<ul>` is fine when the content is not a pass/fail checklist.
 
-Avoid the metric grid, wave-flow, compare grid, and DoD progress bar — those are rich-preview forms for FULL plans.
+Avoid the metric grid, wave-flow, compare grid, and DoD progress bar — those are rich-preview forms for FULL plans. The hero chip row is the only structured anchor a lite preview needs.
 
 ## Reference Skeleton
 
@@ -117,30 +118,51 @@ A minimal, self-contained shape. The shared design tokens and the three-layer th
     }
     h1 { font-size: var(--fs-h1); line-height: var(--lh-heading); margin: 0 0 var(--s2); }
     .eyebrow { color: var(--subtle); font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 var(--s1); }
-    .lead { color: var(--muted); margin: 0 0 var(--s5); }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: var(--s4); margin: 0 0 var(--s4); }
-    .card h2 { font-size: var(--fs-h3); margin: 0 0 var(--s2); }
-    .card ul { margin: 0; padding-left: var(--s4); }
-    code { font-family: var(--font-mono); background: var(--code-bg); padding: 0 var(--s1); border-radius: 4px; }
+    .lead { color: var(--muted); margin: 0 0 var(--s3); }
+    /* Hero meta — a compact inline chip row, NOT a metric grid. type / complexity / priority / status only. */
+    .meta { list-style: none; display: flex; flex-wrap: wrap; gap: var(--s2); margin: var(--s3) 0 var(--s5); padding: 0; }
+    .chip { display: inline-flex; align-items: baseline; gap: var(--s1); font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .03em; color: var(--subtle); background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: var(--s1) var(--s3); }
+    .chip b { font-weight: 600; color: var(--text); }
+    .chip-accent { background: var(--accent-soft); border-color: transparent; }
+    .chip-accent b { color: var(--accent); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: var(--s4); margin: 0 0 var(--s3); }
+    .card > h2 { font-size: var(--fs-caption); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--subtle); margin: 0 0 var(--s3); }
+    .files, .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+    .files li { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: baseline; font-size: var(--fs-small); }
+    .files .desc { color: var(--muted); }
+    .tag { font-size: var(--fs-caption); font-weight: 600; border-radius: 4px; padding: 0 var(--s1); flex: none; }
+    .tag-m { color: var(--accent);  background: var(--accent-soft); }
+    .tag-a { color: var(--success); background: var(--success-soft); }
+    .tag-d { color: var(--danger);  background: var(--danger-soft); }
+    .checks li { display: flex; gap: var(--s2); }
+    .checks li::before { content: "✓"; color: var(--success); font-weight: 600; flex: none; }
+    code { font-family: var(--font-mono); background: var(--code-bg); padding: 0 var(--s1); border-radius: 4px; word-break: break-all; }
+    @media (max-width: 640px) { body { padding: var(--s4); } }
   </style>
 </head>
 <body>
-  <header>
+  <header class="hero">
     <p class="eyebrow">FEATURE · STANDARD</p>
     <h1>Plan title</h1>
     <p class="lead">One-to-two sentence TL;DR of what this plan achieves.</p>
+    <ul class="meta">
+      <li class="chip">Type <b>FEATURE</b></li>
+      <li class="chip">Complexity <b>STANDARD</b></li>
+      <li class="chip chip-accent">Priority <b>Medium</b></li>
+    </ul>
   </header>
 
   <aside class="card">
     <h2>Changes</h2>
     <ul class="files">
-      <li><code>path/to/file.ts</code> <span class="tag">M</span> — what changes</li>
+      <li><code>path/to/file.ts</code> <span class="tag tag-m">M</span> <span class="desc">— what changes</span></li>
+      <li><code>path/to/new.ts</code> <span class="tag tag-a">A</span> <span class="desc">— what is added</span></li>
     </ul>
   </aside>
 
   <aside class="card">
     <h2>Verification</h2>
-    <ul>
+    <ul class="checks">
       <li>Acceptance criterion / test / check that proves the work is done</li>
     </ul>
   </aside>
@@ -155,7 +177,7 @@ Identical to the rich preview — the lite HTML is uploaded in the same `plan cr
 ## Pre-Upload Checklist
 
 - The plan's `complexity` is `MINIMAL` or `STANDARD` (a FULL plan must use the rich preview).
-- Exactly the four blocks (Title / TL;DR / Changes / Verification), in order; no dashboard components.
+- Exactly the four blocks (Title / TL;DR / Changes / Verification), in order; the only structured anchor is the hero chip row — no metric grid, flow diagram, compare grid, or progress bar.
 - The summary matches the source plan's scope and current state; missing info is omitted or marked not specified.
 - No scripts, trackers, forms, auth flows, remote dependencies, or hidden metadata.
 - Light and dark modes are both explicitly styled; the `body` background is `transparent` and renders correctly under host dark themes such as `[data-theme="night"]`.

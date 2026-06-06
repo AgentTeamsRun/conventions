@@ -110,6 +110,34 @@ body {
 }
 ~~~
 
+### Document Shell
+
+The tokens above are CSS only — they must live inside a **complete, standalone HTML document**. Wrap every preview in this shell; it is the one part that is identical across all previews. Fill `<style>` with the Design Tokens block above plus only the component CSS you actually use, and fill `<body>` with the Hero plus the components you pick from *Component Patterns*.
+
+~~~html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* 1. Design Tokens — paste the :root + prefers-color-scheme + [data-theme] + body block verbatim. */
+    /* 2. Component CSS — only the patterns this preview actually uses. */
+  </style>
+</head>
+<body>
+  <header><p class="eyebrow">…</p><h1>…</h1><p class="lead">…</p></header>
+  <!-- metric grid / flow / cards / compare / DoD — pick only the components the plan needs -->
+</body>
+</html>
+~~~
+
+- `<meta charset="utf-8">` is **mandatory** — previews routinely contain non-ASCII content, and a missing charset corrupts it.
+- `<meta name="viewport">` is required for the responsive rules in *Layout Rules* (`clamp()` headings, ≤640px collapse) to take effect.
+- Set `lang` to the plan's language.
+
+> **Token sync:** the Design Tokens block above is duplicated verbatim in `plan-preview-lite-guide.md` → *Reference Skeleton* so each guide is self-contained when loaded on its own. The two copies must stay **byte-identical** — when you change a token value or theme rule here, make the identical edit there.
+
 ### Component Patterns
 
 One canonical markup per pattern — combine them; do not invent variants.
@@ -180,6 +208,7 @@ cat .agentteams/cli/temp/plan-summary.html | agentteams plan upload-html --id {p
 - Missing information is omitted or marked as not specified.
 - No scripts, trackers, forms, auth flows, or remote dependencies were added.
 - The document remains useful if rendered in a sandboxed iframe.
+- The output is a complete standalone document built on the *Document Shell* (doctype + `<meta charset="utf-8">` + viewport + `<style>`), not a bare fragment; the Design Tokens match `plan-preview-lite-guide.md` byte-for-byte.
 - The source plan Markdown/Tiptap remains the canonical execution document.
 - Light and dark modes are both explicitly styled; the document does not depend on the host app's theme.
 - The Visual Design Language tokens, component patterns, and layout rules are honored.
