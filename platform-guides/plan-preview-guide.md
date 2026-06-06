@@ -39,7 +39,7 @@ This guide defines guardrails for AI-authored HTML summaries of plans. Use it wh
 
 ## Visual Design Language
 
-The HTML preview is a **dashboard-shaped summary** of a plan, not a styled rendering of its Markdown. The tokens, components, and layout rules below give every preview a consistent skeleton so different agents can fill it in without each reinventing visual decisions.
+The HTML preview is a **summary of a plan's decision surface**, not a styled rendering of its Markdown — dashboard-shaped when the plan has the substance for it, and a compact column when it does not (see *Differentiation from Markdown*). The tokens, components, and layout rules below give every preview a consistent skeleton so different agents can fill it in without each reinventing visual decisions.
 
 ### Design Tokens
 
@@ -136,8 +136,6 @@ The tokens above are CSS only — they must live inside a **complete, standalone
 - `<meta name="viewport">` is required for the responsive rules in *Layout Rules* (`clamp()` headings, ≤640px collapse) to take effect.
 - Set `lang` to the plan's language.
 
-> **Token sync:** the Design Tokens block above is duplicated verbatim in `plan-preview-lite-guide.md` → *Reference Skeleton* so each guide is self-contained when loaded on its own. The two copies must stay **byte-identical** — when you change a token value or theme rule here, make the identical edit there.
-
 ### Component Patterns
 
 One canonical markup per pattern — combine them; do not invent variants.
@@ -176,7 +174,7 @@ The HTML preview must **not** be a one-to-one rendering of the source Markdown. 
 - A "whole-body HTML page" that mirrors the Markdown end to end.
 - **Meta label boxes / footers** — `plan id`, "AI-curated · summary/preview only", "source: …" pointers. The host UI already supplies this context; rendering it inside the preview is noise.
 
-*Required forms (use at least one)*:
+*Dashboard forms (use at least one when the plan has the substance for it)*:
 
 - **Top metric grid** — Tasks / Files / Commits / Waves / Effort / Tier shown as label + large number.
 - **Task / Wave flow diagram** — nodes + arrows visualizing dependencies (impossible to express in Markdown).
@@ -184,6 +182,8 @@ The HTML preview must **not** be a one-to-one rendering of the source Markdown. 
 - **Progress visualization** — DoD checklists rendered with a `0/N · 0%` counter and a progress bar.
 - **Information compression** — keep only the decision surface (critical path, key guardrails, 3–5 DoD items). Do not move every bullet from the source body.
 - **Delegate the body to Markdown** — references, step-by-step detail, and full prose belong in the Markdown plan, not the HTML preview. Do not draw a "see Markdown" pointer box; a short, dense page is self-explanatory.
+
+*Thin plans — compact column instead*: when the plan genuinely lacks dashboard substance — a single task, one or two files, no waves, no dependency graph, no multi-step DoD — a dashboard form would **invent structure the plan does not have**. Do not force one. Render a single narrow column with: a title/hero, a one-to-two-sentence TL;DR plus deliverables, a **Changes** list (files or concrete steps), and a **Verification** list (acceptance criteria / checks). This is still a summary, not a Markdown one-to-one dump, and it still carries the full light/dark theme layer. Judge this from what the plan actually contains, not from its stored complexity tier.
 
 ## Upload Workflow
 
@@ -208,9 +208,9 @@ cat .agentteams/cli/temp/plan-summary.html | agentteams plan upload-html --id {p
 - Missing information is omitted or marked as not specified.
 - No scripts, trackers, forms, auth flows, or remote dependencies were added.
 - The document remains useful if rendered in a sandboxed iframe.
-- The output is a complete standalone document built on the *Document Shell* (doctype + `<meta charset="utf-8">` + viewport + `<style>`), not a bare fragment; the Design Tokens match `plan-preview-lite-guide.md` byte-for-byte.
+- The output is a complete standalone document built on the *Document Shell* (doctype + `<meta charset="utf-8">` + viewport + `<style>`), not a bare fragment.
 - The source plan Markdown/Tiptap remains the canonical execution document.
 - Light and dark modes are both explicitly styled; the document does not depend on the host app's theme.
 - The Visual Design Language tokens, component patterns, and layout rules are honored.
-- The preview is a dashboard-shaped summary, not a Markdown one-to-one rendering — at least one of {metric grid, flow diagram, compare grid, progress visualization} is present.
+- The preview is a summary, not a Markdown one-to-one rendering — a plan with substance carries at least one of {metric grid, flow diagram, compare grid, progress visualization}; a genuinely thin plan instead uses the compact title + TL;DR + Changes + Verification column.
 - The `body` background is `transparent` and the preview renders in dark mode under host dark themes such as `[data-theme="night"]`.

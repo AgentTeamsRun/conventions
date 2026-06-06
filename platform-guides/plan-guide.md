@@ -190,7 +190,7 @@ agentteams plan cleanup --id {planId}
 
 ## Plan Complexity — A Stored Field, Not Just a Document Concept
 
-Every plan carries a **complexity** tier (`MINIMAL` / `STANDARD` / `FULL`) that is **stored on the plan in the database**, not merely implied by how the body is written. You set it at creation time with `--complexity`; the server records it as both `estimatedComplexity` (the immutable snapshot of your first judgment) and `complexity` (the effective, adjustable value). The stored value drives plan simplification (which preview template is used) and the user-triggered re-investigation loop, so judging it honestly matters.
+Every plan carries a **complexity** tier (`MINIMAL` / `STANDARD` / `FULL`) that is **stored on the plan in the database**, not merely implied by how the body is written. You set it at creation time with `--complexity`; the server records it as both `estimatedComplexity` (the immutable snapshot of your first judgment) and `complexity` (the effective, adjustable value). The stored value drives plan simplification and the user-triggered re-investigation loop, so judging it honestly matters.
 
 ### Judging the Tier
 
@@ -214,14 +214,9 @@ The tier determines how much structure the plan body needs.
 
 > `plan-template.md` provides a copyable FULL-tier template. For MINIMAL/STANDARD, extract only the sections you need.
 
-### Preview — Complexity Selects the Template
+### Preview
 
-The HTML preview is **mandatory at every tier** (there is no escape hatch), but the complexity selects which template to author:
-
-| Complexity | Preview template |
-|---|---|
-| `MINIMAL` / `STANDARD` | **lite** — see `plan-preview-lite-guide.md` (title + TL;DR + changes + verification) |
-| `FULL` | **rich** — see `plan-preview-guide.md` (dashboard: metric grid, wave-flow, DoD progress) |
+The HTML preview is **mandatory at every tier** (there is no escape hatch). Every plan — regardless of complexity — uses the single preview template defined in `plan-preview-guide.md`; scale the amount of structure to what the plan actually carries.
 
 The preview is always authored by an AI agent and uploaded in the same `plan create` / preview-affecting `plan update` command.
 
@@ -232,7 +227,7 @@ The preview is always authored by an AI agent and uploaded in the same `plan cre
 
 ### Raising Complexity → Re-investigation Loop
 
-When a user judges the scope is larger than the plan assumes, they raise `complexity` (typically MINIMAL/STANDARD → FULL). This is the signal to **investigate more deeply and rewrite the plan body at the higher tier** (and regenerate the rich preview). The plan's status is unchanged by a complexity change — it is not a new plan, just a re-scoped one.
+When a user judges the scope is larger than the plan assumes, they raise `complexity` (typically MINIMAL/STANDARD → FULL). This is the signal to **investigate more deeply and rewrite the plan body at the higher tier** (and regenerate the preview). The plan's status is unchanged by a complexity change — it is not a new plan, just a re-scoped one.
 
 ## Task Required Elements
 
@@ -288,5 +283,4 @@ Bake verification into the plan at writing time, not as a trailing afterthought:
 ## References
 
 - `plan-template.md` — copyable FULL-tier plan template
-- `plan-preview-guide.md` — rich HTML preview (FULL plans)
-- `plan-preview-lite-guide.md` — lite HTML preview (MINIMAL/STANDARD plans)
+- `plan-preview-guide.md` — HTML preview (all complexity tiers)
