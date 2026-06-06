@@ -100,14 +100,17 @@ The phrase "start the plan" is an explicit approval signal — do not stop after
 
 Plans may contain entity references in `[label](type:id)` or `[label](type:id:path)` format. Resolve them as follows:
 
-1. **ID prefix stripping (IMPORTANT)**: The `id` part may include a type prefix such as `agentteams_plan_`, `agentteams_cr_`, `agentteams_ca_`, `agentteams_conv_`, or `agentteams_pm_`. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
-   - Example: `[My Plan](plan:agentteams_plan_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
-   - Full prefix list: `agentteams_plan_` · `agentteams_cr_` · `agentteams_ca_` · `agentteams_conv_` · `agentteams_pm_`
+1. **ID prefix stripping (IMPORTANT)**: The `id` part may include a type prefix. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
+   - Example: `[My Plan](plan:agentteams_pln_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
+   - Canonical prefix list: `agentteams_pln_` (plan) · `agentteams_rpt_` (completionReport) · `agentteams_rev_` (codeReview) · `agentteams_act_` (coAction) · `agentteams_cnv_` (convention) · `agentteams_pmt_` (postMortem) · `agentteams_doc_` (document)
+   - Legacy aliases still accepted: `agentteams_plan_` (plan) · `agentteams_cr_` (completionReport) · `agentteams_cdr_` (codeReview) · `agentteams_ca_` (coAction) · `agentteams_conv_` (convention) · `agentteams_pm_` (postMortem) · `agentteams_doc_` (document)
 2. Resolution by type:
    - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
    - `completionReport:id` → Download with `agentteams report download --id {id}` and read the local file
    - `postMortem:id` → Download with `agentteams postmortem download --id {id}` and read the local file
    - `coAction:id` → Download with `agentteams coaction download --id {id}` and read the local file
+   - `codeReview:id` → Fetch the review record with `agentteams code-review get --id {id}` and use the response as context
+   - `document:id` → Download with `agentteams document download --id {id}` and read the local file
 
 ## Origin Issue Linking
 
