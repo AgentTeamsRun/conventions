@@ -79,11 +79,15 @@ agentteams plan finish --id {planId} \
   --report-title "<what you did and why, in one sentence>" \
   --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
   --quality-score <0-100, see Quality Score section> \
-  --report-status <COMPLETED | PARTIAL | FAILED>
+  --report-status <COMPLETED | PARTIAL | FAILED> \
+  --review-recommendation <REQUIRED | NOT_NEEDED> \
+  --review-reason "<one-line justification, see Code Review Recommendation section>"
 
 ~~~
 
 > Git metrics (`commitHash`, `branchName`, `filesModified`, `linesAdded`, `linesDeleted`) are auto-collected. Use `--no-git` to disable. Manual overrides: `--duration-seconds`, `--commit-start`, `--commit-end`, `--pull-request-id`.
+
+> `--review-recommendation` / `--review-reason` are **optional** (see the Code Review Recommendation section). An invalid `--review-recommendation` value is ignored with a warning.
 
 > `--runner-type` and `--model` on `report create` are the **executor** snapshot — the runner/model that actually produced this report. This is independent of `Plan.runnerType` / `Plan.model`, which is the **creator** snapshot recorded at `plan create`. The two values can differ (e.g., a plan written by Claude but executed by Codex).
 
@@ -146,6 +150,34 @@ Work quality is self-assessed by the agent on a 0-100 scale. Use the four dimens
 
 > Convention violations (naming, logging, PR rules, etc.) count against Scope Adherence.
 > A score of 90+ requires conventions to be followed.
+
+## Code Review Recommendation
+
+Declare whether this change warrants an **independent code review**. This is a self-assessment captured at report time, separate from the quality score. Both fields are optional.
+
+- `reviewRecommendation`: `REQUIRED` or `NOT_NEEDED` (omit when undecided — leaves it null)
+- `reviewReason`: one short line (≤255 chars) justifying the call — write it for **both** values
+
+Set `REQUIRED` when the change shows any of these risk signals (same list as `code-review-guide.md`):
+
+- Cross-workspace or shared-contract changes
+- Database schema, migration, authentication, permission, billing, quota, or deployment logic changes
+- Large diffs, broad refactors, or changes touching critical user workflows
+- Failed or skipped verification that still needs independent inspection
+
+Otherwise set `NOT_NEEDED` with a brief reason (e.g., "docs-only", "test-only, no logic change", "trivial copy fix").
+
+~~~bash
+# REQUIRED example
+--review-recommendation REQUIRED \
+--review-reason "DB schema migration + auth middleware touched — independent verification advised"
+
+# NOT_NEEDED example
+--review-recommendation NOT_NEEDED \
+--review-reason "i18n string update only, no logic change"
+~~~
+
+> This only **declares intent** for the review inbox. It does not by itself create a code review record — review creation remains an explicit, independent action (see `code-review-guide.md`).
 
 ## Verification Examples
 
