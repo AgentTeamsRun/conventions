@@ -65,12 +65,11 @@ Two snapshots, two sources:
 |---|---|
 | `CLAUDE_CODE` | Claude Code CLI |
 | `CODEX` | OpenAI Codex CLI |
-| `GEMINI` | Google Gemini CLI |
 | `ANTIGRAVITY` | Google Antigravity CLI |
 | `AMP` | Amp Code |
 | `OPENCODE` | OpenCode |
 
-`--model` accepts any model ID string used by the runner engine (e.g., `claude-opus-4-6`, `o3`, `gemini-2.5-pro`).
+`--model` accepts any model ID string used by the runner engine (e.g., `claude-opus-4-6`, `o3`).
 
 ## Plan Start → Execution Flow
 
