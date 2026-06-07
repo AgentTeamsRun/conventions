@@ -35,7 +35,7 @@ This guide defines guardrails for AI-authored HTML summaries of plans. Use it wh
 - Ensure information-bearing elements — links, code blocks, badges, table rows, callout boxes — remain visually distinguishable in both modes. Do not rely solely on color to convey meaning.
 - Do not hardcode only a light-mode palette. Any CSS variable, class, or inline style that sets color must account for dark mode as well.
 - When the host app injects a theme signal via `<html data-theme="…">`, treat attribute selectors like `[data-theme="night"]`, `[data-theme="dark"]` as the **primary** theme signal and keep `prefers-color-scheme` as a fallback. Some host themes declare `color-scheme: light` even when the OS is dark, which prevents `prefers-color-scheme: dark` from matching inside the iframe. Define color *values* only in your own CSS variables — never pull them from host CSS variables (e.g. `--p`, `--b1`); only consume the `data-theme` *signal*.
-- Keep the `body` background `transparent`; let only cards, panels, and callouts paint their own `--surface`. This way the preview merges into the host modal/page background instead of looking like a boxed-in island.
+- Keep the `body` background `transparent`; only cards, panels, and callouts paint their own `--surface` (see *Layout Rules*).
 
 ## Visual Design Language
 
@@ -212,5 +212,5 @@ cat .agentteams/cli/temp/plan-summary.html | agentteams plan upload-html --id {p
 - The source plan Markdown/Tiptap remains the canonical execution document.
 - Light and dark modes are both explicitly styled; the document does not depend on the host app's theme.
 - The Visual Design Language tokens, component patterns, and layout rules are honored.
-- The preview is a summary, not a Markdown one-to-one rendering — a plan with substance carries at least one of {metric grid, flow diagram, compare grid, progress visualization}; a genuinely thin plan instead uses the compact title + TL;DR + Changes + Verification column.
+- The preview is a summary, not a Markdown one-to-one rendering (see *Differentiation from Markdown*).
 - The `body` background is `transparent` and the preview renders in dark mode under host dark themes such as `[data-theme="night"]`.

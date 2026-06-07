@@ -6,15 +6,13 @@ This guide defines how to **write** a high-quality plan. For execution details (
 
 ## What a Plan Is
 
-- A plan is a tracked unit of work with a type, status, and priority.
-- Use plans when the work spans multiple steps or requires review and verification.
-- Plans support comments, assignment, and status transitions.
-- Plans have a **type** that classifies the nature of the work:
-  - `FEATURE` — New functionality or capability
-  - `BUG_FIX` — Fix for a defect or unexpected behavior
-  - `ISSUE` — Investigation or issue resolution
-  - `REFACTOR` — Code restructuring without behavior change
-  - `CHORE` — Maintenance, config, docs, or other housekeeping
+A tracked unit of work (type, status, priority) with comments, assignment, and status transitions. Use a plan when the work spans multiple steps or needs review/verification. The **type** classifies the work:
+
+- `FEATURE` — New functionality or capability
+- `BUG_FIX` — Fix for a defect or unexpected behavior
+- `ISSUE` — Investigation or issue resolution
+- `REFACTOR` — Code restructuring without behavior change
+- `CHORE` — Maintenance, config, docs, or other housekeeping
 
 ## Plan Writing Workflow
 
@@ -22,10 +20,7 @@ This guide defines how to **write** a high-quality plan. For execution details (
 2. **Write plan body** — judge the plan's **complexity** (see Plan Complexity below) and follow the structure for that tier
 3. **Gap analysis** — SHOULD run Metis review; use the self-check below if unavailable
 4. **Register** — `agentteams plan create --title "{title}" --file {path} --html-file {previewPath} --type {type} --complexity {MINIMAL|STANDARD|FULL} --priority {level} --runner-type {runner-type} --model {model-id}` — an HTML preview is required via `--html-file` or `--html-stdin` (see Plan Complexity → Preview)
-5. **Link dependencies** — when creating multiple plans at once and one plan must finish before another can start, link them after creation:
-   ~~~bash
-   agentteams dependency create --plan-id {blockedPlanId} --blocking-plan-id {blockingPlanId}
-   ~~~
+5. **Link dependencies** — when creating multiple plans where one must finish before another starts, link them after creation (see Plan Dependencies below).
 
 Repository linkage note:
 
@@ -36,30 +31,16 @@ Repository linkage note:
 For standard execution flows, use lifecycle shortcuts instead of manual multi-step status updates.
 
 ~~~bash
-# Start plan lifecycle
-agentteams plan start --id {planId}
-
-# Finish plan lifecycle
-agentteams plan finish --id {planId}
-
-# Finish and include completion report with metrics
-agentteams plan finish --id {planId} \
-  --runner-type <runner-type> --model <model-id> \
-  --report-title "<what you did and why, in one sentence>" \
-  --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
-  --quality-score <0-100, see Quality Score dimensions> \
-  --report-status <COMPLETED | PARTIAL | FAILED>
-
+agentteams plan start  --id {planId}
+agentteams plan finish --id {planId}   # add report flags to attach a completion report
 ~~~
+
+> Commit your work before finishing — `plan finish` auto-collects commit metrics from the current git state.
+> The full report-attaching `plan finish` invocation (report flags + quality-score / report-status semantics) is the SSOT in `completion-report-guide.md`.
 
 ## Runner Type & Model Reference
 
-Two snapshots, two sources:
-
-- `Plan.runnerType` / `Plan.model` — **creator** snapshot. Recorded by `plan create` (and `plan quick`). Required at creation time.
-- `CompletionReport.runnerType` / `CompletionReport.model` — **executor** snapshot. Recorded by `report create` (and by `plan finish` when generating a report). Required when creating a report.
-
-`--runner-type` and `--model` are therefore **required** for `plan create`, `plan quick`, `report create`, and `plan finish` when attaching a completion report. They are not required for `plan start` or `plan finish` without a report.
+`--runner-type` and `--model` are **required** for `plan create`, `plan quick`, `report create`, and report-attaching `plan finish` — the creator snapshot (`Plan.*`) at create, the executor snapshot (`CompletionReport.*`) at report; the two can differ. Not required for `plan start` or report-less `plan finish`.
 
 | Runner Type | Description |
 |---|---|
@@ -98,18 +79,7 @@ The phrase "start the plan" is an explicit approval signal — do not stop after
 
 ## Entity Reference Resolution
 
-Plans may contain entity references in `[label](type:id)` or `[label](type:id:path)` format. Resolve them as follows:
-
-1. **ID prefix stripping (IMPORTANT)**: The `id` part may include a type prefix. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
-   - Example: `[My Plan](plan:agentteams_pln_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
-   - Canonical prefix list: `agentteams_pln_` (plan) · `agentteams_rpt_` (completionReport) · `agentteams_rev_` (codeReview) · `agentteams_act_` (coAction) · `agentteams_cnv_` (convention) · `agentteams_pmt_` (postMortem) · `agentteams_doc_` (document)
-2. Resolution by type:
-   - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
-   - `completionReport:id` → Download with `agentteams report download --id {id}` and read the local file
-   - `postMortem:id` → Download with `agentteams postmortem download --id {id}` and read the local file
-   - `coAction:id` → Download with `agentteams coaction download --id {id}` and read the local file
-   - `codeReview:id` → Fetch the review record with `agentteams code-review get --id {id}` and use the response as context
-   - `document:id` → Download with `agentteams document download --id {id}` and read the local file
+Plan bodies may contain `[label](type:id)` / `[label](type:id:path)` references. Resolve them per the always-on convention's **Entity References & ID Handling** rules — strip the canonical prefix before passing `id` to any CLI flag, then resolve each `type:id` via its download/get command. No plan-specific rules beyond those.
 
 ## Origin Issue Linking
 
@@ -168,14 +138,10 @@ Post comments to track progress:
 
 ## After Completing or Cancelling a Plan
 
-When completing a plan, do not treat the completion report as the final step by itself.
+After the completion report, do not stop there:
 
-1. Write or generate the completion report.
-2. Immediately review whether a Co-Action is needed. Create and link one when the work produced implicit knowledge, durable design decisions, follow-up work, known constraints, or handoff context that cannot be inferred from the code alone.
-3. Immediately review whether a Post-Mortem is needed. Create one only when a failure, regression, or unexpected execution issue occurred and the issue is reproducible or systemic, significantly delayed or blocked the work, and can be prevented by a process, tooling, or environment change.
-4. Clean up the local runbook after required linked documents have been created or explicitly ruled out.
-
-Clean up the local runbook:
+1. Review whether a **Co-Action** and/or **Post-Mortem** is needed, then create and link them — criteria and commands are the SSOT in `completion-report-guide.md` (Post-Report: Linked Document Auto-Creation).
+2. Clean up the local runbook once linked documents are created or explicitly ruled out:
 
 ~~~bash
 agentteams plan cleanup --id {planId}
@@ -231,7 +197,7 @@ FULL tier requires all items. STANDARD tier requires ★ items only. MINIMAL nee
 - Parallelization (Wave / Blocks / Blocked By)
 - ★ References (Pattern / API / External)
 - ★ Acceptance Criteria
-- QA Scenarios (Tool / Steps / Expected Result / Evidence)
+- QA Scenarios (Tool / Steps / Expected Result)
 - Commit (message + files + pre-commit)
 
 ## Gap Analysis
@@ -268,10 +234,7 @@ Bake verification into the plan at writing time, not as a trailing afterthought:
 - Changing API contracts without updating schemas/tests
 - Writing files to project-specific directories when they should be platform-wide
 - Mixing platform content with project conventions (keep them separate)
-- Excessive comments that restate the code
 - Scope creep beyond task spec
-- Over-abstraction or premature generalization
-- Generic names (data, result, item) that obscure intent
 
 ## References
 

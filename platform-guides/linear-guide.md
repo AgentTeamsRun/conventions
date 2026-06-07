@@ -32,12 +32,6 @@ agentteams linear issue create --title "Issue title" [--team-id <linearTeamId>] 
 - `--parent-id` is optional. Creates the issue as a sub-issue under the given parent. Only Linear issue **UUID** is accepted — identifiers such as `AGE-33` are not supported here.
 - Returns the created issue id, identifier, title, and URL.
 
-#### Create a Sub-issue
-
-~~~bash
-agentteams linear issue create --title "Child task" --parent-id 00000000-0000-0000-0000-0000000000ab
-~~~
-
 ### Update Issue State
 
 ~~~bash
@@ -85,24 +79,10 @@ The `--issue-id` flag accepts both **UUID** and **identifier** (e.g., `AGE-13`).
 
 ## Common Workflow
 
-1. Resolve the Linear issue id from one of the sources above.
-2. Read the issue first:
-
-~~~bash
-agentteams linear issue get --issue-id <issueId>
-~~~
-
-3. Check existing comments:
-
-~~~bash
-agentteams linear comment list --issue-id <issueId>
-~~~
-
-4. Add a follow-up comment if needed:
-
-~~~bash
-agentteams linear comment create --issue-id <issueId> --body "Investigation completed."
-~~~
+1. Resolve the issue id from one of the sources above.
+2. Read the issue first (`linear issue get`).
+3. Check existing comments (`linear comment list`).
+4. Add a follow-up comment if needed (`linear comment create`).
 
 ### Retroactive Issue Logging
 
@@ -115,3 +95,4 @@ agentteams linear issue create --title "Fix: auth token refresh" --description "
 ## Notes
 
 - Issue update/delete and comment edit/delete are out of scope.
+- Full flags for any subcommand: `agentteams linear <command> --help`.

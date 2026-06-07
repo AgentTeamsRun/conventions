@@ -90,7 +90,7 @@ Example:
 
 ### QA Policy
 
-- <!-- Tool/command mapping: API→typecheck+test, CLI→test, Web→build+playwright -->
+- <!-- Tool/command mapping: API→typecheck+test, CLI→test, Web→build -->
 - <!-- Test-first: list the tests that prove each Definition of Done item. For BUG_FIX, include a failing reproduction test that a later task makes pass. -->
 
 ---
@@ -176,7 +176,6 @@ flowchart LR
       1. command
     Expected Result: what success looks like
     Failure Indicators: what failure looks like
-    Evidence: .sisyphus/evidence/task-N-name.txt
   ~~~
 
   **Commit**: <!-- YES / NO -->
@@ -225,7 +224,6 @@ Scenario: API returns 404 for non-existent plan
     1. curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/api/plans/nonexistent-id
   Expected Result: 404
   Failure Indicators: 200 or 500
-  Evidence: .sisyphus/evidence/plan-404.txt
 ~~~
 
 ### Bad (vague, unverifiable)

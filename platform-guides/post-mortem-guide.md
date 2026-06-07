@@ -36,58 +36,17 @@ Issues that surfaced during development execution and are likely to recur if lef
 - Known limitations already documented elsewhere
 - Issues that only affect a single developer's local setup with no recurrence risk
 
-## Goals
+## Writing Notes
 
-- Capture what happened and when
-- Identify the root cause (not symptoms)
-- Document the impact (users, revenue, SLA, operations, or development velocity)
-- Define concrete action items to prevent recurrence
-
-## Before You Start
-
-- Collect logs, alerts, and key timestamps.
-- Identify the affected systems and user segments.
-- Confirm whether this was a one-off or part of a recurring pattern.
-
-## Structure
-
-- Title: short incident identifier
-- Content: narrative of what happened and what was learned
-- Action items: specific tasks with owners and deadlines
-- Status: OPEN, IN_PROGRESS, or RESOLVED
-
-## Root Cause Notes
-
-- Prefer a clear causal chain over vague labels.
-- Distinguish: trigger vs contributing factors vs detection failure.
-- Include "why it was not caught earlier".
-
-## Tips
-
-- Use a clear timeline (timestamps if available)
-- Avoid blame; focus on systems and process
-- Include what detection/monitoring failed and how to improve it
+- **Root cause, not symptoms** — describe the causal chain; distinguish trigger vs contributing factors vs detection failure, and include "why it wasn't caught earlier".
+- **Timeline** — collect logs, alerts, and key timestamps first; identify the affected systems and user segments. Use a clear timeline with timestamps when available.
+- **No blame** — focus on systems and process, including what detection/monitoring failed and how to improve it.
+- **Action items** — concrete, testable, with clear ownership; track like normal plans when they need engineering work.
+- **Status**: `OPEN`, `IN_PROGRESS`, or `RESOLVED`.
 
 ## Diagrams (Mermaid)
 
-A fenced ` ```mermaid ` code block renders as a diagram in the web viewer; in raw markdown and CLI output it stays as plain text, so keep the timeline readable on its own too. Use a `gantt` or `sequenceDiagram` to visualize the incident timeline or the chain of events.
-
-~~~markdown
-```mermaid
-gantt
-  title Incident Timeline
-  dateFormat HH:mm
-  Trigger     :09:00, 5m
-  Detection   :09:05, 10m
-  Mitigation  :09:15, 30m
-```
-~~~
-
-## Action Items
-
-- Make action items concrete and testable.
-- Prefer small items with clear ownership.
-- Track them like normal plans if they require engineering work.
+A fenced ```mermaid``` block (`gantt` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw. Use one to visualize the incident timeline or chain of events.
 
 ## Post Mortem Content Template
 

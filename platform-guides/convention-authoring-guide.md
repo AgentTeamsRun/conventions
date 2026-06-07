@@ -40,19 +40,13 @@ Notes:
 
 ## 2-1) AGENT_RULES section
 
-Place a `# AGENT_RULES` heading at the top of the document body (right after frontmatter) to define rules the agent must follow.
-
-- LLMs recognize patterns like `AGENT_RULES`, `NON_NEGOTIABLE_RULES`, `GUARDRAILS` strongly because they appear frequently in training data.
-- Rules in this section have higher compliance rates than rules embedded in general context.
-
-Example:
+Place a `# AGENT_RULES` heading at the top of the body (right after frontmatter) for rules the agent must follow. LLMs comply with `AGENT_RULES` / `NON_NEGOTIABLE_RULES` / `GUARDRAILS` headings more reliably than with rules buried in general context.
 
 ~~~markdown
 # AGENT_RULES
 
 - Do not use .env files for development
 - Use each folder's .env file instead
-- Design dev tool features from the user's perspective
 
 # PROJECT CONTEXT
 ...
@@ -68,50 +62,15 @@ Example:
 
 ## 4) Body authoring rules (Web editor toolbar baseline)
 
-### Structure (Headings)
+Use standard Tiptap-toolbar markdown — headings, blockquotes (warnings/constraints), bullet/ordered/task lists, tables (options/values), code blocks (with language tags). Non-obvious rules:
 
-- **H1**: top-level rule section title
-- **H2**: major subsections under H1
-- **H3**: detailed rules under H2
-- **H4**: only when further subdividing H3
-- **Horizontal rule (HR)**: separate unrelated sections/topics
-
-> Do **not** skip heading levels (e.g. H1 → H3 is not allowed).
-
-### Blocks
-
-- **Blockquote**: warnings/constraints that must stand out
-- **Bullet list**: list rules by items
-- **Ordered list**: step-by-step procedures
-- **Task list**: execution/verification checklist
-- **Table**: summarize options/values/exceptions
-- **Code block**: runnable examples or command snippets (use language tags when possible)
-- **Mermaid block**: a fenced ` ```mermaid ` code block renders as a diagram in the web viewer (e.g. `flowchart`, `sequenceDiagram`); in raw markdown and CLI output it stays as plain text, so keep nearby prose self-contained.
-
-### Inline
-
-- **Bold**: emphasize key conclusions/keywords
-- **Italic**: optional supplemental notes
-- **Inline code**: literal strings such as identifiers, file paths, commands
-- **Links**: connect to related references (use descriptive link text)
-
-### Writing style
-
-- Prefer **imperative** phrasing for rules (e.g. "Do X", "Do not do Y").
-- Wrap examples in fenced code blocks and keep them executable when possible.
-- Prefer multiple smaller, focused conventions over one huge document.
+- **Headings**: H1 = section, H2/H3/H4 = nesting. Do **not** skip levels (H1 → H3 is not allowed).
+- **Mermaid**: a fenced ` ```mermaid ` block renders in the web viewer; it stays plain text in CLI/raw, so keep nearby prose self-contained.
+- **Writing style**: prefer **imperative** phrasing ("Do X", "Do not do Y"); keep examples in fenced, executable code blocks; prefer multiple small focused conventions over one huge document.
 
 ### Markers (recommended prefixes)
 
-Use these prefixes consistently across documents (include a trailing space after the emoji):
-
-- `✅ `: correct example
-- `❌ `: incorrect example
-- `🚫 `: strictly forbidden (including policy/security violations)
-- `⚠️ `: warning/caution
-- `📌 `: key summary
-- `💡 `: tip/reference
-- `🎯 `: goal/intent
+Use consistently (trailing space after the emoji): `✅ ` correct · `❌ ` incorrect · `🚫 ` strictly forbidden · `⚠️ ` warning · `📌 ` key summary · `💡 ` tip · `🎯 ` goal/intent.
 
 ## 5) Single source of truth (no duplication)
 
@@ -128,14 +87,10 @@ A convention must not duplicate facts whose authoritative source lives elsewhere
 # Create a new convention
 agentteams convention create --file .agentteams/{category}/{convention-name}.md
 
-# Download all conventions (required before update/delete)
+# Download all conventions
 agentteams convention download
-
-# Preview update (dry-run)
-agentteams convention update --file .agentteams/{category}/{convention-name}.md
-
-# Apply update to server
-agentteams convention update --file .agentteams/{category}/{convention-name}.md --apply
 ~~~
 
 > Place the file under `.agentteams/<category>/` before running `convention create`. The `<category>` must be one of: `rules`, `skills`, `guides`, `references`.
+>
+> Updating or deleting conventions: see `convention-ud-guide.md`.
