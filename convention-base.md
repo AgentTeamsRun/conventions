@@ -56,63 +56,45 @@ one trailer per line, all at the very end of the message.
 Report status to AgentTeams **if you are working under a plan**.
 
 ```bash
-# Start
 agentteams plan start --id {planId}
-
-# Finish (with completion report)
-agentteams plan finish --id {planId} \
-  --runner-type <runner-type> --model <model-id> \
-  --report-title "<what you did and why, in one sentence>" \
-  --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
-  --quality-score <0-100> \
-  --report-status <COMPLETED | PARTIAL | FAILED>
+# ... do the work, then commit it (see Commit Attribution) ...
+agentteams plan finish --id {planId} ...   # registers the completion report
 ```
 
-For report file structure, quality score dimensions, and status rules, see `.agentteams/platform/completion-report-guide.md`.
+> ⚠️ If your work produced code changes, **commit them before `plan finish`**. `plan finish` auto-collects commit metrics (`commitHash`, `branchName`, diff stats) from the current git state — finishing with uncommitted work records an empty or wrong snapshot. If the project requires a PR, open it before finishing too.
+>
+> The full `plan finish` invocation — every flag plus quality-score / report-status / review-recommendation semantics — lives in `.agentteams/platform/completion-report-guide.md`. Read it before finishing; do not guess flag values.
 
 ## Plan Workflow Rules
 
-### Before starting work on a plan
+Before starting work on a plan:
 
-1. Download the plan as a local runbook:
-   ```bash
-   agentteams plan download --id {planId}
-   ```
-   This saves to `.agentteams/cli/active-plan/{filename}.md`. Read this file at the start of your work.
-
-2. Check for comments (especially `RISK` comments):
-   ```bash
-   agentteams comment list --plan-id {planId}
-   ```
-
-3. For detailed execution workflow (entity references, comments, cleanup), see `.agentteams/platform/plan-guide.md`.
+1. Download the runbook — `agentteams plan download --id {planId}` (saves to `.agentteams/cli/active-plan/{filename}.md`). Read it before starting.
+2. Check comments, especially `RISK` — `agentteams comment list --plan-id {planId}`.
+3. Full execution workflow (entity refs, comments, cleanup): `.agentteams/platform/plan-guide.md`.
 
 ## Work Completion Rules
 
 ### With a Plan
 
-- Completion report is automatically created when `plan finish` is executed
-- If handoff to another agent is needed, also create a co-action (see `.agentteams/platform/co-action-guide.md`)
-- If the change has risk signals (cross-workspace, schema/auth/billing/quota/deployment, large diffs, failed verification), recommend a code review as a separate explicit action (see `.agentteams/platform/code-review-guide.md`). Keep code review decisions independent from co-action and post-mortem decisions.
+- `plan finish` auto-creates the completion report.
+- Handoff needed → also create a co-action (`.agentteams/platform/co-action-guide.md`).
+- Risk signals (cross-workspace; schema/auth/billing/quota/deployment; large diffs; failed verification) → recommend a code review as a separate explicit action (`.agentteams/platform/code-review-guide.md`). Keep this decision independent of co-action / post-mortem decisions.
 
-### Without a Plan
+### Without a Plan (only when the user explicitly requests a report)
 
-Only execute the following flow when the user explicitly requests a completion report:
+1. No active plan → ask: "No active plan found. Create a quick plan?"
+2. Approved → run `agentteams plan quick` (flags below), then follow report steps in `.agentteams/platform/completion-report-guide.md`.
+3. Declined → standalone report, no plan link (`.agentteams/platform/completion-report-guide.md`).
+4. Handoff needed → also create a co-action (`.agentteams/platform/co-action-guide.md`).
 
-1. Ask the user whether to create a quick plan: "No active plan found. Would you like to create a quick plan?"
-2. If approved:
-   ```bash
-   agentteams plan quick --title "<brief work summary>" \
-     --content "<content following the format below>" \
-     --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE> \
-     --runner-type <runner-type> \
-     --model <model-id> \
-     --agent <agent-name-or-id>
-   ```
-   If `--agent` is omitted, `AGENTTEAMS_AGENT_NAME` must be set.
-   Then follow the report creation steps in `.agentteams/platform/completion-report-guide.md`.
-3. If declined: create a standalone completion report (no plan link). See `.agentteams/platform/completion-report-guide.md`.
-4. If handoff to another agent is needed, also create a co-action (see `.agentteams/platform/co-action-guide.md`)
+```bash
+agentteams plan quick --title "<brief work summary>" \
+  --content "<see format below>" \
+  --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE> \
+  --runner-type <runner-type> --model <model-id> \
+  --agent <agent-name-or-id>   # or set AGENTTEAMS_AGENT_NAME
+```
 
 #### Quick Plan `--content` Format
 

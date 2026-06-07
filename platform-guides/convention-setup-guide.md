@@ -1,5 +1,7 @@
 # Convention Setup Guide
 
+> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+
 > This guide helps you decide **what to turn into Conventions** and how to organize them.
 > For **how to write** a Convention file (format, structure, markers), see `convention-authoring-guide.md`.
 
@@ -56,12 +58,6 @@ Scan for AI tool rule files that may already contain valuable conventions:
 | `conventions` | Common coding conventions (naming, logging, Git branching) | `always_on` |
 | Domain-specific rules | Detailed rules for schemas, routes, frontend, testing, deployment, etc. | `model_decision` or conditional |
 
-### Separation guidelines
-
-- **"Must always know"** → `always_on` (limit to 2–3 Conventions)
-- **"Needed for specific tasks"** → `model_decision` or conditional trigger
-- **"Reference only"** → trigger `-`
-
 ### Size guidelines
 
 - If a Convention exceeds ~200 lines, consider splitting it.
@@ -73,10 +69,10 @@ Scan for AI tool rule files that may already contain valuable conventions:
 | Trigger | When to use | Example |
 |---|---|---|
 | `always_on` | Rules every task needs — project context, core coding standards | `context`, `conventions` |
-| `model_decision` | Rules the agent should load when relevant | `schema`, `frontend`, `testing` |
+| `model_decision` | Load when relevant to the task | `schema`, `frontend`, `testing` |
 | `-` | One-time reference, guides, templates | `docs-style-guide`, setup guides |
 
-> Keep `always_on` Conventions to **2–3 max** — each one adds to every conversation's context cost.
+> Keep `always_on` Conventions to **2–3 max** — each adds to every conversation's context cost. This is the single rule for what belongs in `always_on`.
 
 ## 6) Step 5 — Create and Register Conventions
 

@@ -20,14 +20,7 @@ Do **not** create a Document for:
 - Failure analysis → use **Post-Mortem**
 - Agent-to-agent handoffs → use **Co-Action**
 
-## Choosing Between Document and Convention
-
-| User intent | Choose | Why |
-|---|---|---|
-| Coding rules, naming, architecture rules | Convention | Auto-loaded as rules for agents |
-| Human-readable guide, memo, summary, draft | Document | Editable and shareable in the Tiptap editor |
-| Work plan or TODO | Plan | State transitions and execution tracking |
-| Work outcome report | Completion Report | Bound to a plan's completion |
+> Document vs Convention: a Convention is auto-loaded as agent **rules**; a Document is human-readable **prose**, editable and shareable in the Tiptap editor.
 
 ## Creating a Document
 
@@ -66,11 +59,4 @@ Write Documents in Tiptap-compatible markdown so they remain editable in the web
 
 ## Diagrams (Mermaid)
 
-A fenced ` ```mermaid ` code block renders as a diagram in the web viewer. In raw markdown and CLI output it stays as plain text, so keep the surrounding prose understandable on its own. Common diagram types: `flowchart`, `sequenceDiagram`, `erDiagram`, `gantt`, `stateDiagram-v2`.
-
-~~~markdown
-```mermaid
-flowchart LR
-  Draft --> Review --> Publish
-```
-~~~
+A fenced ```mermaid``` block renders in the web viewer; it stays plain text in CLI/raw, so keep the prose self-contained. Types: `flowchart`, `sequenceDiagram`, `erDiagram`, `gantt`, `stateDiagram-v2`.

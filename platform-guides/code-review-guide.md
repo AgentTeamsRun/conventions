@@ -1,5 +1,7 @@
 # Code Review Guide (AgentTeams)
 
+> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+
 Code review is an independent verification workflow. It is not an automatic byproduct of plan completion, completion reports, co-actions, or post-mortems.
 
 ## When to Create a Review
@@ -17,16 +19,12 @@ Do not create a code review record merely because a plan was finished or a compl
 
 ## Reviewer Context
 
-Prefer an independent reviewer context:
+Prefer an **independent** reviewer — a different session, agent, or fresh context. The original implementation session preserves the same assumptions and misses design/regression risks.
 
-- Use a different session, agent, or fresh context when possible.
-- Include the source plan, completion report, commit range, branch, diff summary, and test results as inputs.
-- Avoid making the original implementation session the default reviewer because it may preserve the same assumptions and miss design or regression risks.
+Separate the two contexts clearly in the request:
 
-The review request should clearly separate:
-
-- Original work context: plan/report/commit/diff/test evidence
-- Reviewer execution context: reviewer agent/session/model and review instructions
+- Original work: plan / report / commit range / branch / diff summary / test results
+- Reviewer execution: reviewer agent / session / model + review instructions
 
 ## Creating a Review Record
 
@@ -100,24 +98,11 @@ Required fields per item: `severity`, `title`, `filePath`, `problem`, `impact`, 
 
 ## Diagrams (Mermaid)
 
-A fenced ` ```mermaid ` code block renders as a diagram in the web viewer wherever review prose is shown; in raw markdown and CLI output it stays as plain text. Use a `flowchart` or `sequenceDiagram` when a diagram explains a regression path or control flow more clearly than words.
-
-~~~markdown
-```mermaid
-flowchart TD
-  Request --> Handler
-  Handler -->|missing check| Data[(Other project data)]
-```
-~~~
+A fenced ```mermaid``` block (`flowchart` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw. Use one when it explains a regression path or control flow faster than words.
 
 ## Creating Plans From Findings
 
-Finding-to-plan conversion is human-in-the-loop:
-
-- The user must choose which findings become a plan.
-- Do not automatically include every finding.
-- The generated plan must preserve severity, file path, problem, impact, and suggestion for each selected finding.
-- The generated plan should be scoped to fixing the selected findings, not reopening the entire original implementation.
+Finding-to-plan conversion is **human-in-the-loop** — the user chooses which findings become a plan; do not auto-include every finding. The generated plan preserves each selected finding's severity / file path / problem / impact / suggestion, and is scoped to fixing those findings, not reopening the original implementation.
 
 ## Completion Flow
 

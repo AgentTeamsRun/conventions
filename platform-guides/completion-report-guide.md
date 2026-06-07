@@ -10,19 +10,9 @@ Completion reports capture what changed, why it changed, how it was verified, an
 - After shipping a user-visible change
 - After completing a risky refactor or bug fix
 
-## What Makes a Good Report
-
-- Specific: names the feature/bug and the reason it mattered
-- Verifiable: includes the commands you ran (and results)
-- Scoped: states what was intentionally NOT changed
-- Actionable: calls out follow-ups if any remain
-
 ## What to Include
 
-- Purpose: why this work was needed
-- Scope: what areas/modules were touched
-- Verification: exact commands you ran and whether they passed
-- Risks: potential side effects or follow-up work
+Specific (name the feature/bug + why it mattered) · Verifiable (exact commands + results) · Scoped (what was intentionally NOT changed) · Actionable (remaining follow-ups). The Report File Structure below encodes these.
 
 ## Contract Note
 
@@ -50,17 +40,7 @@ Write the report file with this structure:
 
 ## Diagrams (Mermaid)
 
-A fenced ` ```mermaid ` code block renders as a diagram in the web viewer; in raw markdown and CLI output it stays as plain text, so keep the surrounding prose understandable on its own. Use a `flowchart` or `sequenceDiagram` to convey the change flow when it helps a reader follow what moved through the system.
-
-~~~markdown
-```mermaid
-sequenceDiagram
-  Client->>API: request
-  API->>DB: query
-  DB-->>API: rows
-  API-->>Client: response
-```
-~~~
+A fenced ```mermaid``` block (`flowchart` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw, so keep the prose self-contained. Use one only when it conveys the change flow faster than words.
 
 ## Report File Naming
 
@@ -92,24 +72,12 @@ agentteams plan finish --id {planId} \
 
 > `--runner-type` and `--model` on `report create` are the **executor** snapshot — the runner/model that actually produced this report. This is independent of `Plan.runnerType` / `Plan.model`, which is the **creator** snapshot recorded at `plan create`. The two values can differ (e.g., a plan written by Claude but executed by Codex).
 
-If you were working under a plan, link the report to the plan:
+Separate report (Path B) — add `--plan-id {planId}` when under a plan, omit it for a standalone report:
 
 ~~~bash
-agentteams report create \
-  --plan-id {planId} \
+agentteams report create [--plan-id {planId}] \
   --title "<what you did and why, in one sentence>" \
-  --file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
-  --runner-type <runner-type> --model <model-id> \
-  --quality-score <0-100> \
-  --status <COMPLETED | PARTIAL | FAILED>
-~~~
-
-If you were not working under a plan, omit the plan id:
-
-~~~bash
-agentteams report create \
-  --title "<what you did and why, in one sentence>" \
-  --file .agentteams/cli/temp/<feature-or-fix-name>-report.md \
+  --file .agentteams/cli/temp/{planId-first-8-chars-or-feature-name}-report.md \
   --runner-type <runner-type> --model <model-id> \
   --quality-score <0-100> \
   --status <COMPLETED | PARTIAL | FAILED>
@@ -245,14 +213,7 @@ agentteams postmortem create \
 
 > For post-mortem content structure, see `post-mortem-guide.md`.
 
-### Review Criteria Summary
-
-| Document | Creation Condition | Timing |
-|---|---|---|
-| **Co-Action** | Implicit knowledge, design decisions, or follow-up work exists | Immediately after report |
-| **Post-Mortem** | Failure, regression, or unexpected issue occurred | Immediately after report |
-
-> ⚠️ Do not create documents when none of the conditions apply. However, **never skip the review itself.**
+> ⚠️ Both are reviewed **immediately after the report**. Create them only when the conditions above apply — but **never skip the review itself.**
 
 ---
 

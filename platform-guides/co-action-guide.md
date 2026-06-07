@@ -1,151 +1,87 @@
 # Co-Action Guide (AgentTeams)
 
-> ⚠️ This file is automatically deployed from the server. Do not edit it directly.
+> ⚠️ Auto-deployed from the server. Do not edit directly.
 
-A co-action is a **handoff document** — it captures knowledge that cannot be inferred from code alone. Use it to transfer implicit knowledge between agents or between sessions.
+A co-action is a **handoff document**: knowledge that cannot be inferred from code.
+It is NOT a session log dump — include only what has lasting value for the next reader.
+Co-actions link to plans / completion reports / post-mortems for traceability.
 
-## What a Co-Action Is
+## When to Create
+- Handing off to another agent or session
+- After a multi-session / multi-agent project
+- Before a long pause, when implicit knowledge would otherwise be lost
 
-- A co-action records **discoveries, decisions, and context** accumulated during a work session.
-- It is NOT a session context dump. Only include information that has lasting value for the next reader.
-- Co-actions link to related plans, completion reports, and post-mortems for full traceability.
-- Takeaways track the key insights and lessons learned from the work.
+If the work just needs "what I did", use a completion report instead — not a co-action.
 
-## When to Create a Co-Action
-
-- After completing a multi-session or multi-agent project
-- When handing off work to another agent or team member
-- When a body of implicit knowledge would be lost without documentation
-- Before a long pause in active development on a feature
+## Guardrails (read first)
+- `coaction create` / `update` print tips to **stderr**; structured result (`--format json`) stays on **stdout**. Redirect `2>` when piping JSON.
+- Do not dump raw session logs — curate.
+- Do not put implementation detail here — that belongs in the completion report.
+- Never skip `## Follow-up / Known Constraints` — it is the highest-value section for handoff.
+- Link related plans/reports; do not leave a co-action orphaned.
+- Use `PRIVATE` only when truly private; use `PROJECT` for shared knowledge.
 
 ## Content Structure
-
-Write the co-action content with these sections. Include only sections that have meaningful content — skip empty ones.
+Fill these sections; omit any that have no real content.
 
 ~~~markdown
 ## Key Discoveries
-- <findings that are not obvious from the code>
-- <workarounds, undocumented behaviors, environment quirks>
+- <non-obvious findings, workarounds, undocumented behavior, env quirks>
 
 ## Design Decisions
-- <decision>: <rationale — why this approach, what alternatives were rejected>
+- <decision>: <why this, what was rejected>
 
 ## Usage Scenarios
-- <how the feature/system is intended to be used>
-- <edge cases or non-obvious interaction patterns>
+- <intended use, non-obvious interaction patterns>
 
 ## Non-Goals
-- <what was intentionally excluded and why>
+- <deliberately excluded, and why — prevents next-agent scope creep>
 
 ## Risks / Trade-offs
-- <known compromises and their potential impact>
-- <technical debt introduced and conditions for revisiting>
+- <known compromises, tech debt + when to revisit>
 
 ## Follow-up / Known Constraints
-- <what the next agent should continue or address>
-- <temporary workarounds that need permanent solutions>
-- <incomplete items with context on where they left off>
+- <what the next agent must continue; be specific enough to resume without re-investigating>
 ~~~
 
-## Diagrams (Mermaid)
+Tips: state decisions *with* their reason ("Redis over in-memory because multi-instance, accepted ops overhead"). Key Discoveries = things unreadable from code. Non-Goals = explicit exclusions.
 
-A fenced ` ```mermaid ` code block renders as a diagram in the web viewer; in raw markdown and CLI output it stays as plain text, so keep the prose self-contained. Use a `flowchart` to map how components relate or how a flow moves between systems when a picture transfers the knowledge faster than words.
-
-~~~markdown
-```mermaid
-flowchart LR
-  CLI --> API --> Queue --> Worker
-```
-~~~
-
-## Section Writing Tips
-
-### Key Discoveries
-Focus on things the next reader cannot find by reading code. Examples: "Prisma 7 delegate requires wrapper pattern due to type inference bug", "Docker build caches COPY layer even when file content changes if mtime is unchanged".
-
-### Design Decisions
-State the decision and the reason. Bad: "Used Redis". Good: "Chose Redis over in-memory cache because the service runs multi-instance and cache must be shared; accepted the ops overhead."
-
-### Non-Goals
-Prevent scope creep by the next agent. Be explicit about what was considered and deliberately excluded.
-
-### Follow-up / Known Constraints
-This is the most critical section for handoff. Be specific enough that the next agent can resume without re-investigating.
+A fenced ```mermaid flowchart``` renders in the web viewer; stays plain text in CLI/raw — keep prose self-contained.
 
 ## Visibility
-
-- `PRIVATE` (default): only the creator can view/access
-- `PROJECT`: all project members can view; only the creator can change status, visibility, or delete
+- `PRIVATE` (default): creator only
+- `PROJECT`: all project members view; only creator changes status/visibility/deletes
 
 ## Takeaways
+Standalone insights attached to (but separate from) the content. Create one when you found a non-obvious constraint, an undocumented decision, a reusable workaround, or a risk that doesn't fit the main sections.
 
-Takeaways capture **key insights** that emerged during the work — things the next agent should know but might not discover on their own.
-
-Use takeaways when:
-- You discovered a non-obvious constraint or behavior (e.g., "Fastify response schema silently strips undefined fields")
-- A design decision was made that isn't documented elsewhere
-- You found a workaround that future agents should reuse (or avoid)
-- The task revealed risks or follow-up items that don't belong in the main content
-
-Takeaways are separate from content. Content is the structured handoff document; takeaways are concise, standalone insights attached to it.
-
-~~~bash
-agentteams coaction takeaway-create --id {coActionId} --content "<insight>"
-~~~
-
-## Useful Commands
-
+## Commands
 ~~~bash
 # Create
 agentteams coaction create \
-  --title "<concise handoff title>" \
-  --file .agentteams/cli/temp/{descriptive-name}-coaction.md \
+  --title "<handoff title>" \
+  --file .agentteams/cli/temp/{name}-coaction.md \
   --visibility PRIVATE
 
-# Download for reference
-agentteams coaction download --id {coActionId}
+# Update content / status
+agentteams coaction update --id {id} --file .agentteams/cli/temp/{name}-coaction.md
+agentteams coaction update --id {id} --status CLOSED
 
-# Link related entities
-agentteams coaction link-plan --id {coActionId} --plan-id {planId}
-agentteams coaction link-completion-report --id {coActionId} --completion-report-id {crId}
-agentteams coaction link-post-mortem --id {coActionId} --post-mortem-id {pmId}
+# Download / link
+agentteams coaction download --id {id}
+agentteams coaction link-plan              --id {id} --plan-id {planId}
+agentteams coaction link-completion-report --id {id} --completion-report-id {crId}
+agentteams coaction link-post-mortem       --id {id} --post-mortem-id {pmId}
 
 # Takeaways
-agentteams coaction takeaway-create --id {coActionId} --content "<insight>"
-agentteams coaction takeaway-list --id {coActionId}
-agentteams coaction takeaway-update --id {coActionId} --takeaway-id {takeawayId} --content "<updated insight>"
-agentteams coaction takeaway-delete --id {coActionId} --takeaway-id {takeawayId}
-# Update content
-agentteams coaction update --id {coActionId} --file .agentteams/cli/temp/{name}-coaction.md
+agentteams coaction takeaway-create --id {id} --content "<insight>"
+agentteams coaction takeaway-list   --id {id}
 
-# Change status
-agentteams coaction update --id {coActionId} --status CLOSED
-~~~
-
-## Output Behavior
-
-- `coaction create` and `coaction update` print post-action tips to **stderr**.
-- Structured command results (for `--format json`) remain on **stdout**.
-- This separation prevents JSON pipeline parsing failures when tips are shown.
-
-~~~bash
 # Keep stdout clean for JSON consumers
-agentteams coaction create \
-  --title "<title>" \
-  --file .agentteams/cli/temp/{name}-coaction.md \
-  --format json \
-  2>/tmp/coaction-tips.log
+agentteams coaction create --title "<t>" --file <f> --format json 2>/tmp/tips.log
 ~~~
 
-## Common Pitfalls
-
-- Dumping raw session logs instead of curated knowledge
-- Writing implementation details that belong in a completion report
-- Skipping the "Follow-up / Known Constraints" section — this is the most valuable part for handoff
-- Forgetting to link related plans and reports
-- Using PRIVATE visibility when the knowledge should be shared with the team
-- Assuming info tips are printed to stdout; they are intentionally sent to stderr
+> Full flags for any subcommand: `agentteams coaction <subcommand> --help`
 
 ## References
-
-- Related guides: `plan-guide.md`, `completion-report-guide.md`, `post-mortem-guide.md`
+`plan-guide.md` · `completion-report-guide.md` · `post-mortem-guide.md`
