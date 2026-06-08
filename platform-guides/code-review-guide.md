@@ -53,6 +53,27 @@ Review status is decided by whether the reviewer has produced a result:
 
 Do not omit `--findings-file` to represent a "no issues found" result — that incorrectly leaves the review in `PENDING`.
 
+## Updating a PENDING Review
+
+Use `code-review update` only to correct metadata on a review that is still `PENDING`. Once a review result has been submitted or findings exist, update the review through the result/finding lifecycle instead.
+
+```bash
+agentteams code-review update \
+  --id <code-review-id> \
+  --title "<corrected review title>" \
+  --target-type BRANCH_DIFF \
+  --target-ref "<branch, PR, MR, or commit range>" \
+  --diff-file .agentteams/cli/temp/<updated-review-diff-summary>.md \
+  --test-file .agentteams/cli/temp/<updated-review-test-summary>.md \
+  --reviewer-context "<updated review instructions and source context>" \
+  --runner-type <runner-type> \
+  --model <model-id>
+```
+
+Editable fields are `title`, `targetType`, `targetRef`, `sourceCommitStart`, `sourceCommitEnd`, `sourceBranchName`, `baseBranchName`, `diffSummary`, `testSummary`, `reviewerContext`, `recommendationReason`, `runnerType`, and `model`. Pass only the fields that need to change.
+
+Do not use `code-review update` for `findings`, `status`, `resultSummary`, `errorMessage`, source links, repository links, or creator metadata. Use `code-review submit-result` for results and the finding commands for finding state changes.
+
 ## Severity
 
 Use these severities consistently:
