@@ -12,7 +12,9 @@ Completion reports capture what changed, why it changed, how it was verified, an
 
 ## What to Include
 
-Specific (name the feature/bug + why it mattered) · Verifiable (exact commands + results) · Scoped (what was intentionally NOT changed) · Actionable (remaining follow-ups). The Report File Structure below encodes these.
+Specific (name the feature/bug + why it mattered) · Verifiable (exact commands + results) · Scoped (what was intentionally NOT changed) · Actionable (remaining follow-ups) · Linked (attach the PR/MR if one exists). The Report File Structure below encodes these.
+
+> **If this work produced a pull/merge request, you must attach its link** via `--pull-request-id` (see Metrics). A report tied to a PR/MR without the link is incomplete.
 
 ## Contract Note
 
@@ -96,7 +98,7 @@ Repository linkage note:
   - `commitStart`, `commitEnd` — auto-filled when `plan start` recorded a start commit
   - `durationSeconds` — auto-calculated from `startedAt` to finish time (server-side)
 - Manual-only fields:
-  - `pullRequestId`
+  - `pullRequestId` — **required when a PR/MR exists for this work.** Pass the PR/MR URL (or id) via `--pull-request-id` so the report links back to the review. Omit only when no PR/MR was opened.
 - `--no-git` disables auto collection.
 - Manual options override auto-collected values.
 
