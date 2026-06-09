@@ -134,6 +134,21 @@ Prefer actionable findings over broad commentary. Do not include items that cann
 
 Required fields per item: `severity`, `title`, `filePath`, `problem`, `impact`, `suggestion`. The CLI rejects the file with a clear error when any required field is missing or the top-level value is not an array.
 
+## Attaching Evidence
+
+When a finding's basis is easier to show than to describe — a failing-test log, a reproduction capture, or a performance trace — attach the file to the review so the evidence travels with it. Attach **after the review record exists** (the review id is required):
+
+~~~bash
+agentteams attachment create \
+  --file .agentteams/cli/temp/repro.png \
+  --code-review-id {codeReviewId}
+~~~
+
+- Pass exactly one target id (`--code-review-id` here; `--completion-report-id` for reports).
+- Allowed types: images (jpg/png/gif/webp), text/markdown, pdf, html. Max 10 MB and 10 attachments per record.
+- The CLI uploads the bytes straight to object storage and registers only metadata with the server.
+- Attach evidence to support findings; keep the written finding self-contained — the attachment supplements, not replaces, the `problem` / `impact` / `suggestion` text.
+
 ## Diagrams (Mermaid)
 
 A fenced ```mermaid``` block (`flowchart` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw. Use one when it explains a regression path or control flow faster than words.

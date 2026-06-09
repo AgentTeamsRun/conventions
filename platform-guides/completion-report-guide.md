@@ -158,6 +158,21 @@ cd api && npm test
 cd cli && npm test
 ~~~
 
+## Attaching Evidence
+
+Back your report with the evidence you produced — test/build output, before/after screenshots, or a saved log — so a reviewer can confirm the claims without re-running everything. Attach files to the report **after it exists** (the report id is required):
+
+~~~bash
+agentteams attachment create \
+  --file .agentteams/cli/temp/test-output.txt \
+  --completion-report-id {completionReportId}
+~~~
+
+- Pass exactly one target id (`--completion-report-id` here; `--code-review-id` for reviews).
+- Allowed types: images (jpg/png/gif/webp), text/markdown, pdf, html. Max 10 MB and 10 attachments per record.
+- The CLI uploads the bytes straight to object storage and registers only metadata with the server — keep files within the limits above.
+- Attach only what supports the report; this is optional when there is nothing meaningful to show.
+
 ## Post-Report: Linked Document Auto-Creation
 
 **Immediately after** writing a completion report, review the following two categories and create the documents if applicable.
