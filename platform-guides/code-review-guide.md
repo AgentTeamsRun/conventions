@@ -57,6 +57,23 @@ Do not omit `--findings-file` to represent a "no issues found" result — that i
 
 Use `code-review update` only to correct metadata on a review that is still `PENDING`. Once a review result has been submitted or findings exist, update the review through the result/finding lifecycle instead.
 
+When executing an existing `PENDING` review, inspect the review record before reviewing the diff. If the review input context is incomplete, update it before calling `submit-result`. A completed review should preserve both sides of the workflow:
+
+- Original work: target ref, source/base branch or commit range, diff summary, and test summary
+- Reviewer execution: reviewer context/instructions, runner type, and model
+
+Before `submit-result`, confirm these fields are recorded when the information is available:
+
+- `targetRef` or source commit range
+- `sourceBranchName` and `baseBranchName` for branch diffs
+- `diffSummary`
+- `testSummary`
+- `reviewerContext`
+- `runnerType`
+- `model`
+
+If any required context cannot be recovered or the CLI cannot update it, mention that limitation in `resultSummary` before submitting the result.
+
 ```bash
 agentteams code-review update \
   --id <code-review-id> \
