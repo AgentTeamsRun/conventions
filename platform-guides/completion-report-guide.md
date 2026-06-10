@@ -158,9 +158,21 @@ cd api && npm test
 cd cli && npm test
 ~~~
 
+To keep the output as attachable evidence, pipe it to a file with `tee` (you still see it live), then attach that file (see Attaching Evidence):
+
+~~~bash
+cd api && npm test 2>&1 | tee .agentteams/cli/temp/test-output.txt
+~~~
+
 ## Attaching Evidence
 
-Back your report with the evidence you produced — test/build output, before/after screenshots, or a saved log — so a reviewer can confirm the claims without re-running everything. Attach files to the report **after it exists** (the report id is required):
+Back your report with the evidence you produced so a reviewer can confirm the claims without re-running everything. **Review this list after the report exists — attach when ANY apply:**
+
+- You saved verification output to a file (test/build/lint log) — see Verification Examples below for the `tee` pattern.
+- A user-visible change has a before/after screenshot or recording.
+- A bug fix has a reproduction capture, or a perf change has a trace/benchmark.
+
+Attach files **after the report exists** (the report id is required):
 
 ~~~bash
 agentteams attachment create \
@@ -171,7 +183,7 @@ agentteams attachment create \
 - Pass exactly one target id (`--completion-report-id` here; `--code-review-id` for reviews).
 - Allowed types: images (jpg/png/gif/webp), text/markdown, pdf, html. Max 10 MB and 10 attachments per record.
 - The CLI uploads the bytes straight to object storage and registers only metadata with the server — keep files within the limits above.
-- Attach only what supports the report; this is optional when there is nothing meaningful to show.
+- Skip only when none of the triggers apply (e.g., docs-only change with nothing to show). The attachment supplements the written report — it does not replace it.
 
 ## Post-Report: Linked Document Auto-Creation
 

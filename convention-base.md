@@ -78,8 +78,9 @@ Before starting work on a plan:
 ### With a Plan
 
 - `plan finish` auto-creates the completion report.
+- Evidence produced (verification output saved to a file, before/after screenshots, repro/perf logs) → attach it to the report so the claim travels with proof (`agentteams attachment create --completion-report-id {id}`; see Attaching Evidence in `.agentteams/platform/completion-report-guide.md`).
 - Handoff needed → also create a co-action (`.agentteams/platform/co-action-guide.md`).
-- Risk signals (cross-workspace; schema/auth/billing/quota/deployment; large diffs; failed verification) → recommend a code review as a separate explicit action (`.agentteams/platform/code-review-guide.md`). Keep this decision independent of co-action / post-mortem decisions.
+- Risk signals (cross-workspace; schema/auth/billing/quota/deployment; large diffs; failed verification) → recommend a code review as a separate explicit action (`.agentteams/platform/code-review-guide.md`). Keep this decision independent of co-action / post-mortem decisions. Evidence behind a finding → attach it to the review (see Attaching Evidence in the code-review guide).
 
 ### Without a Plan (only when the user explicitly requests a report)
 

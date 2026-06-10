@@ -136,7 +136,13 @@ Required fields per item: `severity`, `title`, `filePath`, `problem`, `impact`, 
 
 ## Attaching Evidence
 
-When a finding's basis is easier to show than to describe — a failing-test log, a reproduction capture, or a performance trace — attach the file to the review so the evidence travels with it. Attach **after the review record exists** (the review id is required):
+When a finding's basis is easier to show than to describe, attach the file to the review so the evidence travels with it. **Review this list when findings exist — attach when ANY apply:**
+
+- A finding is backed by a failing-test or error log you captured.
+- A finding has a reproduction capture (screenshot/recording).
+- A perf or regression finding has a trace, benchmark, or profiling output.
+
+Attach **after the review record exists** (the review id is required):
 
 ~~~bash
 agentteams attachment create \
@@ -147,7 +153,7 @@ agentteams attachment create \
 - Pass exactly one target id (`--code-review-id` here; `--completion-report-id` for reports).
 - Allowed types: images (jpg/png/gif/webp), text/markdown, pdf, html. Max 10 MB and 10 attachments per record.
 - The CLI uploads the bytes straight to object storage and registers only metadata with the server.
-- Attach evidence to support findings; keep the written finding self-contained — the attachment supplements, not replaces, the `problem` / `impact` / `suggestion` text.
+- Keep the written finding self-contained — the attachment supplements, not replaces, the `problem` / `impact` / `suggestion` text. Skip only when no finding has capturable evidence.
 
 ## Diagrams (Mermaid)
 
