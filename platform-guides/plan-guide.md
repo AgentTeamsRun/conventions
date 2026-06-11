@@ -164,13 +164,17 @@ Every plan carries a **complexity** tier (`MINIMAL` / `STANDARD` / `FULL`) that 
 
 The tier determines how much structure the plan body needs.
 
-- **MINIMAL** — `## TL;DR` (1–2 sentence summary + deliverables) · `## TODOs` (What to do + Acceptance Criteria per task)
+- **MINIMAL** — `## TL;DR` (In Plain Terms line + 1–2 sentence summary + deliverables) · `## TODOs` (What to do + Acceptance Criteria per task)
 - **STANDARD** — everything in MINIMAL, plus `## Context` (Original Request / Research Findings) · `## Work Objectives` (Deliverables / Definition of Done / Must Have / Must NOT Have) · `## Verification Strategy` (QA tool mapping: API→typecheck+test, CLI→test, Web→build) · TODOs add Must NOT do / References
 - **FULL** — everything in STANDARD, plus Context adds Interview Summary / Metis Review · `## Execution Strategy` (Parallel Waves / Dependency Matrix / Agent Dispatch) · TODOs add Agent Profile / Parallelization / QA Scenarios / Commit plan
 
 `### Conventions Referenced` — `.agentteams/rules/*.md` files you consulted while planning — is **required at every tier**. Do not guess. Place it under Context, or top-level when Context is omitted.
 
 > `plan-template.md` provides a copyable FULL-tier template. For MINIMAL/STANDARD, extract only the sections you need.
+
+### TL;DR Audience (every tier)
+
+`## TL;DR` opens with an **In Plain Terms** line — the one part of the plan a non-expert (requester, stakeholder) reads to confirm the work matches their intent. Write it in everyday language in the plan's own language: state the problem and what visibly changes for the user. Do **not** put file paths, code identifiers, or internal abbreviations (e.g. `SSOT`, `projectId`) in it. Everything below the TL;DR — Context, TODOs, verification — is the work order for the executing agent and may be as technical and detailed as the task requires. Keep the easy summary and the technical detail separate, not blended.
 
 ### Preview
 

@@ -9,6 +9,7 @@ This guide defines guardrails for AI-authored HTML summaries of plans. Use it wh
 - Treat HTML as a **human-facing summary/preview only**.
 - Keep the original plan Markdown/Tiptap content as the canonical source for agents, automation, status, and execution.
 - Make the summary easier to scan without changing the plan's meaning, scope, blockers, owners, or verification requirements.
+- Write the hero lead and any narrative summary in **plain language a non-expert can read** — state the problem and what visibly changes for the user, not file paths, code identifiers, or internal jargon (e.g. `SSOT`, `projectId`). Mirror the plan's **In Plain Terms** TL;DR line. Labels, metrics, badges, and the file list may stay technical.
 
 ## Factual Safety
 
@@ -140,7 +141,7 @@ The tokens above are CSS only — they must live inside a **complete, standalone
 
 One canonical markup per pattern — combine them; do not invent variants.
 
-- **Hero** — `<header><p class="eyebrow">…</p><h1>…</h1><p class="lead">…</p></header>`
+- **Hero** — `<header><p class="eyebrow">…</p><h1>…</h1><p class="lead">…</p></header>` — the `lead` is the non-expert summary; keep it jargon-free (see *Purpose*)
 - **Metric grid** — `<section class="metrics"><div class="metric"><span class="label">Tasks</span><span class="value">12</span></div>…</section>` (4 or 6 cells, top of page)
 - **Task / Wave flow** — `<ol class="flow"><li class="node">…</li>…</ol>` with `→` between nodes; collapses to a vertical stack at ≤640px
 - **Compare grid** — `<section class="compare"><div class="pro">✓ …</div><div class="con">✕ …</div></section>` using `--success-soft` / `--danger-soft`

@@ -8,7 +8,9 @@
 
 ## TL;DR
 
-> **Quick Summary**: <!-- 1-2 sentence summary of what this plan achieves -->
+> **In Plain Terms**: <!-- 1-2 sentences a non-expert (the requester/stakeholder) can read to confirm the plan matches their intent. State the problem and what visibly changes for the user. Write in the plan's language. NO file paths, code identifiers, or internal jargon (e.g. SSOT, projectId). See plan-guide.md → TL;DR Audience. -->
+>
+> **Quick Summary**: <!-- 1-2 sentence technical summary of what this plan achieves -->
 >
 > **Deliverables**:
 >
