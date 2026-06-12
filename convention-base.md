@@ -10,6 +10,29 @@
 
 Rules for interacting with the AgentTeams platform (CLI, plans, reports, conventions). These are system-level and apply to all projects.
 
+## Convention Freshness
+
+> ⚠️ At the start of a session, **before substantive work**, make sure your conventions are current. The always-on conventions are loaded into your context once at session start, so a stale local copy means you would work from out-of-date rules without noticing.
+
+1. If the `agentteams` CLI is available, check for updates (read-only, no writes):
+
+   ```bash
+   agentteams convention status
+   ```
+
+2. If updates are reported (`updateAvailable: true`), sync and **reload**:
+
+   ```bash
+   agentteams convention download
+   ```
+
+   Then re-read the affected `.agentteams/` rule files (and this convention) before proceeding, so you act on the latest rules.
+
+3. If no updates are reported, proceed.
+4. If the CLI is unavailable or the project is not configured, **skip this check silently and continue** — do not block on it.
+
+> Run this check **once per session**, not before every command. Only `agentteams convention download` writes anything; `agentteams convention status` is safe to call anytime.
+
 ## Entity References & ID Handling
 
 User messages from the AgentTeams web UI may contain entity references in `[label](type:id)` or `[label](type:id:path)` format.
