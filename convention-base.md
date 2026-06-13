@@ -108,16 +108,20 @@ Before starting work on a plan:
 ### Without a Plan (only when the user explicitly requests a report)
 
 1. No active plan → ask: "No active plan found. Create a quick plan?"
-2. Approved → run `agentteams plan quick` (flags below), then follow report steps in `.agentteams/platform/completion-report-guide.md`.
+2. Approved → run `agentteams plan quick` with completion report flags to register the plan and report in a single step (see `.agentteams/platform/completion-report-guide.md` for report flags).
 3. Declined → standalone report, no plan link (`.agentteams/platform/completion-report-guide.md`).
 4. Handoff needed → also create a co-action (`.agentteams/platform/co-action-guide.md`).
 
 ```bash
+# Register quick plan and completion report in a single workflow
+# (see completion-report-guide.md for all available report flags)
 agentteams plan quick --title "<brief work summary>" \
   --content "<see format below>" \
   --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE> \
   --runner-type <runner-type> --model <model-id> \
-  --agent <agent-name-or-id>   # or set AGENTTEAMS_AGENT_NAME
+  --agent <agent-name-or-id> \
+  --report-file "<path to report markdown>" \
+  [report-flags...]
 ```
 
 #### Quick Plan `--content` Format

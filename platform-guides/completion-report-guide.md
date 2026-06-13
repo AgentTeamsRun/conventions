@@ -54,11 +54,11 @@ Use `{first 8 characters of planId}-report.md`. Example: if planId is `57a51ec2-
 
 For standalone reports (no plan), use a descriptive name: `<feature-or-fix-name>-report.md`.
 
-> ⚠️ **Use either Path A or Path B, not both.** Running both simultaneously will create duplicate completion reports for the same plan.
+> ⚠️ **Use either Path A, Path B, or Path C, not multiple.** Running them simultaneously will create duplicate completion reports for the same plan.
 
-## Plan-Linked vs Non-Plan Reports
+## Plan-Linked, Non-Plan, vs Quick-Plan Reports
 
-You can attach report content directly while finishing a plan:
+You can attach report content directly while finishing a plan (Path A):
 
 ```bash
 agentteams plan finish --id {planId} \
@@ -76,7 +76,7 @@ agentteams plan finish --id {planId} \
 
 > `--review-recommendation` / `--review-reason` are **optional** (see the Code Review Recommendation section). An invalid `--review-recommendation` value is ignored with a warning.
 
-> `--runner-type` and `--model` on `report create` are the **executor** snapshot — the runner/model that actually produced this report. This is independent of `Plan.runnerType` / `Plan.model`, which is the **creator** snapshot recorded at `plan create`. The two values can differ (e.g., a plan written by Claude but executed by Codex).
+> `--runner-type` and `--model` are the **executor** snapshot — the runner/model that actually produced this report. This is independent of `Plan.runnerType` / `Plan.model`, which is the **creator** snapshot recorded at `plan create`. The two values can differ (e.g., a plan written by Claude but executed by Codex).
 
 Separate report (Path B) — add `--plan-id {planId}` when under a plan, omit it for a standalone report:
 
@@ -88,6 +88,24 @@ agentteams report create [--plan-id {planId}] \
   --quality-score <0-100> \
   --status <COMPLETED | PARTIAL | FAILED>
 ```
+
+Quick-plan report (Path C) — attach report content directly when creating a quick plan:
+
+```bash
+agentteams plan quick --title "<brief work summary>" \
+  --content "<quick plan description>" \
+  --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE> \
+  --runner-type <runner-type> --model <model-id> \
+  --agent <agent-name-or-id> \
+  --report-title "<what you did and why, in one sentence>" \
+  --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
+  --quality-score <0-100> \
+  --report-status <COMPLETED | PARTIAL | FAILED> \
+  --review-recommendation <REQUIRED | NOT_NEEDED> \
+  --review-reason "<one-line justification>"
+```
+
+> All completion report parameters from `plan finish` are supported on `plan quick` when attaching a report.
 
 Repository linkage note:
 

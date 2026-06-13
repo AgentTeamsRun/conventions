@@ -35,12 +35,20 @@ agentteams plan start  --id {planId}
 agentteams plan finish --id {planId}   # add report flags to attach a completion report
 ```
 
-> Commit your work before finishing — `plan finish` auto-collects commit metrics from the current git state.
-> The full report-attaching `plan finish` invocation (report flags + quality-score / report-status semantics) is the SSOT in `completion-report-guide.md`.
+For quick plans (one-shot tasks), use `plan quick` to create, start, and finish a plan in a single command. You can also attach a completion report directly to this command using the same report flags:
+
+```bash
+agentteams plan quick --title "<title>" --content "<plan content>" \
+  --runner-type <runner> --model <model> \
+  [--report-file <path> --report-title <report title> ...]
+```
+
+> Commit your work before finishing — both `plan finish` and report-attaching `plan quick` auto-collect commit metrics from the current git state.
+> The full report-attaching parameters (report flags + quality-score / report-status semantics) are defined in `completion-report-guide.md` as the SSOT.
 
 ## Runner Type & Model Reference
 
-`--runner-type` and `--model` are **required** for `plan create`, `plan quick`, `report create`, and report-attaching `plan finish` — the creator snapshot (`Plan.*`) at create, the executor snapshot (`CompletionReport.*`) at report; the two can differ. Not required for `plan start` or report-less `plan finish`.
+`--runner-type` and `--model` are **required** for `plan create`, `plan quick`, `report create`, and report-attaching `plan finish` / `plan quick` — the creator snapshot (`Plan.*`) at create, the executor snapshot (`CompletionReport.*`) at report; the two can differ. Not required for `plan start` or report-less `plan finish` / `plan quick`.
 
 | Runner Type   | Description            |
 | ------------- | ---------------------- |
