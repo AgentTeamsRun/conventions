@@ -46,39 +46,47 @@ Issues that surfaced during development execution and are likely to recur if lef
 
 ## Diagrams (Mermaid)
 
-A fenced ```mermaid``` block (`gantt` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw. Use one to visualize the incident timeline or chain of events.
+A fenced `mermaid` block (`gantt` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw. Use one to visualize the incident timeline or chain of events.
 
 ## Post Mortem Content Template
 
 Use this structure for the `--content` field or the `--file` content:
 
-~~~markdown
+```markdown
 ## Summary
+
 <what happened — 1-2 sentences, be specific>
 
 ## Category
+
 <Service Incident | Development Execution Issue>
 
 ## Timeline
+
 - HH:MM - <event 1>
 - HH:MM - <event 2>
 
 ## Root Cause
+
 <specific cause, not symptoms — describe the causal chain>
 
 ## Impact
+
 <who/what was affected and for how long — for development execution issues, describe the delay or blocked work>
 
 ## What Went Wrong
+
 - <contributing factor 1>
 - <contributing factor 2>
 
 ## What Went Well
+
 - <what helped limit the damage or speed up recovery>
 
 ## Prevention
+
 - <specific process, tooling, or environment change to prevent recurrence>
-~~~
+```
 
 ## Post Mortem File Naming
 
@@ -86,14 +94,14 @@ Use `{first 8 characters of planId}-postmortem.md`. Example: if planId is `57a51
 
 ## Useful Commands
 
-~~~bash
+```bash
 agentteams postmortem create \
   --plan-id {planId} \
   --title "<what broke — e.g., 'API 500 on plan finish after schema migration'>" \
   --file .agentteams/cli/temp/{planId-first-8-chars}-postmortem.md \
   --action-items "<specific preventive action 1>,<specific preventive action 2>" \
   --status OPEN
-~~~
+```
 
 Repository linkage note:
 

@@ -12,10 +12,10 @@ For the convention body, follow the structures and elements supported by the **W
 
 Example:
 
-~~~markdown
+```markdown
 ---
 trigger: always_on
-description: "..."
+description: '...'
 ---
 
 # AGENT_RULES
@@ -26,7 +26,7 @@ description: "..."
 # Title
 
 - Item
-~~~
+```
 
 ## 2) Recommended frontmatter fields
 
@@ -42,15 +42,16 @@ Notes:
 
 Place a `# AGENT_RULES` heading at the top of the body (right after frontmatter) for rules the agent must follow. LLMs comply with `AGENT_RULES` / `NON_NEGOTIABLE_RULES` / `GUARDRAILS` headings more reliably than with rules buried in general context.
 
-~~~markdown
+```markdown
 # AGENT_RULES
 
 - Do not use .env files for development
 - Use each folder's .env file instead
 
 # PROJECT CONTEXT
+
 ...
-~~~
+```
 
 ## 3) Category / path rules
 
@@ -78,18 +79,18 @@ A convention must not duplicate facts whose authoritative source lives elsewhere
 
 - Define only what the convention **owns**: implementation patterns, naming, and process — rules that have no other authoritative source.
 - For values or policy whose source of truth is **code or a Document, link to it instead of restating it** (e.g. reference the constant in source code; reference the Document for policy and rationale).
-- Heuristic: *"If this changes, must I edit it in two places?"* If yes, it is duplication — remove it from the convention and replace it with a pointer.
+- Heuristic: _"If this changes, must I edit it in two places?"_ If yes, it is duplication — remove it from the convention and replace it with a pointer.
 - Ownership split: **values/logic → code**, **human-facing policy/rationale → Document**, **patterns/naming/process → convention**.
 
 ## 6) Useful Commands
 
-~~~bash
+```bash
 # Create a new convention
 agentteams convention create --file .agentteams/{category}/{convention-name}.md
 
 # Download all conventions
 agentteams convention download
-~~~
+```
 
 > Place the file under `.agentteams/<category>/` before running `convention create`. The `<category>` must be one of: `rules`, `skills`, `guides`, `references`.
 >

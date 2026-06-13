@@ -8,18 +8,18 @@ Use this guide when you need to read, create, or comment on Linear issues from t
 
 ### Read an Issue
 
-~~~bash
+```bash
 agentteams linear issue get --issue-id <linearIssueId>
-~~~
+```
 
 - Returns the issue title, description, status, assignee, priority, labels, and URL.
 - Use `--format json` when another tool needs structured output.
 
 ### Create an Issue
 
-~~~bash
+```bash
 agentteams linear issue create --title "Issue title" [--team-id <linearTeamId>] [--description "Details"] [--state "Done"] [--parent-id <linearIssueUuid>]
-~~~
+```
 
 - Creates a new Linear issue.
 - `--title` is required.
@@ -34,9 +34,9 @@ agentteams linear issue create --title "Issue title" [--team-id <linearTeamId>] 
 
 ### Update Issue State
 
-~~~bash
+```bash
 agentteams linear issue update --issue-id <linearIssueId> --state "In Progress"
-~~~
+```
 
 - Changes the status of an existing Linear issue.
 - `--issue-id` accepts both UUID and identifier (e.g., `AGE-13`).
@@ -44,9 +44,9 @@ agentteams linear issue update --issue-id <linearIssueId> --state "In Progress"
 
 ### List Comments
 
-~~~bash
+```bash
 agentteams linear comment list --issue-id <linearIssueId>
-~~~
+```
 
 - Returns all comments on the specified issue.
 - Each comment includes `id`, `body`, `user` (author name, nullable), `createdAt`, and `updatedAt`.
@@ -54,9 +54,9 @@ agentteams linear comment list --issue-id <linearIssueId>
 
 ### Create a Comment
 
-~~~bash
+```bash
 agentteams linear comment create --issue-id <linearIssueId> --body "Comment text"
-~~~
+```
 
 - Creates a new Linear comment with the connected member's token.
 - Returns the created comment id and timestamps.
@@ -71,11 +71,11 @@ agentteams linear comment create --issue-id <linearIssueId> --body "Comment text
 
 The `--issue-id` flag accepts both **UUID** and **identifier** (e.g., `AGE-13`).
 
-| Source | How to extract | Example |
-|---|---|---|
-| Entity reference `[label](LINEAR_ISSUE:uuid)` | Use the UUID directly | `--issue-id 7c113c62-f3b6-48f5-bc76-c3a1579094fe` |
-| Linear URL `https://linear.app/{workspace}/issue/{identifier}/...` | Extract the identifier segment from the URL path | `--issue-id AGE-13` |
-| User mentions identifier in text (e.g., "AGE-13 확인해줘") | Use the identifier as-is | `--issue-id AGE-13` |
+| Source                                                             | How to extract                                   | Example                                           |
+| ------------------------------------------------------------------ | ------------------------------------------------ | ------------------------------------------------- |
+| Entity reference `[label](LINEAR_ISSUE:uuid)`                      | Use the UUID directly                            | `--issue-id 7c113c62-f3b6-48f5-bc76-c3a1579094fe` |
+| Linear URL `https://linear.app/{workspace}/issue/{identifier}/...` | Extract the identifier segment from the URL path | `--issue-id AGE-13`                               |
+| User mentions identifier in text (e.g., "AGE-13 확인해줘")         | Use the identifier as-is                         | `--issue-id AGE-13`                               |
 
 ## Common Workflow
 
@@ -88,9 +88,9 @@ The `--issue-id` flag accepts both **UUID** and **identifier** (e.g., `AGE-13`).
 
 When the user asks to log completed work as a Linear issue (e.g., "이슈 등록하고 완료로 처리해줘"), create the issue with `--state "Done"`:
 
-~~~bash
+```bash
 agentteams linear issue create --title "Fix: auth token refresh" --description "Added auto-refresh for expired Linear OAuth tokens" --state "Done"
-~~~
+```
 
 ## Notes
 

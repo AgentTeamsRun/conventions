@@ -8,35 +8,35 @@ This guide explains how to update or delete **project convention files** using t
 
 - Update/delete only works for files produced by:
 
-~~~bash
+```bash
 agentteams convention download
-~~~
+```
 
 - Uploading arbitrary local files is not supported.
 
 ## Recommended workflow
 
-1) Download conventions (also creates a local manifest used for mapping)
+1. Download conventions (also creates a local manifest used for mapping)
 
-~~~bash
+```bash
 agentteams convention download
-~~~
+```
 
-2) Edit the downloaded markdown files under `.agentteams/<category>/*.md`
+2. Edit the downloaded markdown files under `.agentteams/<category>/*.md`
 
-3) Preview changes (default: dry-run)
+3. Preview changes (default: dry-run)
 
-~~~bash
+```bash
 agentteams convention update --file .agentteams/rules/core-rules.md
-~~~
+```
 
 - This prints a diff and does **not** update the server.
 
-4) Apply the update to the server
+4. Apply the update to the server
 
-~~~bash
+```bash
 agentteams convention update --file .agentteams/rules/core-rules.md --apply
-~~~
+```
 
 ## Concurrency/conflict handling
 
@@ -46,10 +46,10 @@ agentteams convention update --file .agentteams/rules/core-rules.md --apply
 
 ## Delete
 
-~~~bash
+```bash
 # dry-run (default)
 agentteams convention delete --file .agentteams/rules/core-rules.md
 
 # apply
 agentteams convention delete --file .agentteams/rules/core-rules.md --apply
-~~~
+```

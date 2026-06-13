@@ -35,70 +35,112 @@ This guide defines guardrails for AI-authored HTML summaries of plans. Use it wh
 - Avoid pure `#000000` on `#ffffff` or the reverse in dark mode — use near-black and near-white (e.g., `#1a1a1a` / `#e8e8e8`) to reduce eye strain.
 - Ensure information-bearing elements — links, code blocks, badges, table rows, callout boxes — remain visually distinguishable in both modes. Do not rely solely on color to convey meaning.
 - Do not hardcode only a light-mode palette. Any CSS variable, class, or inline style that sets color must account for dark mode as well.
-- When the host app injects a theme signal via `<html data-theme="…">`, treat attribute selectors like `[data-theme="night"]`, `[data-theme="dark"]` as the **primary** theme signal and keep `prefers-color-scheme` as a fallback. Some host themes declare `color-scheme: light` even when the OS is dark, which prevents `prefers-color-scheme: dark` from matching inside the iframe. Define color *values* only in your own CSS variables — never pull them from host CSS variables (e.g. `--p`, `--b1`); only consume the `data-theme` *signal*.
-- Keep the `body` background `transparent`; only cards, panels, and callouts paint their own `--surface` (see *Layout Rules*).
+- When the host app injects a theme signal via `<html data-theme="…">`, treat attribute selectors like `[data-theme="night"]`, `[data-theme="dark"]` as the **primary** theme signal and keep `prefers-color-scheme` as a fallback. Some host themes declare `color-scheme: light` even when the OS is dark, which prevents `prefers-color-scheme: dark` from matching inside the iframe. Define color _values_ only in your own CSS variables — never pull them from host CSS variables (e.g. `--p`, `--b1`); only consume the `data-theme` _signal_.
+- Keep the `body` background `transparent`; only cards, panels, and callouts paint their own `--surface` (see _Layout Rules_).
 
 ## Visual Design Language
 
-The HTML preview is a **summary of a plan's decision surface**, not a styled rendering of its Markdown — dashboard-shaped when the plan has the substance for it, and a compact column when it does not (see *Differentiation from Markdown*). The tokens, components, and layout rules below give every preview a consistent skeleton so different agents can fill it in without each reinventing visual decisions.
+The HTML preview is a **summary of a plan's decision surface**, not a styled rendering of its Markdown — dashboard-shaped when the plan has the substance for it, and a compact column when it does not (see _Differentiation from Markdown_). The tokens, components, and layout rules below give every preview a consistent skeleton so different agents can fill it in without each reinventing visual decisions.
 
 ### Design Tokens
 
-Define all design values as CSS custom properties on `:root`. Resolve theme in three layers: light defaults → `prefers-color-scheme: dark` fallback → host `[data-theme]` attribute selector (primary signal). The light values are the defaults; dark values are duplicated across the fallback and attribute-selector blocks because CSS cannot share value lists between selectors. Do not import color *values* from host CSS variables.
+Define all design values as CSS custom properties on `:root`. Resolve theme in three layers: light defaults → `prefers-color-scheme: dark` fallback → host `[data-theme]` attribute selector (primary signal). The light values are the defaults; dark values are duplicated across the fallback and attribute-selector blocks because CSS cannot share value lists between selectors. Do not import color _values_ from host CSS variables.
 
-~~~css
+```css
 :root {
   color-scheme: light dark;
   --max-w: 800px; /* preferred range: 720–960 */
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --fs-caption: 11px; --fs-small: 13px; --fs-body: 15px;
+  --fs-caption: 11px;
+  --fs-small: 13px;
+  --fs-body: 15px;
   --fs-h3: 18px;
   --fs-h2: clamp(20px, 3.5vw, 22px);
   --fs-h1: clamp(24px, 5vw, 28px);
-  --lh-body: 1.55; --lh-heading: 1.2;
-  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px;
+  --lh-body: 1.55;
+  --lh-heading: 1.2;
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
   /* Light palette */
-  --bg: #fbfbfa; --surface: #ffffff; --surface-2: #f4f4f2;
-  --border: #e6e6e2; --border-strong: #d4d4ce;
-  --text: #1a1a1a; --muted: #555; --subtle: #888;
-  --accent: #2b6cb0;  --accent-soft: #e3eef9;
-  --danger: #b42318;  --danger-soft: #fdeceb;
-  --warn:   #b75e09;  --warn-soft:   #fdf2e3;
-  --success:#1f7a3a;  --success-soft:#e6f4ea;
+  --bg: #fbfbfa;
+  --surface: #ffffff;
+  --surface-2: #f4f4f2;
+  --border: #e6e6e2;
+  --border-strong: #d4d4ce;
+  --text: #1a1a1a;
+  --muted: #555;
+  --subtle: #888;
+  --accent: #2b6cb0;
+  --accent-soft: #e3eef9;
+  --danger: #b42318;
+  --danger-soft: #fdeceb;
+  --warn: #b75e09;
+  --warn-soft: #fdf2e3;
+  --success: #1f7a3a;
+  --success-soft: #e6f4ea;
   --code-bg: #f4f4f2;
 }
 
 /* Fallback when the host does not signal a theme. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg:#141414; --surface:#1c1c1c; --surface-2:#232323;
-    --border:#2e2e2e; --border-strong:#3d3d3d;
-    --text:#e8e8e8; --muted:#a8a8a8; --subtle:#808080;
-    --accent:#82b8e6;  --accent-soft:#1d2c3a;
-    --danger:#f0857a;  --danger-soft:#3a1b18;
-    --warn:  #e0a464;  --warn-soft:  #3a2a14;
-    --success:#7dc795; --success-soft:#16301d;
-    --code-bg:#1c1c1c;
+    --bg: #141414;
+    --surface: #1c1c1c;
+    --surface-2: #232323;
+    --border: #2e2e2e;
+    --border-strong: #3d3d3d;
+    --text: #e8e8e8;
+    --muted: #a8a8a8;
+    --subtle: #808080;
+    --accent: #82b8e6;
+    --accent-soft: #1d2c3a;
+    --danger: #f0857a;
+    --danger-soft: #3a1b18;
+    --warn: #e0a464;
+    --warn-soft: #3a2a14;
+    --success: #7dc795;
+    --success-soft: #16301d;
+    --code-bg: #1c1c1c;
   }
 }
 
 /* Primary signal: host theme attribute (DaisyUI dark theme names). */
-:root[data-theme="night"],    :root[data-theme="dark"],
-:root[data-theme="dim"],      :root[data-theme="sunset"],
-:root[data-theme="black"],    :root[data-theme="luxury"],
-:root[data-theme="business"], :root[data-theme="coffee"],
-:root[data-theme="forest"],   :root[data-theme="halloween"],
-:root[data-theme="dracula"],  :root[data-theme="abyss"] {
+:root[data-theme='night'],
+:root[data-theme='dark'],
+:root[data-theme='dim'],
+:root[data-theme='sunset'],
+:root[data-theme='black'],
+:root[data-theme='luxury'],
+:root[data-theme='business'],
+:root[data-theme='coffee'],
+:root[data-theme='forest'],
+:root[data-theme='halloween'],
+:root[data-theme='dracula'],
+:root[data-theme='abyss'] {
   color-scheme: dark;
-  --bg:#141414; --surface:#1c1c1c; --surface-2:#232323;
-  --border:#2e2e2e; --border-strong:#3d3d3d;
-  --text:#e8e8e8; --muted:#a8a8a8; --subtle:#808080;
-  --accent:#82b8e6;  --accent-soft:#1d2c3a;
-  --danger:#f0857a;  --danger-soft:#3a1b18;
-  --warn:  #e0a464;  --warn-soft:  #3a2a14;
-  --success:#7dc795; --success-soft:#16301d;
-  --code-bg:#1c1c1c;
+  --bg: #141414;
+  --surface: #1c1c1c;
+  --surface-2: #232323;
+  --border: #2e2e2e;
+  --border-strong: #3d3d3d;
+  --text: #e8e8e8;
+  --muted: #a8a8a8;
+  --subtle: #808080;
+  --accent: #82b8e6;
+  --accent-soft: #1d2c3a;
+  --danger: #f0857a;
+  --danger-soft: #3a1b18;
+  --warn: #e0a464;
+  --warn-soft: #3a2a14;
+  --success: #7dc795;
+  --success-soft: #16301d;
+  --code-bg: #1c1c1c;
 }
 
 body {
@@ -109,39 +151,43 @@ body {
   margin: 0 auto;
   padding: var(--s5);
 }
-~~~
+```
 
 ### Document Shell
 
-The tokens above are CSS only — they must live inside a **complete, standalone HTML document**. Wrap every preview in this shell; it is the one part that is identical across all previews. Fill `<style>` with the Design Tokens block above plus only the component CSS you actually use, and fill `<body>` with the Hero plus the components you pick from *Component Patterns*.
+The tokens above are CSS only — they must live inside a **complete, standalone HTML document**. Wrap every preview in this shell; it is the one part that is identical across all previews. Fill `<style>` with the Design Tokens block above plus only the component CSS you actually use, and fill `<body>` with the Hero plus the components you pick from _Component Patterns_.
 
-~~~html
+```html
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    /* 1. Design Tokens — paste the :root + prefers-color-scheme + [data-theme] + body block verbatim. */
-    /* 2. Component CSS — only the patterns this preview actually uses. */
-  </style>
-</head>
-<body>
-  <header><p class="eyebrow">…</p><h1>…</h1><p class="lead">…</p></header>
-  <!-- metric grid / flow / cards / compare / DoD — pick only the components the plan needs -->
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      /* 1. Design Tokens — paste the :root + prefers-color-scheme + [data-theme] + body block verbatim. */
+      /* 2. Component CSS — only the patterns this preview actually uses. */
+    </style>
+  </head>
+  <body>
+    <header>
+      <p class="eyebrow">…</p>
+      <h1>…</h1>
+      <p class="lead">…</p>
+    </header>
+    <!-- metric grid / flow / cards / compare / DoD — pick only the components the plan needs -->
+  </body>
 </html>
-~~~
+```
 
 - `<meta charset="utf-8">` is **mandatory** — previews routinely contain non-ASCII content, and a missing charset corrupts it.
-- `<meta name="viewport">` is required for the responsive rules in *Layout Rules* (`clamp()` headings, ≤640px collapse) to take effect.
+- `<meta name="viewport">` is required for the responsive rules in _Layout Rules_ (`clamp()` headings, ≤640px collapse) to take effect.
 - Set `lang` to the plan's language.
 
 ### Component Patterns
 
 One canonical markup per pattern — combine them; do not invent variants.
 
-- **Hero** — `<header><p class="eyebrow">…</p><h1>…</h1><p class="lead">…</p></header>` — the `lead` is the non-expert summary; keep it jargon-free (see *Purpose*)
+- **Hero** — `<header><p class="eyebrow">…</p><h1>…</h1><p class="lead">…</p></header>` — the `lead` is the non-expert summary; keep it jargon-free (see _Purpose_)
 - **Metric grid** — `<section class="metrics"><div class="metric"><span class="label">Tasks</span><span class="value">12</span></div>…</section>` (4 or 6 cells, top of page)
 - **Task / Wave flow** — `<ol class="flow"><li class="node">…</li>…</ol>` with `→` between nodes; collapses to a vertical stack at ≤640px
 - **Compare grid** — `<section class="compare"><div class="pro">✓ …</div><div class="con">✕ …</div></section>` using `--success-soft` / `--danger-soft`
@@ -154,7 +200,7 @@ One canonical markup per pattern — combine them; do not invent variants.
 
 ### Layout Rules
 
-- Card / callout *types* per page: 3 or fewer.
+- Card / callout _types_ per page: 3 or fewer.
 - Color emphasis only when it carries status meaning. No decorative gradients, drop shadows, or emojis (status glyphs `✓ ✕ → ⚠` are fine when they convey meaning).
 - Content max width follows `--max-w`; container is centered.
 - Use only two font weights: 400 and 600.
@@ -165,9 +211,9 @@ One canonical markup per pattern — combine them; do not invent variants.
 
 ### Differentiation from Markdown
 
-The HTML preview must **not** be a one-to-one rendering of the source Markdown. Markdown remains the canonical plan body; HTML is a dashboard-shaped summary of the *decision surface*.
+The HTML preview must **not** be a one-to-one rendering of the source Markdown. Markdown remains the canonical plan body; HTML is a dashboard-shaped summary of the _decision surface_.
 
-*Anti-patterns (do not do)*:
+_Anti-patterns (do not do)_:
 
 - Mapping every Markdown section to `<h2>` + card.
 - Copying every bullet from the source body into the preview.
@@ -175,7 +221,7 @@ The HTML preview must **not** be a one-to-one rendering of the source Markdown. 
 - A "whole-body HTML page" that mirrors the Markdown end to end.
 - **Meta label boxes / footers** — `plan id`, "AI-curated · summary/preview only", "source: …" pointers. The host UI already supplies this context; rendering it inside the preview is noise.
 
-*Dashboard forms (use at least one when the plan has the substance for it)*:
+_Dashboard forms (use at least one when the plan has the substance for it)_:
 
 - **Top metric grid** — Tasks / Files / Commits / Waves / Effort / Tier shown as label + large number.
 - **Task / Wave flow diagram** — nodes + arrows visualizing dependencies (impossible to express in Markdown).
@@ -184,7 +230,7 @@ The HTML preview must **not** be a one-to-one rendering of the source Markdown. 
 - **Information compression** — keep only the decision surface (critical path, key guardrails, 3–5 DoD items). Do not move every bullet from the source body.
 - **Delegate the body to Markdown** — references, step-by-step detail, and full prose belong in the Markdown plan, not the HTML preview. Do not draw a "see Markdown" pointer box; a short, dense page is self-explanatory.
 
-*Thin plans — compact column instead*: when the plan genuinely lacks dashboard substance — a single task, one or two files, no waves, no dependency graph, no multi-step DoD — a dashboard form would **invent structure the plan does not have**. Do not force one. Render a single narrow column with: a title/hero, a one-to-two-sentence TL;DR plus deliverables, a **Changes** list (files or concrete steps), and a **Verification** list (acceptance criteria / checks). This is still a summary, not a Markdown one-to-one dump, and it still carries the full light/dark theme layer. Judge this from what the plan actually contains, not from its stored complexity tier.
+_Thin plans — compact column instead_: when the plan genuinely lacks dashboard substance — a single task, one or two files, no waves, no dependency graph, no multi-step DoD — a dashboard form would **invent structure the plan does not have**. Do not force one. Render a single narrow column with: a title/hero, a one-to-two-sentence TL;DR plus deliverables, a **Changes** list (files or concrete steps), and a **Verification** list (acceptance criteria / checks). This is still a summary, not a Markdown one-to-one dump, and it still carries the full light/dark theme layer. Judge this from what the plan actually contains, not from its stored complexity tier.
 
 ## Upload Workflow
 
@@ -193,15 +239,15 @@ The HTML preview must **not** be a one-to-one rendering of the source Markdown. 
 3. Inspect the HTML for factual drift, unsafe content, and accidental hidden metadata.
 4. Upload only after review:
 
-~~~bash
+```bash
 agentteams plan upload-html --id {planId} --file .agentteams/cli/temp/plan-summary.html
-~~~
+```
 
 For pipeline-style automation, stdin upload is also supported:
 
-~~~bash
+```bash
 cat .agentteams/cli/temp/plan-summary.html | agentteams plan upload-html --id {planId} --stdin
-~~~
+```
 
 ## Pre-Upload Checklist
 
@@ -209,9 +255,9 @@ cat .agentteams/cli/temp/plan-summary.html | agentteams plan upload-html --id {p
 - Missing information is omitted or marked as not specified.
 - No scripts, trackers, forms, auth flows, or remote dependencies were added.
 - The document remains useful if rendered in a sandboxed iframe.
-- The output is a complete standalone document built on the *Document Shell* (doctype + `<meta charset="utf-8">` + viewport + `<style>`), not a bare fragment.
+- The output is a complete standalone document built on the _Document Shell_ (doctype + `<meta charset="utf-8">` + viewport + `<style>`), not a bare fragment.
 - The source plan Markdown/Tiptap remains the canonical execution document.
 - Light and dark modes are both explicitly styled; the document does not depend on the host app's theme.
 - The Visual Design Language tokens, component patterns, and layout rules are honored.
-- The preview is a summary, not a Markdown one-to-one rendering (see *Differentiation from Markdown*).
+- The preview is a summary, not a Markdown one-to-one rendering (see _Differentiation from Markdown_).
 - The `body` background is `transparent` and the preview renders in dark mode under host dark themes such as `[data-theme="night"]`.

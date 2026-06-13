@@ -30,10 +30,10 @@ Repository linkage note:
 
 For standard execution flows, use lifecycle shortcuts instead of manual multi-step status updates.
 
-~~~bash
+```bash
 agentteams plan start  --id {planId}
 agentteams plan finish --id {planId}   # add report flags to attach a completion report
-~~~
+```
 
 > Commit your work before finishing — `plan finish` auto-collects commit metrics from the current git state.
 > The full report-attaching `plan finish` invocation (report flags + quality-score / report-status semantics) is the SSOT in `completion-report-guide.md`.
@@ -42,13 +42,13 @@ agentteams plan finish --id {planId}   # add report flags to attach a completion
 
 `--runner-type` and `--model` are **required** for `plan create`, `plan quick`, `report create`, and report-attaching `plan finish` — the creator snapshot (`Plan.*`) at create, the executor snapshot (`CompletionReport.*`) at report; the two can differ. Not required for `plan start` or report-less `plan finish`.
 
-| Runner Type | Description |
-|---|---|
-| `CLAUDE_CODE` | Claude Code CLI |
-| `CODEX` | OpenAI Codex CLI |
+| Runner Type   | Description            |
+| ------------- | ---------------------- |
+| `CLAUDE_CODE` | Claude Code CLI        |
+| `CODEX`       | OpenAI Codex CLI       |
 | `ANTIGRAVITY` | Google Antigravity CLI |
-| `AMP` | Amp Code |
-| `OPENCODE` | OpenCode |
+| `AMP`         | Amp Code               |
+| `OPENCODE`    | OpenCode               |
 
 `--model` accepts any model ID string used by the runner engine (e.g., `claude-opus-4-6`, `o3`).
 
@@ -56,7 +56,7 @@ agentteams plan finish --id {planId}   # add report flags to attach a completion
 
 When a user explicitly says to start a plan (e.g. "start plan {id}", "let's start {id}"), treat it as an explicit execution approval. Follow this flow:
 
-~~~bash
+```bash
 # 1. Download runbook
 agentteams plan download --id {planId}
 
@@ -65,14 +65,14 @@ agentteams comment list --plan-id {planId}
 
 # 3. Start lifecycle
 agentteams plan start --id {planId}
-~~~
+```
 
 **Decision after comment check:**
 
-| Comments found | Action |
-|---|---|
+| Comments found                   | Action                                                       |
+| -------------------------------- | ------------------------------------------------------------ |
 | `RISK` or `MODIFICATION` present | Report to user and wait for confirmation before implementing |
-| None (or `GENERAL` only) | Proceed with implementation immediately |
+| None (or `GENERAL` only)         | Proceed with implementation immediately                      |
 
 The phrase "start the plan" is an explicit approval signal — do not stop after the CLI status change. Implement unless a blocking comment requires human confirmation.
 
@@ -88,7 +88,7 @@ When creating a plan based on an external issue (GitHub, GitLab, Linear), link t
 
 **Preferred method — Explicit link after creation:**
 
-~~~bash
+```bash
 # Linear
 agentteams plan link-issue --id {planId} --provider LINEAR \
   --external-id <issueUuid> --external-url <issueUrl> --title "{issueTitle}"
@@ -100,7 +100,7 @@ agentteams plan link-issue --id {planId} --provider GITHUB \
 # GitLab
 agentteams plan link-issue --id {planId} --provider GITLAB \
   --external-id <projectPath#iid> --external-url <issueUrl> --title "{issueTitle}"
-~~~
+```
 
 Repeat `agentteams plan link-issue` for multiple issues. `agentteams plan issue` exists as a short alias, but platform guides should prefer the official action shown in `agentteams plan --help`: `link-issue`.
 
@@ -114,7 +114,7 @@ If the plan body includes an issue entity reference (e.g., `[Issue title](LINEAR
 
 When creating multiple plans at once, use dependencies to define execution order. A blocked plan should not start until its blocking plans are completed.
 
-~~~bash
+```bash
 # Add dependency (blockedPlan waits for blockingPlan to finish)
 agentteams dependency create --plan-id {blockedPlanId} --blocking-plan-id {blockingPlanId}
 
@@ -123,7 +123,7 @@ agentteams dependency list --plan-id {planId}
 
 # Remove a dependency
 agentteams dependency delete --plan-id {planId} --dep-id {depId}
-~~~
+```
 
 Typical flow: create all plans first, then link dependencies using the returned IDs.
 
@@ -142,9 +142,9 @@ After the completion report, do not stop there:
 1. Review whether a **Co-Action** and/or **Post-Mortem** is needed, then create and link them — criteria and commands are the SSOT in `completion-report-guide.md` (Post-Report: Linked Document Auto-Creation).
 2. Clean up the local runbook once linked documents are created or explicitly ruled out:
 
-~~~bash
+```bash
 agentteams plan cleanup --id {planId}
-~~~
+```
 
 ## Plan Complexity — A Stored Field, Not Just a Document Concept
 
@@ -152,11 +152,11 @@ Every plan carries a **complexity** tier (`MINIMAL` / `STANDARD` / `FULL`) that 
 
 ### Judging the Tier
 
-| Tier | When |
-|---|---|
-| `MINIMAL` | 1 task · 1–2 files · single domain · no risk signals |
-| `STANDARD` | 2–3 tasks · known, bounded scope |
-| `FULL` | 4+ tasks · multi-wave, **or** any risk signal: schema / auth / billing / quota / deployment change · cross-workspace edits · large diff · unfamiliar domain |
+| Tier       | When                                                                                                                                                        |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MINIMAL`  | 1 task · 1–2 files · single domain · no risk signals                                                                                                        |
+| `STANDARD` | 2–3 tasks · known, bounded scope                                                                                                                            |
+| `FULL`     | 4+ tasks · multi-wave, **or** any risk signal: schema / auth / billing / quota / deployment change · cross-workspace edits · large diff · unfamiliar domain |
 
 > When unsure between two tiers, pick the higher one. Under-scoping a FULL plan as MINIMAL is the failure mode this field exists to prevent.
 
@@ -229,7 +229,7 @@ Bake verification into the plan at writing time, not as a trailing afterthought:
 - Write each task's **Acceptance Criteria as verifiable tests** — what you would assert to prove the task is done. A criterion that cannot be expressed as a check is underspecified.
 - For `BUG_FIX` plans, make the first task a **failing test that reproduces the bug**; a later task makes it pass. This proves both that the bug existed and that it is gone.
 - For `FEATURE` work, plan the test in the **same task** as the code it covers — not as a separate trailing "write tests" task that gets dropped under time pressure.
-- The connected project's testing convention is the source of truth for framework, file location, and run command. This guide governs *that* you plan tests, not *how* they are written.
+- The connected project's testing convention is the source of truth for framework, file location, and run command. This guide governs _that_ you plan tests, not _how_ they are written.
 
 ## Common Pitfalls
 

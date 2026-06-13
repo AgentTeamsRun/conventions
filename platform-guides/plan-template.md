@@ -101,26 +101,26 @@ Example:
 
 ### Parallel Execution Waves
 
-~~~
+```
 Wave 1:
 ├── Task 1: description [category]
 └── Task 2: description [category]
 
 Wave 2 (Wave 1 complete):
 └── Task 3: description [category]
-~~~
+```
 
 ### Diagrams (Mermaid)
 
 A fenced ` ```mermaid ` code block renders as a diagram in the web viewer; in raw markdown and CLI output it stays as plain text. Use a `flowchart` to show waves and task dependencies at a glance.
 
-~~~markdown
+````markdown
 ```mermaid
 flowchart LR
   T1[Task 1] --> T3[Task 3]
   T2[Task 2] --> T3
 ```
-~~~
+````
 
 ---
 
@@ -130,28 +130,28 @@ flowchart LR
 
 ### 1. Task title
 
-  **What to do**:
+**What to do**:
 
   <!-- Detailed steps -->
 
-  **Must NOT do**:
+**Must NOT do**:
 
-  - <!-- Forbidden action -->
+- <!-- Forbidden action -->
 
-  **Recommended Agent Profile**:
+**Recommended Agent Profile**:
 
-  - **Category**: `<!-- category -->`
-    - Reason: <!-- why this category -->
-  - **Skills**: <!-- skill list or none -->
+- **Category**: `<!-- category -->`
+  - Reason: <!-- why this category -->
+- **Skills**: <!-- skill list or none -->
 
-  **Parallelization**:
+**Parallelization**:
 
-  - **Can Run In Parallel**: <!-- YES / NO -->
-  - **Parallel Group**: <!-- Wave N -->
-  - **Blocks**: <!-- Task N or none -->
-  - **Blocked By**: <!-- Task N or none -->
+- **Can Run In Parallel**: <!-- YES / NO -->
+- **Parallel Group**: <!-- Wave N -->
+- **Blocks**: <!-- Task N or none -->
+- **Blocked By**: <!-- Task N or none -->
 
-  **Required Conventions**:
+**Required Conventions**:
 
   <!-- Project conventions the executing agent MUST read before starting this task. -->
   <!-- These are project-level rule files (e.g., routes.md, schema.md, frontend.md) that define -->
@@ -159,32 +159,32 @@ flowchart LR
   <!-- The agent should load and follow these conventions throughout the entire task execution. -->
   <!-- If none are required, write "none". -->
 
-  - <!-- convention file — why it's required for this task -->
+- <!-- convention file — why it's required for this task -->
 
-  **References**:
+**References**:
 
-  - <!-- file:lines — description -->
+- <!-- file:lines — description -->
 
-  **Acceptance Criteria**:
+**Acceptance Criteria**:
 
-  - <!-- Verifiable criterion — prefer one expressed as a test assertion (what you'd check to prove this task is done) -->
+- <!-- Verifiable criterion — prefer one expressed as a test assertion (what you'd check to prove this task is done) -->
 
-  **QA Scenarios**:
+**QA Scenarios**:
 
-  ~~~
-  Scenario: description
-    Tool: Bash
-    Steps:
-      1. command
-    Expected Result: what success looks like
-    Failure Indicators: what failure looks like
-  ~~~
+```
+Scenario: description
+  Tool: Bash
+  Steps:
+    1. command
+  Expected Result: what success looks like
+  Failure Indicators: what failure looks like
+```
 
-  **Commit**: <!-- YES / NO -->
+**Commit**: <!-- YES / NO -->
 
-  - Message: `<!-- type(scope): description -->`
-  - Files: <!-- file list -->
-  - Pre-commit: `<!-- verification command -->`
+- Message: `<!-- type(scope): description -->`
+- Files: <!-- file list -->
+- Pre-commit: `<!-- verification command -->`
 
 ---
 
@@ -207,11 +207,11 @@ flowchart LR
 
 ## Success Criteria
 
-~~~bash
+```bash
 # <!-- description -->
 <!-- command -->
 # Expected: <!-- result -->
-~~~
+```
 
 ---
 
@@ -219,21 +219,21 @@ flowchart LR
 
 ### Good (specific, verifiable)
 
-~~~
+```
 Scenario: API returns 404 for non-existent plan
   Tool: Bash
   Steps:
     1. curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/api/plans/nonexistent-id
   Expected Result: 404
   Failure Indicators: 200 or 500
-~~~
+```
 
 ### Bad (vague, unverifiable)
 
-~~~
+```
 Scenario: API works correctly
   Tool: Manual
   Steps:
     1. Test the API
   Expected Result: It works
-~~~
+```

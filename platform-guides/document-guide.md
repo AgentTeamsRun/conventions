@@ -59,4 +59,4 @@ Write Documents in Tiptap-compatible markdown so they remain editable in the web
 
 ## Diagrams (Mermaid)
 
-A fenced ```mermaid``` block renders in the web viewer; it stays plain text in CLI/raw, so keep the prose self-contained. Types: `flowchart`, `sequenceDiagram`, `erDiagram`, `gantt`, `stateDiagram-v2`.
+A fenced `mermaid` block renders in the web viewer; it stays plain text in CLI/raw, so keep the prose self-contained. Types: `flowchart`, `sequenceDiagram`, `erDiagram`, `gantt`, `stateDiagram-v2`.

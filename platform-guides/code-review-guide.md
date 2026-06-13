@@ -144,11 +144,11 @@ When a finding's basis is easier to show than to describe, attach the file to th
 
 Attach **after the review record exists** (the review id is required):
 
-~~~bash
+```bash
 agentteams attachment create \
   --file .agentteams/cli/temp/repro.png \
   --code-review-id {codeReviewId}
-~~~
+```
 
 - Pass exactly one target id (`--code-review-id` here; `--completion-report-id` for reports).
 - Allowed types: images (jpg/png/gif/webp), text/markdown, pdf, html. Max 10 MB and 10 attachments per record.
@@ -157,7 +157,7 @@ agentteams attachment create \
 
 ## Diagrams (Mermaid)
 
-A fenced ```mermaid``` block (`flowchart` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw. Use one when it explains a regression path or control flow faster than words.
+A fenced `mermaid` block (`flowchart` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw. Use one when it explains a regression path or control flow faster than words.
 
 ## Creating Plans From Findings
 

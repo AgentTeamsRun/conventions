@@ -25,24 +25,28 @@ Specific (name the feature/bug + why it mattered) · Verifiable (exact commands 
 
 Write the report file with this structure:
 
-~~~markdown
+```markdown
 ## Summary
+
 - <what changed and why — be specific, not generic>
 
 ## Verification
+
 - typecheck: <pass or fail, with the command you ran>
 - tests: <pass or fail, with the command you ran>
 
 ## Notes
+
 - <risks, follow-ups, or "none">
 
 ## Conventions Referenced
-- <list .agentteams/rules/*.md files you actually referenced — do not guess>
-~~~
+
+- <list .agentteams/rules/\*.md files you actually referenced — do not guess>
+```
 
 ## Diagrams (Mermaid)
 
-A fenced ```mermaid``` block (`flowchart` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw, so keep the prose self-contained. Use one only when it conveys the change flow faster than words.
+A fenced `mermaid` block (`flowchart` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw, so keep the prose self-contained. Use one only when it conveys the change flow faster than words.
 
 ## Report File Naming
 
@@ -51,12 +55,12 @@ Use `{first 8 characters of planId}-report.md`. Example: if planId is `57a51ec2-
 For standalone reports (no plan), use a descriptive name: `<feature-or-fix-name>-report.md`.
 
 > ⚠️ **Use either Path A or Path B, not both.** Running both simultaneously will create duplicate completion reports for the same plan.
->
+
 ## Plan-Linked vs Non-Plan Reports
 
 You can attach report content directly while finishing a plan:
 
-~~~bash
+```bash
 agentteams plan finish --id {planId} \
   --runner-type <runner-type> --model <model-id> \
   --report-title "<what you did and why, in one sentence>" \
@@ -66,7 +70,7 @@ agentteams plan finish --id {planId} \
   --review-recommendation <REQUIRED | NOT_NEEDED> \
   --review-reason "<one-line justification, see Code Review Recommendation section>"
 
-~~~
+```
 
 > Git metrics (`commitHash`, `branchName`, `filesModified`, `linesAdded`, `linesDeleted`) are auto-collected. Use `--no-git` to disable. Manual overrides: `--duration-seconds`, `--commit-start`, `--commit-end`, `--pull-request-id`.
 
@@ -76,14 +80,14 @@ agentteams plan finish --id {planId} \
 
 Separate report (Path B) — add `--plan-id {planId}` when under a plan, omit it for a standalone report:
 
-~~~bash
+```bash
 agentteams report create [--plan-id {planId}] \
   --title "<what you did and why, in one sentence>" \
   --file .agentteams/cli/temp/{planId-first-8-chars-or-feature-name}-report.md \
   --runner-type <runner-type> --model <model-id> \
   --quality-score <0-100> \
   --status <COMPLETED | PARTIAL | FAILED>
-~~~
+```
 
 Repository linkage note:
 
@@ -106,18 +110,18 @@ Repository linkage note:
 
 Work quality is self-assessed by the agent on a 0-100 scale. Use the four dimensions below to judge holistically.
 
-| Dimension | What to check |
-|---|---|
-| Verification | Did typecheck and tests pass? |
-| Completeness | Were all requirements addressed? |
+| Dimension       | What to check                                                           |
+| --------------- | ----------------------------------------------------------------------- |
+| Verification    | Did typecheck and tests pass?                                           |
+| Completeness    | Were all requirements addressed?                                        |
 | Scope Adherence | Were changes limited to the requested scope? Were conventions followed? |
-| Side Effects | Did the change avoid unintended impact on existing behavior? |
+| Side Effects    | Did the change avoid unintended impact on existing behavior?            |
 
-| Score | Meaning |
-|---|---|
-| 90-100 | All verification passed. All requirements met. Conventions followed. No side effects. |
-| 70-89 | Minor gaps: verification partially skipped, slight scope overage, or minor convention deviations. |
-| 0-69 | Verification failed, requirements unmet, significant scope violation, or side effects introduced. |
+| Score  | Meaning                                                                                           |
+| ------ | ------------------------------------------------------------------------------------------------- |
+| 90-100 | All verification passed. All requirements met. Conventions followed. No side effects.             |
+| 70-89  | Minor gaps: verification partially skipped, slight scope overage, or minor convention deviations. |
+| 0-69   | Verification failed, requirements unmet, significant scope violation, or side effects introduced. |
 
 > Convention violations (naming, logging, PR rules, etc.) count against Scope Adherence.
 > A score of 90+ requires conventions to be followed.
@@ -138,7 +142,7 @@ Set `REQUIRED` when the change shows any of these risk signals (same list as `co
 
 Otherwise set `NOT_NEEDED` with a brief reason (e.g., "docs-only", "test-only, no logic change", "trivial copy fix").
 
-~~~bash
+```bash
 # REQUIRED example
 --review-recommendation REQUIRED \
 --review-reason "DB schema migration + auth middleware touched — independent verification advised"
@@ -146,23 +150,23 @@ Otherwise set `NOT_NEEDED` with a brief reason (e.g., "docs-only", "test-only, n
 # NOT_NEEDED example
 --review-recommendation NOT_NEEDED \
 --review-reason "i18n string update only, no logic change"
-~~~
+```
 
 > This only **declares intent** for the review inbox. It does not by itself create a code review record — review creation remains an explicit, independent action (see `code-review-guide.md`).
 
 ## Verification Examples
 
-~~~bash
+```bash
 cd api && npm run typecheck
 cd api && npm test
 cd cli && npm test
-~~~
+```
 
 To keep the output as attachable evidence, pipe it to a file with `tee` (you still see it live), then attach that file (see Attaching Evidence):
 
-~~~bash
+```bash
 cd api && npm test 2>&1 | tee .agentteams/cli/temp/test-output.txt
-~~~
+```
 
 ## Attaching Evidence
 
@@ -174,11 +178,11 @@ Back your report with the evidence you produced so a reviewer can confirm the cl
 
 Attach files **after the report exists** (the report id is required):
 
-~~~bash
+```bash
 agentteams attachment create \
   --file .agentteams/cli/temp/test-output.txt \
   --completion-report-id {completionReportId}
-~~~
+```
 
 - Pass exactly one target id (`--completion-report-id` here; `--code-review-id` for reviews).
 - Allowed types: images (jpg/png/gif/webp), text/markdown, pdf, html. Max 10 MB and 10 attachments per record.
@@ -198,7 +202,7 @@ Create a co-action if **any** of the following apply:
 - Follow-up work or known constraints remain
 - Implicit knowledge needs to be handed off to another agent or session
 
-~~~bash
+```bash
 # Create co-action
 agentteams coaction create \
   --title "<concise handoff title>" \
@@ -210,7 +214,7 @@ agentteams coaction link-plan --id {coActionId} --plan-id {planId}
 
 # Link to completion report
 agentteams coaction link-completion-report --id {coActionId} --completion-report-id {crId}
-~~~
+```
 
 > For co-action content structure, see `co-action-guide.md`.
 
@@ -231,14 +235,14 @@ Create a post-mortem if **any** of the following apply:
 - A verification step (typecheck, test, lint) passed locally but failed in CI
 - Unexpected behavior required significant debugging time
 
-~~~bash
+```bash
 agentteams postmortem create \
   --plan-id {planId} \
   --title "<what went wrong — be specific>" \
   --file .agentteams/cli/temp/{name}-postmortem.md \
   --action-items "<preventive action 1>,<preventive action 2>" \
   --status OPEN
-~~~
+```
 
 > For post-mortem content structure, see `post-mortem-guide.md`.
 
@@ -249,5 +253,5 @@ agentteams postmortem create \
 ## Notes
 
 - Keep reports factual and reproducible.
-- Prefer describing *why* over listing every line-level change.
+- Prefer describing _why_ over listing every line-level change.
 - If verification was skipped, state the reason explicitly.

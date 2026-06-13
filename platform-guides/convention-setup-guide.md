@@ -32,15 +32,15 @@ Before writing any Convention, understand the project:
 
 Scan for AI tool rule files that may already contain valuable conventions:
 
-| File | Tool |
-|---|---|
-| `CLAUDE.md` | Claude Code |
-| `.claude/settings.json` | Claude Code |
-| `.cursorrules`, `.cursor/rules/*.md` | Cursor |
-| `.github/copilot-instructions.md` | GitHub Copilot |
-| `.windsurfrules` | Windsurf |
-| `.aider*` | Aider |
-| `codex.md`, `AGENTS.md` | Codex |
+| File                                 | Tool           |
+| ------------------------------------ | -------------- |
+| `CLAUDE.md`                          | Claude Code    |
+| `.claude/settings.json`              | Claude Code    |
+| `.cursorrules`, `.cursor/rules/*.md` | Cursor         |
+| `.github/copilot-instructions.md`    | GitHub Copilot |
+| `.windsurfrules`                     | Windsurf       |
+| `.aider*`                            | Aider          |
+| `codex.md`, `AGENTS.md`              | Codex          |
 
 **How to convert:**
 
@@ -52,10 +52,10 @@ Scan for AI tool rule files that may already contain valuable conventions:
 
 ### Recommended structure
 
-| Convention | Purpose | Trigger |
-|---|---|---|
-| `context` | Project identity, tech stack, directory structure | `always_on` |
-| `conventions` | Common coding conventions (naming, logging, Git branching) | `always_on` |
+| Convention            | Purpose                                                                 | Trigger                         |
+| --------------------- | ----------------------------------------------------------------------- | ------------------------------- |
+| `context`             | Project identity, tech stack, directory structure                       | `always_on`                     |
+| `conventions`         | Common coding conventions (naming, logging, Git branching)              | `always_on`                     |
 | Domain-specific rules | Detailed rules for schemas, routes, frontend, testing, deployment, etc. | `model_decision` or conditional |
 
 ### Size guidelines
@@ -66,11 +66,11 @@ Scan for AI tool rule files that may already contain valuable conventions:
 
 ## 5) Step 4 — Choose Triggers
 
-| Trigger | When to use | Example |
-|---|---|---|
-| `always_on` | Rules every task needs — project context, core coding standards | `context`, `conventions` |
-| `model_decision` | Load when relevant to the task | `schema`, `frontend`, `testing` |
-| `-` | One-time reference, guides, templates | `docs-style-guide`, setup guides |
+| Trigger          | When to use                                                     | Example                          |
+| ---------------- | --------------------------------------------------------------- | -------------------------------- |
+| `always_on`      | Rules every task needs — project context, core coding standards | `context`, `conventions`         |
+| `model_decision` | Load when relevant to the task                                  | `schema`, `frontend`, `testing`  |
+| `-`              | One-time reference, guides, templates                           | `docs-style-guide`, setup guides |
 
 > Keep `always_on` Conventions to **2–3 max** — each adds to every conversation's context cost. This is the single rule for what belongs in `always_on`.
 

@@ -1,118 +1,275 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      color-scheme: light dark;
-      --max-w: 800px;
-      --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-      --fs-caption: 11px; --fs-small: 13px; --fs-body: 15px;
-      --fs-h3: 18px;
-      --fs-h2: clamp(20px, 3.5vw, 22px);
-      --fs-h1: clamp(24px, 5vw, 28px);
-      --lh-body: 1.55; --lh-heading: 1.2;
-      --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px;
-      --bg: #fbfbfa; --surface: #ffffff; --surface-2: #f4f4f2;
-      --border: #e6e6e2; --border-strong: #d4d4ce;
-      --text: #1a1a1a; --muted: #555; --subtle: #888;
-      --accent: #2b6cb0;  --accent-soft: #e3eef9;
-      --danger: #b42318;  --danger-soft: #fdeceb;
-      --warn:   #b75e09;  --warn-soft:   #fdf2e3;
-      --success:#1f7a3a;  --success-soft:#e6f4ea;
-      --code-bg: #f4f4f2;
-    }
-    @media (prefers-color-scheme: dark) {
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
       :root {
-        --bg:#141414; --surface:#1c1c1c; --surface-2:#232323;
-        --border:#2e2e2e; --border-strong:#3d3d3d;
-        --text:#e8e8e8; --muted:#a8a8a8; --subtle:#808080;
-        --accent:#82b8e6;  --accent-soft:#1d2c3a;
-        --danger:#f0857a;  --danger-soft:#3a1b18;
-        --warn:  #e0a464;  --warn-soft:  #3a2a14;
-        --success:#7dc795; --success-soft:#16301d;
-        --code-bg:#1c1c1c;
+        color-scheme: light dark;
+        --max-w: 800px;
+        --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+        --fs-caption: 11px;
+        --fs-small: 13px;
+        --fs-body: 15px;
+        --fs-h3: 18px;
+        --fs-h2: clamp(20px, 3.5vw, 22px);
+        --fs-h1: clamp(24px, 5vw, 28px);
+        --lh-body: 1.55;
+        --lh-heading: 1.2;
+        --s1: 4px;
+        --s2: 8px;
+        --s3: 12px;
+        --s4: 16px;
+        --s5: 24px;
+        --s6: 32px;
+        --s7: 48px;
+        --bg: #fbfbfa;
+        --surface: #ffffff;
+        --surface-2: #f4f4f2;
+        --border: #e6e6e2;
+        --border-strong: #d4d4ce;
+        --text: #1a1a1a;
+        --muted: #555;
+        --subtle: #888;
+        --accent: #2b6cb0;
+        --accent-soft: #e3eef9;
+        --danger: #b42318;
+        --danger-soft: #fdeceb;
+        --warn: #b75e09;
+        --warn-soft: #fdf2e3;
+        --success: #1f7a3a;
+        --success-soft: #e6f4ea;
+        --code-bg: #f4f4f2;
       }
-    }
-    :root[data-theme="night"],    :root[data-theme="dark"],
-    :root[data-theme="dim"],      :root[data-theme="sunset"],
-    :root[data-theme="black"],    :root[data-theme="luxury"],
-    :root[data-theme="business"], :root[data-theme="coffee"],
-    :root[data-theme="forest"],   :root[data-theme="halloween"],
-    :root[data-theme="dracula"],  :root[data-theme="abyss"] {
-      color-scheme: dark;
-      --bg:#141414; --surface:#1c1c1c; --surface-2:#232323;
-      --border:#2e2e2e; --border-strong:#3d3d3d;
-      --text:#e8e8e8; --muted:#a8a8a8; --subtle:#808080;
-      --accent:#82b8e6;  --accent-soft:#1d2c3a;
-      --danger:#f0857a;  --danger-soft:#3a1b18;
-      --warn:  #e0a464;  --warn-soft:  #3a2a14;
-      --success:#7dc795; --success-soft:#16301d;
-      --code-bg:#1c1c1c;
-    }
-    body {
-      background: transparent;
-      color: var(--text);
-      font: var(--fs-body)/var(--lh-body) var(--font-sans);
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: var(--s5);
-    }
-    h1 { font-size: var(--fs-h1); line-height: var(--lh-heading); margin: 0 0 var(--s2); }
-    .eyebrow { color: var(--subtle); font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 var(--s1); }
-    .lead { color: var(--muted); margin: 0 0 var(--s3); }
-    .meta { list-style: none; display: flex; flex-wrap: wrap; gap: var(--s2); margin: var(--s3) 0 var(--s5); padding: 0; }
-    .chip { display: inline-flex; align-items: baseline; gap: var(--s1); font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: .03em; color: var(--subtle); background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: var(--s1) var(--s3); }
-    .chip b { font-weight: 600; color: var(--text); }
-    .chip-accent { background: var(--accent-soft); border-color: transparent; }
-    .chip-accent b { color: var(--accent); }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: var(--s4); margin: 0 0 var(--s3); }
-    .card > h2 { font-size: var(--fs-caption); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--subtle); margin: 0 0 var(--s3); }
-    .files, .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
-    .files li { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: baseline; font-size: var(--fs-small); }
-    .files .desc { color: var(--muted); }
-    .tag { font-size: var(--fs-caption); font-weight: 600; border-radius: 4px; padding: 0 var(--s1); flex: none; }
-    .tag-m { color: var(--accent);  background: var(--accent-soft); }
-    .tag-a { color: var(--success); background: var(--success-soft); }
-    .tag-d { color: var(--danger);  background: var(--danger-soft); }
-    .checks li { display: flex; gap: var(--s2); }
-    .checks li::before { content: "✓"; color: var(--success); font-weight: 600; flex: none; }
-    code { font-family: var(--font-mono); background: var(--code-bg); padding: 0 var(--s1); border-radius: 4px; word-break: break-all; }
-    @media (max-width: 640px) { body { padding: var(--s4); } }
-  </style>
-</head>
-<body>
-  <header class="hero">
-    <p class="eyebrow">CHORE · STANDARD</p>
-    <h1>Set Up Project Conventions</h1>
-    <p class="lead">Seed plan auto-registered on init. Investigate the project and write the first set of Conventions so the AI agent works against consistent standards from day one — refine them as the project evolves.</p>
-    <ul class="meta">
-      <li class="chip">Type <b>CHORE</b></li>
-      <li class="chip">Complexity <b>STANDARD</b></li>
-      <li class="chip chip-accent">Priority <b>Medium</b></li>
-    </ul>
-  </header>
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #141414;
+          --surface: #1c1c1c;
+          --surface-2: #232323;
+          --border: #2e2e2e;
+          --border-strong: #3d3d3d;
+          --text: #e8e8e8;
+          --muted: #a8a8a8;
+          --subtle: #808080;
+          --accent: #82b8e6;
+          --accent-soft: #1d2c3a;
+          --danger: #f0857a;
+          --danger-soft: #3a1b18;
+          --warn: #e0a464;
+          --warn-soft: #3a2a14;
+          --success: #7dc795;
+          --success-soft: #16301d;
+          --code-bg: #1c1c1c;
+        }
+      }
+      :root[data-theme='night'],
+      :root[data-theme='dark'],
+      :root[data-theme='dim'],
+      :root[data-theme='sunset'],
+      :root[data-theme='black'],
+      :root[data-theme='luxury'],
+      :root[data-theme='business'],
+      :root[data-theme='coffee'],
+      :root[data-theme='forest'],
+      :root[data-theme='halloween'],
+      :root[data-theme='dracula'],
+      :root[data-theme='abyss'] {
+        color-scheme: dark;
+        --bg: #141414;
+        --surface: #1c1c1c;
+        --surface-2: #232323;
+        --border: #2e2e2e;
+        --border-strong: #3d3d3d;
+        --text: #e8e8e8;
+        --muted: #a8a8a8;
+        --subtle: #808080;
+        --accent: #82b8e6;
+        --accent-soft: #1d2c3a;
+        --danger: #f0857a;
+        --danger-soft: #3a1b18;
+        --warn: #e0a464;
+        --warn-soft: #3a2a14;
+        --success: #7dc795;
+        --success-soft: #16301d;
+        --code-bg: #1c1c1c;
+      }
+      body {
+        background: transparent;
+        color: var(--text);
+        font: var(--fs-body)/var(--lh-body) var(--font-sans);
+        max-width: var(--max-w);
+        margin: 0 auto;
+        padding: var(--s5);
+      }
+      h1 {
+        font-size: var(--fs-h1);
+        line-height: var(--lh-heading);
+        margin: 0 0 var(--s2);
+      }
+      .eyebrow {
+        color: var(--subtle);
+        font-size: var(--fs-caption);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 0 0 var(--s1);
+      }
+      .lead {
+        color: var(--muted);
+        margin: 0 0 var(--s3);
+      }
+      .meta {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s2);
+        margin: var(--s3) 0 var(--s5);
+        padding: 0;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: baseline;
+        gap: var(--s1);
+        font-size: var(--fs-caption);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--subtle);
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: var(--s1) var(--s3);
+      }
+      .chip b {
+        font-weight: 600;
+        color: var(--text);
+      }
+      .chip-accent {
+        background: var(--accent-soft);
+        border-color: transparent;
+      }
+      .chip-accent b {
+        color: var(--accent);
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: var(--s4);
+        margin: 0 0 var(--s3);
+      }
+      .card > h2 {
+        font-size: var(--fs-caption);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--subtle);
+        margin: 0 0 var(--s3);
+      }
+      .files,
+      .checks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: var(--s2);
+      }
+      .files li {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s2);
+        align-items: baseline;
+        font-size: var(--fs-small);
+      }
+      .files .desc {
+        color: var(--muted);
+      }
+      .tag {
+        font-size: var(--fs-caption);
+        font-weight: 600;
+        border-radius: 4px;
+        padding: 0 var(--s1);
+        flex: none;
+      }
+      .tag-m {
+        color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .tag-a {
+        color: var(--success);
+        background: var(--success-soft);
+      }
+      .tag-d {
+        color: var(--danger);
+        background: var(--danger-soft);
+      }
+      .checks li {
+        display: flex;
+        gap: var(--s2);
+      }
+      .checks li::before {
+        content: '✓';
+        color: var(--success);
+        font-weight: 600;
+        flex: none;
+      }
+      code {
+        font-family: var(--font-mono);
+        background: var(--code-bg);
+        padding: 0 var(--s1);
+        border-radius: 4px;
+        word-break: break-all;
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: var(--s4);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <p class="eyebrow">CHORE · STANDARD</p>
+      <h1>Set Up Project Conventions</h1>
+      <p class="lead">
+        Seed plan auto-registered on init. Investigate the project and write the first set of Conventions so the AI
+        agent works against consistent standards from day one — refine them as the project evolves.
+      </p>
+      <ul class="meta">
+        <li class="chip">Type <b>CHORE</b></li>
+        <li class="chip">Complexity <b>STANDARD</b></li>
+        <li class="chip chip-accent">Priority <b>Medium</b></li>
+      </ul>
+    </header>
 
-  <aside class="card">
-    <h2>Changes</h2>
-    <ul class="files">
-      <li><code>.agentteams/rules/context.md</code> <span class="tag tag-a">A</span> <span class="desc">— project identity, tech stack, structure (<code>always_on</code>)</span></li>
-      <li><code>.agentteams/rules/conventions.md</code> <span class="tag tag-a">A</span> <span class="desc">— common coding rules (<code>always_on</code>)</span></li>
-      <li><code>.agentteams/rules/&lt;domain&gt;.md</code> <span class="tag tag-a">A</span> <span class="desc">— schema / routes / frontend as needed</span></li>
-      <li><span class="desc">Register each file via <code>agentteams convention create --file &lt;path&gt;</code></span></li>
-    </ul>
-  </aside>
+    <aside class="card">
+      <h2>Changes</h2>
+      <ul class="files">
+        <li>
+          <code>.agentteams/rules/context.md</code> <span class="tag tag-a">A</span>
+          <span class="desc">— project identity, tech stack, structure (<code>always_on</code>)</span>
+        </li>
+        <li>
+          <code>.agentteams/rules/conventions.md</code> <span class="tag tag-a">A</span>
+          <span class="desc">— common coding rules (<code>always_on</code>)</span>
+        </li>
+        <li>
+          <code>.agentteams/rules/&lt;domain&gt;.md</code> <span class="tag tag-a">A</span>
+          <span class="desc">— schema / routes / frontend as needed</span>
+        </li>
+        <li>
+          <span class="desc">Register each file via <code>agentteams convention create --file &lt;path&gt;</code></span>
+        </li>
+      </ul>
+    </aside>
 
-  <aside class="card">
-    <h2>Verification</h2>
-    <ul class="checks">
-      <li><code>context.md</code> and <code>conventions.md</code> exist and are registered on the server</li>
-      <li><code>always_on</code> Conventions are limited to 2–3</li>
-      <li>The Quality Checklist in <code>convention-setup-guide.md</code> is satisfied</li>
-      <li>Items needing a human decision are listed explicitly, not silently confirmed</li>
-    </ul>
-  </aside>
-</body>
+    <aside class="card">
+      <h2>Verification</h2>
+      <ul class="checks">
+        <li><code>context.md</code> and <code>conventions.md</code> exist and are registered on the server</li>
+        <li><code>always_on</code> Conventions are limited to 2–3</li>
+        <li>The Quality Checklist in <code>convention-setup-guide.md</code> is satisfied</li>
+        <li>Items needing a human decision are listed explicitly, not silently confirmed</li>
+      </ul>
+    </aside>
+  </body>
 </html>

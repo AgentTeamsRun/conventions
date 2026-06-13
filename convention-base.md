@@ -124,12 +124,15 @@ agentteams plan quick --title "<brief work summary>" \
 
 ```markdown
 ## TL;DR
+
 <!-- 1-2 sentence summary -->
 
 ## Work Performed
+
 - <!-- changed files / description -->
 
 ## Verification Results
+
 - <!-- build/test pass status -->
 ```
 
@@ -145,18 +148,18 @@ agentteams search --query "<keyword>" --format json
 
 Before writing or updating **platform records** (plans, reports, conventions, postmortems, code reviews, documents), read the matching guide:
 
-| Record type | Guide to read |
-|---|---|
-| Plan execution | `.agentteams/platform/plan-guide.md` |
-| New plan | `.agentteams/platform/plan-template.md` |
-| Completion report | `.agentteams/platform/completion-report-guide.md` |
-| Postmortem | `.agentteams/platform/post-mortem-guide.md` |
-| Convention (create) | `.agentteams/platform/convention-authoring-guide.md` |
-| Convention (update/delete) | `.agentteams/platform/convention-ud-guide.md` |
-| Co-action (handoff) | `.agentteams/platform/co-action-guide.md` |
-| Code review (independent verification) | `.agentteams/platform/code-review-guide.md` |
-| Document (human-facing artifact) | `.agentteams/platform/document-guide.md` |
-| Linear (issue/comment) | `.agentteams/platform/linear-guide.md` |
+| Record type                            | Guide to read                                        |
+| -------------------------------------- | ---------------------------------------------------- |
+| Plan execution                         | `.agentteams/platform/plan-guide.md`                 |
+| New plan                               | `.agentteams/platform/plan-template.md`              |
+| Completion report                      | `.agentteams/platform/completion-report-guide.md`    |
+| Postmortem                             | `.agentteams/platform/post-mortem-guide.md`          |
+| Convention (create)                    | `.agentteams/platform/convention-authoring-guide.md` |
+| Convention (update/delete)             | `.agentteams/platform/convention-ud-guide.md`        |
+| Co-action (handoff)                    | `.agentteams/platform/co-action-guide.md`            |
+| Code review (independent verification) | `.agentteams/platform/code-review-guide.md`          |
+| Document (human-facing artifact)       | `.agentteams/platform/document-guide.md`             |
+| Linear (issue/comment)                 | `.agentteams/platform/linear-guide.md`               |
 
 ---
 
