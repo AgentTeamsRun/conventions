@@ -52,8 +52,8 @@ drafting this plan — do not guess. Same format as completion reports so the
 platform can auto-link plan-stage convention usage to execution-stage usage.
 
 Example:
-- .agentteams/rules/frontend.md
-- .agentteams/rules/pr-workflow.md - 브랜치 네이밍 규칙
+- .agentteams/rules/<convention-name>.md
+- .agentteams/rules/<convention-name>.md - <why it was relevant>
 -->
 
 ---
