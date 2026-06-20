@@ -22,10 +22,6 @@ A tracked unit of work (type, status, priority) with comments, assignment, and s
 4. **Register** — `agentteams plan create --title "{title}" --file {path} --html-file {previewPath} --type {type} --complexity {MINIMAL|STANDARD|FULL} --priority {level} --runner-type {runner-type} --model {model-id}` — an HTML preview is required via `--html-file` or `--html-stdin` (see Plan Complexity → Preview)
 5. **Link dependencies** — when creating multiple plans where one must finish before another starts, link them after creation (see Plan Dependencies below).
 
-Repository linkage note:
-
-- If .agentteams/config.json contains `repositoryId`, `plan create` links the new plan to that repository automatically.
-
 ## Execution Shortcuts
 
 For standard execution flows, use lifecycle shortcuts instead of manual multi-step status updates.

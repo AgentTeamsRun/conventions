@@ -102,7 +102,3 @@ agentteams postmortem create \
   --action-items "<specific preventive action 1>,<specific preventive action 2>" \
   --status OPEN
 ```
-
-Repository linkage note:
-
-- If .agentteams/config.json contains `repositoryId`, `postmortem create` links the postmortem to that repository automatically.

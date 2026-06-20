@@ -107,10 +107,6 @@ agentteams plan quick --title "<brief work summary>" \
 
 > All completion report parameters from `plan finish` are supported on `plan quick` when attaching a report.
 
-Repository linkage note:
-
-- If .agentteams/config.json contains `repositoryId`, `report create` links the report to that repository automatically.
-
 ## Metrics (Auto + Manual)
 
 `report create` and `plan finish` can attach work metrics for insight workflows.
