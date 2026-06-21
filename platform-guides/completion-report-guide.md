@@ -96,7 +96,6 @@ agentteams plan quick --title "<brief work summary>" \
   --content "<quick plan description>" \
   --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE> \
   --runner-type <runner-type> --model <model-id> \
-  --agent <agent-name-or-id> \
   --report-title "<what you did and why, in one sentence>" \
   --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
   --quality-score <0-100> \

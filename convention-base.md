@@ -119,7 +119,6 @@ agentteams plan quick --title "<brief work summary>" \
   --content "<see format below>" \
   --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE> \
   --runner-type <runner-type> --model <model-id> \
-  --agent <agent-name-or-id> \
   --report-file "<path to report markdown>" \
   [report-flags...]
 ```
