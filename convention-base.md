@@ -123,21 +123,7 @@ agentteams plan quick --title "<brief work summary>" \
   [report-flags...]
 ```
 
-#### Quick Plan `--content` Format
-
-```markdown
-## TL;DR
-
-<!-- 1-2 sentence summary -->
-
-## Work Performed
-
-- <!-- changed files / description -->
-
-## Verification Results
-
-- <!-- build/test pass status -->
-```
+> The `--content` body format (and when to choose a quick plan over the full lifecycle) is the SSOT in `.agentteams/platform/plan-guide.md` (**Quick Plan**).
 
 ## Unified Search
 

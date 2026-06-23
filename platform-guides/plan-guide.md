@@ -31,7 +31,26 @@ agentteams plan start  --id {planId}
 agentteams plan finish --id {planId}   # add report flags to attach a completion report
 ```
 
-For quick plans (one-shot tasks), use `plan quick` to create, start, and finish a plan in a single command. You can also attach a completion report directly to this command using the same report flags:
+For one-shot tasks, `plan quick` collapses create + start + finish into a single command — see **Quick Plan** below.
+
+> Commit your work before finishing — both `plan finish` and report-attaching `plan quick` auto-collect commit metrics from the current git state.
+> The full report-attaching parameters (report flags + quality-score / report-status semantics) are defined in `completion-report-guide.md` as the SSOT.
+
+## Quick Plan
+
+A **quick plan** is a one-shot plan: `plan quick` performs create + start + finish in a single command, optionally attaching a completion report in the same call. It exists for work that does not need a downloaded runbook or multi-step status tracking.
+
+### When to Use a Quick Plan
+
+| Use a quick plan when…                                           | Use the full `plan create` lifecycle when…                        |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Single, small, well-understood task finished in one session      | Work spans multiple steps, waves, or sessions                     |
+| No separate runbook / step-by-step execution is needed           | Reviewers need to inspect the plan before execution               |
+| You are recording work you just did (often with `--report-file`) | Risk signals apply (schema / auth / billing / quota / deployment) |
+
+When unsure, prefer the full lifecycle — a quick plan cannot be reviewed before the work happens.
+
+### Command
 
 ```bash
 agentteams plan quick --title "<title>" --content "<plan content>" \
@@ -39,8 +58,29 @@ agentteams plan quick --title "<title>" --content "<plan content>" \
   [--report-file <path> --report-title <report title> ...]
 ```
 
-> Commit your work before finishing — both `plan finish` and report-attaching `plan quick` auto-collect commit metrics from the current git state.
-> The full report-attaching parameters (report flags + quality-score / report-status semantics) are defined in `completion-report-guide.md` as the SSOT.
+`--content` carries the plan body (format below). Adding report flags attaches a completion report in the same command.
+
+### `--content` Format
+
+Keep a quick plan's body short — three sections:
+
+```markdown
+## TL;DR
+
+<!-- 1-2 sentence summary -->
+
+## Work Performed
+
+- <!-- changed files / description -->
+
+## Verification Results
+
+- <!-- build/test pass status -->
+```
+
+### Completion Report
+
+`completion-report-guide.md` is the SSOT for the report flags (report status, quality score, review recommendation) and for the quick-plan-with-report path. Commit your work first — report-attaching `plan quick` auto-collects commit metrics from the current git state.
 
 ## Runner Type & Model Reference
 
