@@ -37,7 +37,7 @@ Rules for interacting with the AgentTeams platform (CLI, plans, reports, convent
 
 User messages from the AgentTeams web UI may contain entity references in `[label](type:id)` or `[label](type:id:path)` format.
 
-- **ID prefix stripping (IMPORTANT)**: The `id` part can include a type prefix. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.).
+- **ID prefix stripping (IMPORTANT)**: The `id` part can include a type prefix. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.). The CLI also normalizes a prefixed id automatically if one slips through, but strip it yourself to keep commands portable.
   - Example: `[Safari pull-to-refresh](plan:agentteams_pln_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
   - Canonical prefix list: `agentteams_pln_` (plan) · `agentteams_rpt_` (completionReport) · `agentteams_rev_` (codeReview) · `agentteams_act_` (coAction) · `agentteams_cnv_` (convention) · `agentteams_pmt_` (postMortem) · `agentteams_doc_` (document)
 - Resolution by type:
@@ -52,6 +52,8 @@ User messages from the AgentTeams web UI may contain entity references in `[labe
   - `GITHUB_PR:owner/repo#number` → GitHub pull request. Use `gh pr view {number} --repo {owner/repo}` or GitHub API to fetch details. No prefix stripping needed.
   - `GITLAB_ISSUE:projectPath#iid` → GitLab issue. Use `glab issue view {iid} --repo {projectPath}` or GitLab API to fetch details. No prefix stripping needed.
   - `GITLAB_MERGE_REQUEST:projectPath!iid` → GitLab merge request. Use `glab mr view {iid} --repo {projectPath}` or GitLab API to fetch details. No prefix stripping needed.
+  - `BITBUCKET_ISSUE:workspace/repo#id` → Bitbucket issue. Resolves to `https://bitbucket.org/{workspace}/{repo}/issues/{id}`; use the URL or `agentteams search` to fetch context. No prefix stripping needed. Bitbucket issues are also extracted as plan origin issues.
+  - `BITBUCKET_PR:workspace/repo#id` → Bitbucket pull request. Resolves to `https://bitbucket.org/{workspace}/{repo}/pull-requests/{id}`; use the URL or `agentteams search` to fetch context. No prefix stripping needed.
 
 ## CLI Output Rules
 

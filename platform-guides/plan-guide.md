@@ -126,9 +126,9 @@ Plan bodies may contain `[label](type:id)` / `[label](type:id:path)` references.
 
 ## Origin Issue Linking
 
-When creating a plan based on an external issue (GitHub, GitLab, Linear), link the origin issue so the platform can track the relationship and sync status.
+When creating a plan based on an external issue (GitHub, GitLab, Bitbucket, Linear), link the origin issue so the platform can track the relationship and sync status.
 
-**Supported providers:** `LINEAR`, `GITHUB`, `GITLAB`
+**Supported providers:** `LINEAR`, `GITHUB`, `GITLAB`, `BITBUCKET`
 
 **Preferred method — Explicit link after creation:**
 
@@ -144,13 +144,17 @@ agentteams plan link-issue --id {planId} --provider GITHUB \
 # GitLab
 agentteams plan link-issue --id {planId} --provider GITLAB \
   --external-id <projectPath#iid> --external-url <issueUrl> --title "{issueTitle}"
+
+# Bitbucket
+agentteams plan link-issue --id {planId} --provider BITBUCKET \
+  --external-id <workspace/repo#id> --external-url <issueUrl> --title "{issueTitle}"
 ```
 
 Repeat `agentteams plan link-issue` for multiple issues. `agentteams plan issue` exists as a short alias, but platform guides should prefer the official action shown in `agentteams plan --help`: `link-issue`.
 
 **Fallback — Entity reference in plan content:**
 
-If the plan body includes an issue entity reference (e.g., `[Issue title](LINEAR_ISSUE:uuid)`, `[Issue title](GITHUB_ISSUE:owner/repo#number)`), the server automatically extracts and links it on creation.
+If the plan body includes an issue entity reference (e.g., `[Issue title](LINEAR_ISSUE:uuid)`, `[Issue title](GITHUB_ISSUE:owner/repo#number)`, `[Issue title](BITBUCKET_ISSUE:workspace/repo#id)`), the server automatically extracts and links it on creation. (Pull-request references such as `GITHUB_PR`/`BITBUCKET_PR` are resolved to URLs but are not extracted as origin issues.)
 
 **Duplicate handling:** If the same issue is linked multiple times (via manual command or content extraction), only one record is kept — duplicates are silently ignored.
 
