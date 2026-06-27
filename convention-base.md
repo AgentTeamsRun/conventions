@@ -109,13 +109,15 @@ Before starting work on a plan:
 
 ### Without a Plan (only when the user explicitly requests a report)
 
-1. No active plan → ask: "No active plan found. Create a quick plan?"
+A completion report is always tied to a plan — there is no standalone (plan-less) report. To record work you already finished without a pre-existing plan, use a **quick log** (`plan quick`), which registers the plan and the report in a single step.
+
+1. No active plan → ask: "No active plan found. Record it as a quick log?"
 2. Approved → run `agentteams plan quick` with completion report flags to register the plan and report in a single step (see `.agentteams/platform/completion-report-guide.md` for report flags).
-3. Declined → standalone report, no plan link (`.agentteams/platform/completion-report-guide.md`).
+3. Declined → no report is recorded (a report cannot be created without a plan).
 4. Handoff needed → also create a co-action (`.agentteams/platform/co-action-guide.md`).
 
 ```bash
-# Register quick plan and completion report in a single workflow
+# Record already-done work as a quick log (plan + completion report in one workflow)
 # (see completion-report-guide.md for all available report flags)
 agentteams plan quick --title "<brief work summary>" \
   --content "<see format below>" \
@@ -125,7 +127,7 @@ agentteams plan quick --title "<brief work summary>" \
   [report-flags...]
 ```
 
-> The `--content` body format (and when to choose a quick plan over the full lifecycle) is the SSOT in `.agentteams/platform/plan-guide.md` (**Quick Plan**).
+> The `--content` body format (and when to choose a quick log over the full lifecycle) is the SSOT in `.agentteams/platform/plan-guide.md` (**Quick Log**).
 
 ## Unified Search
 

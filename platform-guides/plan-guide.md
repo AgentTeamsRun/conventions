@@ -31,24 +31,26 @@ agentteams plan start  --id {planId}
 agentteams plan finish --id {planId}   # add report flags to attach a completion report
 ```
 
-For one-shot tasks, `plan quick` collapses create + start + finish into a single command — see **Quick Plan** below.
+For one-shot tasks, `plan quick` collapses create + start + finish into a single command — see **Quick Log** below.
 
 > Commit your work before finishing — both `plan finish` and report-attaching `plan quick` auto-collect commit metrics from the current git state.
 > The full report-attaching parameters (report flags + quality-score / report-status semantics) are defined in `completion-report-guide.md` as the SSOT.
 
-## Quick Plan
+## Quick Log
 
-A **quick plan** is a one-shot plan: `plan quick` performs create + start + finish in a single command, optionally attaching a completion report in the same call. It exists for work that does not need a downloaded runbook or multi-step status tracking.
+A **quick log** is the way to record work you already finished when there is no plan for it yet. The `plan quick` command performs create + start + finish in a single command and optionally attaches a completion report in the same call, so the work is captured as a plan-linked report without a separate up-front planning step. Use it for work that does not need a downloaded runbook or multi-step status tracking.
 
-### When to Use a Quick Plan
+> Because every completion report is plan-linked, a quick log is the standard path for logging already-done work — it provides the plan the report attaches to, in one shot.
 
-| Use a quick plan when…                                           | Use the full `plan create` lifecycle when…                        |
+### When to Use a Quick Log
+
+| Use a quick log when…                                            | Use the full `plan create` lifecycle when…                        |
 | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
 | Single, small, well-understood task finished in one session      | Work spans multiple steps, waves, or sessions                     |
 | No separate runbook / step-by-step execution is needed           | Reviewers need to inspect the plan before execution               |
 | You are recording work you just did (often with `--report-file`) | Risk signals apply (schema / auth / billing / quota / deployment) |
 
-When unsure, prefer the full lifecycle — a quick plan cannot be reviewed before the work happens.
+When unsure, prefer the full lifecycle — a quick log cannot be reviewed before the work happens.
 
 ### Command
 
@@ -62,7 +64,7 @@ agentteams plan quick --title "<title>" --content "<plan content>" \
 
 ### `--content` Format
 
-Keep a quick plan's body short — three sections:
+Keep a quick log's body short — three sections:
 
 ```markdown
 ## TL;DR
@@ -80,7 +82,7 @@ Keep a quick plan's body short — three sections:
 
 ### Completion Report
 
-`completion-report-guide.md` is the SSOT for the report flags (report status, quality score, review recommendation) and for the quick-plan-with-report path. Commit your work first — report-attaching `plan quick` auto-collects commit metrics from the current git state.
+`completion-report-guide.md` is the SSOT for the report flags (report status, quality score, review recommendation) and for the quick-log-with-report path. Commit your work first — report-attaching `plan quick` auto-collects commit metrics from the current git state.
 
 ## Runner Type & Model Reference
 

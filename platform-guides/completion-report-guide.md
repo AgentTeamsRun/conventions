@@ -52,11 +52,11 @@ A fenced `mermaid` block (`flowchart` / `sequenceDiagram`) renders in the web vi
 
 Use `{first 8 characters of planId}-report.md`. Example: if planId is `57a51ec2-cf70-...`, the file name is `57a51ec2-report.md`.
 
-For standalone reports (no plan), use a descriptive name: `<feature-or-fix-name>-report.md`.
-
 > ⚠️ **Use either Path A, Path B, or Path C, not multiple.** Running them simultaneously will create duplicate completion reports for the same plan.
 
-## Plan-Linked, Non-Plan, vs Quick-Plan Reports
+## Plan-Linked vs Quick-Log Reports
+
+A completion report is **always tied to a plan** — there is no standalone (plan-less) report. The three paths below differ only in how the plan is provided; the report itself is plan-linked in every case.
 
 You can attach report content directly while finishing a plan (Path A):
 
@@ -78,18 +78,18 @@ agentteams plan finish --id {planId} \
 
 > `--runner-type` and `--model` are the **executor** snapshot — the runner/model that actually produced this report. This is independent of `Plan.runnerType` / `Plan.model`, which is the **creator** snapshot recorded at `plan create`. The two values can differ (e.g., a plan written by Claude but executed by Codex).
 
-Separate report (Path B) — add `--plan-id {planId}` when under a plan, omit it for a standalone report:
+Separate report (Path B) — register a report against an existing plan. `--plan-id` is **required** (a report cannot be created without a plan):
 
 ```bash
-agentteams report create [--plan-id {planId}] \
+agentteams report create --plan-id {planId} \
   --title "<what you did and why, in one sentence>" \
-  --file .agentteams/cli/temp/{planId-first-8-chars-or-feature-name}-report.md \
+  --file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
   --runner-type <runner-type> --model <model-id> \
   --quality-score <0-100> \
   --status <COMPLETED | PARTIAL | FAILED>
 ```
 
-Quick-plan report (Path C) — attach report content directly when creating a quick plan:
+Quick-log report (Path C) — when you finished work that has no plan yet, use a **quick log** (`plan quick`) to record it and attach the report in a single step. This is the standard way to log already-done work without a separate plan:
 
 ```bash
 agentteams plan quick --title "<brief work summary>" \
