@@ -18,9 +18,20 @@ A tracked unit of work (type, status, priority) with comments, assignment, and s
 
 1. **Clarify requirements** — explore the codebase, interview the requester if needed
 2. **Write plan body** — judge the plan's **complexity** (see Plan Complexity below) and follow the structure for that tier
-3. **Gap analysis** — SHOULD run Metis review; use the self-check below if unavailable
+3. **Gap analysis** — SHOULD run a plan-review/gap-analysis pass; use the self-check below if unavailable
 4. **Register** — `agentteams plan create --title "{title}" --file {path} --html-file {previewPath} --type {type} --complexity {MINIMAL|STANDARD|FULL} --priority {level} --runner-type {runner-type} --model {model-id}` — an HTML preview is required via `--html-file` or `--html-stdin` (see Plan Complexity → Preview)
 5. **Link dependencies** — when creating multiple plans where one must finish before another starts, link them after creation (see Plan Dependencies below).
+
+## Grounding: Evidence Over Memory
+
+A plan is **specific to this repository** — and every project-specific claim in it must come from **evidence you gathered in this repo**, not from training priors, another project, or a prior session's memory. Assumed specifics are the plan-writing equivalent of the leaks platform guides forbid: they read as authoritative but silently mismatch the real project, and the executing agent acts on them.
+
+- **Verify before you assert**: stack, build/test/lint commands, file paths, symbol/function names, and config must be confirmed from the source — read the manifest and its scripts, open the file, run the command's `--help` — before you state them as fact.
+- **Do not launder memory into fact**: if a detail comes from "projects like this usually…", it is an assumption, not a finding. Keep it out of the body's factual claims.
+- **Separate, don't blend**: anything you could not verify goes in `### Assumptions & Unknowns` (see below), never mixed into the body as if confirmed.
+- Record what you actually consulted in `### Research Findings` and `### Conventions Referenced` — do not guess these.
+
+> Specificity is still the goal — a vague, "neutral" plan is the failure mode the QA examples in `plan-template.md` warn against. Be concrete **about this repo**; be honest about what you have not confirmed.
 
 ## Execution Shortcuts
 
@@ -64,7 +75,22 @@ agentteams plan quick --title "<title>" --content "<plan content>" \
 
 ### `--content` Format
 
-Keep a quick log's body short — three sections:
+A quick log's body **scales to whether you attach a completion report**, so the same work is never described twice. Decide ownership first:
+
+| You attach a report (`--report-file`)? | `--content` carries                                 | Why                                                                                                                                                   |
+| -------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Yes** (the common path)              | `## TL;DR` only — the intent/scope, one anchor line | The report owns _what changed_ (`## Summary`) and _how it was verified_ (`## Verification`). Restating them in the plan duplicates the report's SSOT. |
+| **No**                                 | The full three sections below                       | With no report attached, the plan body is the **only** record of the work, so it must carry the work and verification itself.                         |
+
+**With a report (minimal anchor):**
+
+```markdown
+## TL;DR
+
+<!-- 1-2 sentence intent: what this work was and why. The report carries the detail. -->
+```
+
+**Without a report (sole record):**
 
 ```markdown
 ## TL;DR
@@ -79,6 +105,8 @@ Keep a quick log's body short — three sections:
 
 - <!-- build/test pass status -->
 ```
+
+> Ownership split: the **quick-log plan** = _why/what_ (intent) + the anchor the report links to; the **completion report** = _what changed + how verified + risks/follow-ups + conventions_ (the outcome SSOT). When a report is attached, do not repeat Work Performed / Verification in `--content`.
 
 ### Completion Report
 
@@ -215,10 +243,12 @@ Every plan carries a **complexity** tier (`MINIMAL` / `STANDARD` / `FULL`) that 
 The tier determines how much structure the plan body needs.
 
 - **MINIMAL** — `## TL;DR` (In Plain Terms line + 1–2 sentence summary + deliverables) · `## TODOs` (What to do + Acceptance Criteria per task)
-- **STANDARD** — everything in MINIMAL, plus `## Context` (Original Request / Research Findings) · `## Work Objectives` (Deliverables / Definition of Done / Must Have / Must NOT Have) · `## Verification Strategy` (QA tool mapping: API→typecheck+test, CLI→test, Web→build) · TODOs add Must NOT do / References
-- **FULL** — everything in STANDARD, plus Context adds Interview Summary / Metis Review · `## Execution Strategy` (Parallel Waves / Dependency Matrix / Agent Dispatch) · TODOs add Agent Profile / Parallelization / QA Scenarios / Commit plan
+- **STANDARD** — everything in MINIMAL, plus `## Context` (Original Request / Research Findings / Assumptions & Unknowns) · `## Work Objectives` (Deliverables / Definition of Done / Must Have / Must NOT Have) · `## Verification Strategy` (QA tool mapping per the project's stack) · TODOs add Must NOT do / References
+- **FULL** — everything in STANDARD, plus Context adds Interview Summary / Gap-Analysis Review · `## Execution Strategy` (Parallel Waves / Dependency Matrix / Agent Dispatch) · TODOs add Agent Profile / Parallelization / QA Scenarios / Commit plan
 
 `### Conventions Referenced` — `.agentteams/rules/*.md` files you consulted while planning — is **required at every tier**. Do not guess. Place it under Context, or top-level when Context is omitted.
+
+`### Assumptions & Unknowns` — project-specific claims you could **not** verify against this repo (see Grounding above), kept separate from the body's confirmed facts. Required at STANDARD/FULL whenever any such claim exists; write `none` if everything was verified. At MINIMAL (no Context section), note an unverified assumption inline in the TODO it affects rather than stating it as fact.
 
 > `plan-template.md` provides a copyable FULL-tier template. For MINIMAL/STANDARD, extract only the sections you need.
 
@@ -255,15 +285,17 @@ FULL tier requires all items. STANDARD tier requires ★ items only. MINIMAL nee
 
 ## Gap Analysis
 
-SHOULD: Ask the Metis agent to review the plan draft before registering.
+SHOULD: Ask a plan-review/gap-analysis agent to review the plan draft before registering.
 
-If Metis is unavailable, self-check:
+If no such reviewer is available, self-check:
 
 - [ ] All required sections for the chosen tier present?
 - [ ] Must NOT Have guardrails defined?
 - [ ] Each TODO has acceptance criteria?
 - [ ] Dependency graph correct (no circular blocks)?
 - [ ] File references verified to exist?
+- [ ] Stack / commands / paths stated as fact were confirmed against this repo, not recalled from memory?
+- [ ] Every unverified claim lives in `### Assumptions & Unknowns`, not blended into the body?
 
 ## Verification Expectations
 
@@ -283,6 +315,8 @@ Bake verification into the plan at writing time, not as a trailing afterthought:
 
 ## Common Pitfalls
 
+- Stating stack, commands, or file paths from memory instead of verifying them against this repo
+- Blending unverified assumptions into the body as confirmed facts instead of isolating them in `### Assumptions & Unknowns`
 - Skipping tests because changes "look small"
 - Changing API contracts without updating schemas/tests
 - Writing files to project-specific directories when they should be platform-wide

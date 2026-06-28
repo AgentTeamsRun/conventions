@@ -45,8 +45,8 @@ Place a `# AGENT_RULES` heading at the top of the body (right after frontmatter)
 ```markdown
 # AGENT_RULES
 
-- Do not use .env files for development
-- Use each folder's .env file instead
+- <imperative rule the agent must always follow>
+- <another non-negotiable rule>
 
 # PROJECT CONTEXT
 
@@ -58,7 +58,7 @@ Place a `# AGENT_RULES` heading at the top of the body (right after frontmatter)
 - Use one of the following values for `<category>`:
   - `rules`, `skills`, `guides`, `references`
 - Use the path format `.agentteams/<category>/<fileName>.md`.
-- Prefer lowercase, hyphen-based file names (e.g. `api-routes.md`).
+- Prefer lowercase, hyphen-based file names (e.g. `coding-standards.md`).
 - Avoid file name collisions within the same category; depending on policy, the server/CLI may reject conflicts.
 
 ## 4) Body authoring rules (Web editor toolbar baseline)

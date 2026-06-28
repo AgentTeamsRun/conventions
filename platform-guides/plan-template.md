@@ -40,9 +40,22 @@
 
 <!-- What you discovered from exploring the codebase, docs, or external sources -->
 
-### Metis Review
+### Assumptions & Unknowns
 
-<!-- Gaps identified by Metis review (or self-check results) -->
+<!--
+Project-specific claims you could NOT verify against this repo — kept separate
+from the confirmed facts above (see plan-guide.md → Grounding: Evidence Over
+Memory). Do not blend these into the body as if confirmed. Write "none" if every
+stack / command / path / symbol used in this plan was verified from the source.
+
+Example:
+- Assumed the test command is the package's default script — NOT verified against the manifest.
+- Unsure whether <module> already exists; plan creates it, revisit if it does.
+-->
+
+### Gap-Analysis Review
+
+<!-- Gaps identified by a plan-review/gap-analysis pass (or self-check results) -->
 
 ### Conventions Referenced
 
@@ -154,8 +167,9 @@ flowchart LR
 **Required Conventions**:
 
   <!-- Project conventions the executing agent MUST read before starting this task. -->
-  <!-- These are project-level rule files (e.g., routes.md, schema.md, frontend.md) that define -->
-  <!-- coding standards, naming rules, or architectural patterns relevant to this task. -->
+  <!-- Use project-level rule files relevant to this task (for example, -->
+  <!-- .agentteams/rules/<relevant-convention>.md). These define coding standards, -->
+  <!-- naming rules, workflow rules, or architectural patterns the task depends on. -->
   <!-- The agent should load and follow these conventions throughout the entire task execution. -->
   <!-- If none are required, write "none". -->
 
@@ -220,10 +234,10 @@ Scenario: description
 ### Good (specific, verifiable)
 
 ```
-Scenario: API returns 404 for non-existent plan
+Scenario: API returns 404 for a non-existent resource
   Tool: Bash
   Steps:
-    1. curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/api/plans/nonexistent-id
+    1. curl -s -o /dev/null -w "%{http_code}" http://localhost:<port>/<api-path>/nonexistent-id
   Expected Result: 404
   Failure Indicators: 200 or 500
 ```

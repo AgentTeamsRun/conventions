@@ -97,20 +97,20 @@ agentteams convention download
 - [ ] Each Convention has an appropriate trigger
 - [ ] No content duplication across Conventions
 - [ ] `AGENT_RULES` sections use clear, imperative phrasing
-- [ ] File names use lowercase hyphen-case (e.g., `api-routes.md`)
+- [ ] File names use lowercase hyphen-case (e.g., `coding-standards.md`)
 
-## 8) Example: Typical Convention Set for a Node.js Project
+## 8) Example: Adaptable Convention Set
 
 ```
 .agentteams/
   rules/
     context.md          # always_on — Project overview, tech stack, structure
     conventions.md      # always_on — Naming, logging, Git branching
-    schema.md           # model_decision — DB schema rules (Prisma, etc.)
-    routes.md           # model_decision — API endpoint patterns
-    frontend.md         # model_decision — React/Next.js patterns
-    testing.md          # model_decision — Test framework, patterns
-    deployment.md       # model_decision — Deploy/release checklist
+    architecture.md     # model_decision — System boundaries and module patterns
+    data-modeling.md    # model_decision — Persistence or schema design rules
+    interfaces.md       # model_decision — API, CLI, UI, or integration contracts
+    testing.md          # model_decision — Test framework, commands, and patterns
+    release-process.md  # model_decision — Deploy, release, or publishing checklist
 ```
 
-> This is an illustrative example. Adapt the set to your project's actual needs — not every project needs all of these, and some projects may need different domains entirely.
+> This is an illustrative example. Adapt the set to your project's actual stack and workflow — not every project needs all of these, and some projects may need different domains entirely.

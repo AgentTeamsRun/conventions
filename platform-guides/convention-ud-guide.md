@@ -27,7 +27,7 @@ agentteams convention download
 3. Preview changes (default: dry-run)
 
 ```bash
-agentteams convention update --file .agentteams/rules/core-rules.md
+agentteams convention update --file .agentteams/rules/<convention-name>.md
 ```
 
 - This prints a diff and does **not** update the server.
@@ -35,7 +35,7 @@ agentteams convention update --file .agentteams/rules/core-rules.md
 4. Apply the update to the server
 
 ```bash
-agentteams convention update --file .agentteams/rules/core-rules.md --apply
+agentteams convention update --file .agentteams/rules/<convention-name>.md --apply
 ```
 
 ## Concurrency/conflict handling
@@ -48,8 +48,8 @@ agentteams convention update --file .agentteams/rules/core-rules.md --apply
 
 ```bash
 # dry-run (default)
-agentteams convention delete --file .agentteams/rules/core-rules.md
+agentteams convention delete --file .agentteams/rules/<convention-name>.md
 
 # apply
-agentteams convention delete --file .agentteams/rules/core-rules.md --apply
+agentteams convention delete --file .agentteams/rules/<convention-name>.md --apply
 ```

@@ -29,7 +29,7 @@ agentteams linear issue create --title "Issue title" [--team-id <linearTeamId>] 
   - 2+ teams connected: returns 400 error asking to specify `--team-id`.
 - `--description` is optional. Supports markdown.
 - `--state` is optional. Accepts a state name (e.g., "Backlog", "Todo", "In Progress", "Done", "Canceled"). The name is matched case-insensitively against the team's workflow states. If omitted, the team's default state is used.
-- `--parent-id` is optional. Creates the issue as a sub-issue under the given parent. Only Linear issue **UUID** is accepted — identifiers such as `AGE-33` are not supported here.
+- `--parent-id` is optional. Creates the issue as a sub-issue under the given parent. Only Linear issue **UUID** is accepted — identifiers such as `ABC-33` are not supported here.
 - Returns the created issue id, identifier, title, and URL.
 
 ### Update Issue State
@@ -39,7 +39,7 @@ agentteams linear issue update --issue-id <linearIssueId> --state "In Progress"
 ```
 
 - Changes the status of an existing Linear issue.
-- `--issue-id` accepts both UUID and identifier (e.g., `AGE-13`).
+- `--issue-id` accepts both UUID and identifier (e.g., `ABC-13`).
 - `--state` accepts a state name matched case-insensitively against the issue's team workflow states.
 
 ### List Comments
@@ -69,13 +69,13 @@ agentteams linear comment create --issue-id <linearIssueId> --body "Comment text
 
 ## Resolving Issue IDs
 
-The `--issue-id` flag accepts both **UUID** and **identifier** (e.g., `AGE-13`).
+The `--issue-id` flag accepts both **UUID** and **identifier** (e.g., `ABC-13`).
 
 | Source                                                             | How to extract                                   | Example                                           |
 | ------------------------------------------------------------------ | ------------------------------------------------ | ------------------------------------------------- |
 | Entity reference `[label](LINEAR_ISSUE:uuid)`                      | Use the UUID directly                            | `--issue-id 7c113c62-f3b6-48f5-bc76-c3a1579094fe` |
-| Linear URL `https://linear.app/{workspace}/issue/{identifier}/...` | Extract the identifier segment from the URL path | `--issue-id AGE-13`                               |
-| User mentions identifier in text (e.g., "AGE-13 확인해줘")         | Use the identifier as-is                         | `--issue-id AGE-13`                               |
+| Linear URL `https://linear.app/{workspace}/issue/{identifier}/...` | Extract the identifier segment from the URL path | `--issue-id ABC-13`                               |
+| User mentions identifier in text (e.g., "ABC-13 확인해줘")         | Use the identifier as-is                         | `--issue-id ABC-13`                               |
 
 ## Common Workflow
 

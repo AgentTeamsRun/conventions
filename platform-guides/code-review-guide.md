@@ -121,13 +121,13 @@ Prefer actionable findings over broad commentary. Do not include items that cann
 [
   {
     "severity": "P1",
-    "title": "Missing permission check",
-    "filePath": "api/src/routes/example.ts",
+    "title": "Missing authorization check",
+    "filePath": "src/path/to/file.ts",
     "lineStart": 42,
     "lineEnd": 45,
-    "problem": "The route accepts project data without checking membership.",
-    "impact": "A member could access another project's data.",
-    "suggestion": "Call requireProjectMemberAccess before the handler."
+    "problem": "The handler accepts protected data without checking access.",
+    "impact": "A user could access data they should not be able to see.",
+    "suggestion": "Call the project's authorization guard before using protected data."
   }
 ]
 ```

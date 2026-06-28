@@ -106,6 +106,8 @@ agentteams plan quick --title "<brief work summary>" \
 
 > All completion report parameters from `plan finish` are supported on `plan quick` when attaching a report.
 
+> **Avoid duplication with the plan body.** In a quick log with a report, the report is the SSOT for _what changed_ (`## Summary`) and _how it was verified_ (`## Verification`); the plan `--content` should carry only the intent/scope (`## TL;DR`). See `plan-guide.md` → Quick Log → `--content` Format for the ownership split.
+
 ## Metrics (Auto + Manual)
 
 `report create` and `plan finish` can attach work metrics for insight workflows.
@@ -169,16 +171,17 @@ Otherwise set `NOT_NEEDED` with a brief reason (e.g., "docs-only", "test-only, n
 
 ## Verification Examples
 
+Run **your project's** typecheck/test/build commands — use whatever the project's stack and layout define (the right working directory, package manager, and task names). The shape is:
+
 ```bash
-cd api && npm run typecheck
-cd api && npm test
-cd cli && npm test
+<typecheck command>   # e.g. the project's type/lint check
+<test command>        # the project's test runner
 ```
 
 To keep the output as attachable evidence, pipe it to a file with `tee` (you still see it live), then attach that file (see Attaching Evidence):
 
 ```bash
-cd api && npm test 2>&1 | tee .agentteams/cli/temp/test-output.txt
+<test command> 2>&1 | tee .agentteams/cli/temp/test-output.txt
 ```
 
 ## Attaching Evidence
