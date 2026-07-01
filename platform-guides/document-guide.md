@@ -49,6 +49,12 @@ agentteams document list --query "<keyword>"
 
 If `--title` is omitted on create, the file name is used.
 
+## Visibility (Private vs Project)
+
+Documents are `PRIVATE` by default. When you omit `--visibility`, the document is saved as private and is visible only to the creator.
+
+Use `--visibility PROJECT` only when the user explicitly asks to share the document with the project or team. Project-visible documents are visible to project members, and creating one sends a notification to project members, so avoid using project visibility for routine agent-generated drafts, notes, and handoffs unless sharing was requested.
+
 ## Tagging (two-tier: suggested vs confirmed)
 
 Tags have two layers. Only **confirmed** tags (`tags`) drive the document folder tree, list filters, and search. **Suggested** tags (`suggestedTags`) are a staging area that a person reviews.
