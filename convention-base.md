@@ -96,7 +96,8 @@ Before starting work on a plan:
 
 1. Download the runbook — `agentteams plan download --id {planId}` (saves to `.agentteams/cli/active-plan/{filename}.md`). Read it before starting.
 2. Check comments, especially `RISK` — `agentteams comment list --plan-id {planId}`.
-3. Full execution workflow (entity refs, comments, cleanup): `.agentteams/platform/plan-guide.md`.
+3. During execution (V2 plans only): mark per-task progress with `agentteams task start` / `task finish --status <DONE|BLOCKED|SKIPPED>` — details in `.agentteams/platform/plan-guide.md` (**During Plan Execution**).
+4. Full execution workflow (entity refs, comments, cleanup): `.agentteams/platform/plan-guide.md`.
 
 ## Work Completion Rules
 

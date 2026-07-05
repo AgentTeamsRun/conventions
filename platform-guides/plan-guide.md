@@ -139,6 +139,9 @@ agentteams comment list --plan-id {planId}
 
 # 3. Start lifecycle
 agentteams plan start --id {planId}
+
+# 4. (V2 plans) As you work each task, mark its start/finish — details in "During Plan Execution"
+agentteams task start --plan-id {planId} --task-id {taskId}
 ```
 
 **Decision after comment check:**
@@ -212,6 +215,26 @@ Post comments to track progress:
 - **Risk found**: `agentteams comment create --plan-id {planId} --type RISK --content "<risk description>" --affected-files "<paths>"`
 - **Scope changed**: `agentteams comment create --plan-id {planId} --type MODIFICATION --content "<what changed and why>" --affected-files "<paths>"`
 - **Status update**: `agentteams comment create --plan-id {planId} --type GENERAL --content "<current progress>"`
+
+### Task Lifecycle (V2 plans only)
+
+Only **V2 plans that carry tasks** get a task sidecar (`.agentteams/cli/active-plan/{filename}.tasks.json`), written alongside the runbook at download time. Each sidecar entry's `id` is the `--task-id`. As you work through the runbook, mark each task's start and finish so the plan's per-task progress stays live:
+
+```bash
+# When you begin a task
+agentteams task start --plan-id {planId} --task-id {taskId}
+
+# When you finish a task
+agentteams task finish --plan-id {planId} --task-id {taskId} --status <DONE | BLOCKED | SKIPPED>
+```
+
+Finish status:
+
+- `DONE` — completed as specified.
+- `BLOCKED` — cannot proceed (unmet dependency, missing decision, external blocker); explain in a `RISK` or `GENERAL` comment.
+- `SKIPPED` — intentionally not done (out of scope, obsoleted); note why in a comment.
+
+V1 plans (or V2 plans without tasks) have no sidecar and no per-task lifecycle — track progress with comments only.
 
 ## After Completing or Cancelling a Plan
 
