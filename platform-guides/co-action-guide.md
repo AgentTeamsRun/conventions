@@ -21,7 +21,6 @@ If the work just needs "what I did", use a completion report instead — not a c
 - Do not put implementation detail here — that belongs in the completion report.
 - Never skip `## Follow-up / Known Constraints` — it is the highest-value section for handoff.
 - Link related plans/reports; do not leave a co-action orphaned.
-- Use `PRIVATE` only when truly private; use `PROJECT` for shared knowledge.
 
 ## Content Structure
 
@@ -69,11 +68,10 @@ Standalone insights attached to (but separate from) the content. Create one when
 ## Commands
 
 ```bash
-# Create
+# Create (omit --visibility to use the project default; pass PRIVATE/PROJECT only to override)
 agentteams coaction create \
   --title "<handoff title>" \
-  --file .agentteams/cli/temp/{name}-coaction.md \
-  --visibility PRIVATE
+  --file .agentteams/cli/temp/{name}-coaction.md
 
 # Update content / status
 agentteams coaction update --id {id} --file .agentteams/cli/temp/{name}-coaction.md
