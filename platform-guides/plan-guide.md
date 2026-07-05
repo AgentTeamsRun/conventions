@@ -19,7 +19,7 @@ A tracked unit of work (type, status, priority) with comments, assignment, and s
 1. **Clarify requirements** — explore the codebase, interview the requester if needed
 2. **Write plan body** — judge the plan's **complexity** (see Plan Complexity below) and follow the structure for that tier
 3. **Gap analysis** — SHOULD run a plan-review/gap-analysis pass; use the self-check below if unavailable
-4. **Register** — `agentteams plan create --title "{title}" --file {path} --html-file {previewPath} --type {type} --complexity {MINIMAL|STANDARD|FULL} --priority {level} --runner-type {runner-type} --model {model-id}` — an HTML preview is required via `--html-file` or `--html-stdin` (see Plan Complexity → Preview)
+4. **Register** — `agentteams plan create --title "{title}" --file {path} --type {type} --complexity {MINIMAL|STANDARD|FULL} --priority {level} --runner-type {runner-type} --model {model-id}` — an HTML preview is optional via `--html-file` or `--html-stdin` (V2 plans no longer render a preview; see Plan Complexity → Preview)
 5. **Link dependencies** — when creating multiple plans where one must finish before another starts, link them after creation (see Plan Dependencies below).
 
 ## Grounding: Evidence Over Memory
@@ -281,9 +281,9 @@ The tier determines how much structure the plan body needs.
 
 ### Preview
 
-The HTML preview is **mandatory at every tier** (there is no escape hatch). Every plan — regardless of complexity — uses the single preview template defined in `plan-preview-guide.md`; scale the amount of structure to what the plan actually carries.
+The HTML preview is **optional (opt-in)** (V2 plans do not render a preview). When provided, the plan uses the single preview template defined in `plan-preview-guide.md`; scale the amount of structure to what the plan actually carries.
 
-The preview is always authored by an AI agent and uploaded in the same `plan create` / preview-affecting `plan update` command.
+The preview is optionally authored by an AI agent and uploaded in the `plan create` / `plan update` command.
 
 ### Immutability & Change History
 
