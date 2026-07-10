@@ -18,8 +18,6 @@
 > - <!-- file/module 2 — what changes -->
 >
 > **Estimated Effort**: <!-- Short / Medium / Long -->
-> **Type**: <!-- FEATURE / BUG_FIX / ISSUE / REFACTOR / CHORE -->
-> **Complexity**: FULL <!-- MINIMAL / STANDARD / FULL — must match --complexity at create -->
 > **Parallel Execution**: <!-- YES / NO -->
 > **Critical Path**: <!-- Task X → Task Y → ... -->
 > **Dependencies**: <!-- blocking plan IDs if creating multiple plans, or "none" -->
