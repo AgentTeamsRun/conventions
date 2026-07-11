@@ -50,7 +50,7 @@ A fenced `mermaid` block (`flowchart` / `sequenceDiagram`) renders in the web vi
 
 ## Report File Naming
 
-Use `{first 8 characters of planId}-report.md`. Example: if planId is `57a51ec2-cf70-...`, the file name is `57a51ec2-report.md`.
+For an existing plan (Path A or B), use `{first 8 characters of planId}-report.md`. Example: if planId is `57a51ec2-cf70-...`, the file name is `57a51ec2-report.md`. Quick-log reports (Path C) do not have a plan ID before the command runs, so use a concise descriptive file name such as `fix-token-refresh-report.md`.
 
 > ⚠️ **Use either Path A, Path B, or Path C, not multiple.** Running them simultaneously will create duplicate completion reports for the same plan.
 
@@ -97,7 +97,7 @@ agentteams plan quick --title "<brief work summary>" \
   --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE> \
   --runner-type <runner-type> --model <model-id> \
   --report-title "<what you did and why, in one sentence>" \
-  --report-file .agentteams/cli/temp/{planId-first-8-chars}-report.md \
+  --report-file .agentteams/cli/temp/<descriptive-name>-report.md \
   --quality-score <0-100> \
   --report-status <COMPLETED | PARTIAL | FAILED> \
   --review-recommendation <REQUIRED | NOT_NEEDED> \
@@ -205,11 +205,11 @@ agentteams attachment create \
 - The CLI uploads the bytes straight to object storage and registers only metadata with the server — keep files within the limits above.
 - Skip only when none of the triggers apply (e.g., docs-only change with nothing to show). The attachment supplements the written report — it does not replace it.
 
-## Post-Report: Linked Document Auto-Creation
+## Post-Report Linked Record Decision
 
-**Immediately after** writing a completion report, review the following two categories and create the documents if applicable.
+**Immediately after** writing a completion report, review the following two categories and create the linked records only when their criteria apply.
 
-### Co-Action Auto-Creation
+### Co-Action Decision
 
 Create a co-action if **any** of the following apply:
 
@@ -222,8 +222,7 @@ Create a co-action if **any** of the following apply:
 # Create co-action
 agentteams coaction create \
   --title "<concise handoff title>" \
-  --file .agentteams/cli/temp/{descriptive-name}-coaction.md \
-  --visibility PROJECT
+  --file .agentteams/cli/temp/{descriptive-name}-coaction.md
 
 # Link to plan (if applicable)
 agentteams coaction link-plan --id {coActionId} --plan-id {planId}
@@ -234,16 +233,15 @@ agentteams coaction link-completion-report --id {coActionId} --completion-report
 
 > For co-action content structure, see `co-action-guide.md`.
 
-### Post-Mortem Auto-Creation
+### Post-Mortem Decision
 
-Create a post-mortem if **any** of the following apply:
+Create a post-mortem when one of these category-specific rules applies:
 
 **Service Incidents:**
 
-- A failure, bug, or regression occurred during the work
-- Existing functionality was unintentionally affected
+- A user-facing outage, regression, or degraded behavior occurred
 
-**Development Execution Issues** (when reproducible, blocking, and preventable):
+**Development Execution Issues:** create one only when **all three conditions** are met: the issue is reproducible or systemic, it blocked or significantly delayed the work, and a process, tooling, or environment change can prevent recurrence. Examples include:
 
 - A database migration failed due to missing state or incompatible assumptions
 - A required CLI tool or dependency was missing or version-mismatched

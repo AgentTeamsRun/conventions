@@ -94,5 +94,6 @@ agentteams linear issue create --title "Fix: auth token refresh" --description "
 
 ## Notes
 
-- Issue update/delete and comment edit/delete are out of scope.
+- Updating issue state is supported. Updating other issue fields and deleting issues are out of scope.
+- Comment edit/delete is out of scope.
 - Full flags for any subcommand: `agentteams linear <command> --help`.

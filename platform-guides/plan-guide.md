@@ -19,7 +19,7 @@ A tracked unit of work (type, status, priority) with comments, assignment, and s
 1. **Clarify requirements** — explore the codebase, interview the requester if needed
 2. **Write plan body** — judge the plan's **complexity** (see Plan Complexity below) and follow the structure for that tier
 3. **Gap analysis** — SHOULD run a plan-review/gap-analysis pass; use the self-check below if unavailable
-4. **Register** — `agentteams plan create --title "{title}" --file {path} --type {type} --complexity {MINIMAL|STANDARD|FULL} --priority {level} --runner-type {runner-type} --model {model-id}` — an HTML preview is optional via `--html-file` or `--html-stdin` (V2 plans no longer render a preview; see Plan Complexity → Preview)
+4. **Register** — `agentteams plan create --title "{title}" --file {path} --type {type} --complexity {MINIMAL|STANDARD|FULL} --priority {level} --runner-type {runner-type} --model {model-id}`
 5. **Link dependencies** — when creating multiple plans where one must finish before another starts, link them after creation (see Plan Dependencies below).
 
 ## Grounding: Evidence Over Memory
@@ -114,7 +114,7 @@ A quick log's body **scales to whether you attach a completion report**, so the 
 
 ## Runner Type & Model Reference
 
-`--runner-type` and `--model` are **required** for `plan create`, `plan quick`, `report create`, and report-attaching `plan finish` / `plan quick` — the creator snapshot (`Plan.*`) at create, the executor snapshot (`CompletionReport.*`) at report; the two can differ. Not required for `plan start` or report-less `plan finish` / `plan quick`.
+`--runner-type` and `--model` are **required** for `plan create`, `plan quick`, `report create`, and report-attaching `plan finish` — the creator snapshot (`Plan.*`) at create, the executor snapshot (`CompletionReport.*`) at report; the two can differ. Not required for `plan start` or report-less `plan finish`. Always required for `plan quick`, whether or not it attaches a report.
 
 | Runner Type   | Description            |
 | ------------- | ---------------------- |
@@ -334,9 +334,9 @@ The tier determines how much structure the plan body needs.
 
 ### Preview
 
-The HTML preview is **optional (opt-in)** (V2 plans do not render a preview). When provided, the plan uses the single preview template defined in `plan-preview-guide.md`; scale the amount of structure to what the plan actually carries.
+V2 plans render their structured sections and tasks directly in the web UI; they do **not** render an uploaded HTML preview. Do not generate or upload a preview for a V2 plan.
 
-The preview is optionally authored by an AI agent and uploaded in the `plan create` / `plan update` command.
+The HTML preview workflow in `plan-preview-guide.md` remains only for legacy V1 plans that still expose the visualization tab.
 
 ### Immutability & Change History
 
@@ -345,7 +345,7 @@ The preview is optionally authored by an AI agent and uploaded in the `plan crea
 
 ### Raising Complexity → Re-investigation Loop
 
-When a user judges the scope is larger than the plan assumes, they raise `complexity` (typically MINIMAL/STANDARD → FULL). This is the signal to **investigate more deeply and rewrite the plan body at the higher tier** (and regenerate the preview). The plan's status is unchanged by a complexity change — it is not a new plan, just a re-scoped one.
+When a user judges the scope is larger than the plan assumes, they raise `complexity` (typically MINIMAL/STANDARD → FULL). This is the signal to **investigate more deeply and rewrite the plan body at the higher tier**. The plan's status is unchanged by a complexity change — it is not a new plan, just a re-scoped one.
 
 ## Task Required Elements
 
@@ -402,4 +402,4 @@ Bake verification into the plan at writing time, not as a trailing afterthought:
 ## References
 
 - `plan-template.md` — copyable FULL-tier plan template
-- `plan-preview-guide.md` — HTML preview (all complexity tiers)
+- `plan-preview-guide.md` — HTML preview for legacy V1 plans only

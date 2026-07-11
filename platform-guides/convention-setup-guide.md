@@ -7,7 +7,7 @@
 
 ## 1) Overview
 
-After running `agentteams init`, your project has a `.agentteams/` directory but no project-specific Conventions yet. This guide walks you through analyzing your project, converting existing rule files, and creating new Conventions — so the AI agent can follow your team's standards from day one.
+`agentteams init` downloads existing project conventions into `.agentteams/`. A new project may not have any registered conventions yet, while an established project may already receive its shared set. This guide walks you through reviewing what was downloaded, analyzing your project, converting existing rule files, and creating any missing Conventions — so the AI agent can follow your team's standards from day one.
 
 **Two scenarios this guide covers:**
 

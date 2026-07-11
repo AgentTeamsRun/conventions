@@ -24,6 +24,7 @@ Guides that AI agents reference when working with the AgentTeams platform.
 | [Convention Setup Guide](platform-guides/convention-setup-guide.md)         | Deciding what to turn into conventions and organizing them             |
 | [Convention Update/Delete Guide](platform-guides/convention-ud-guide.md)    | Updating or deleting conventions                                       |
 | [Linear Guide](platform-guides/linear-guide.md)                             | Linear issue integration                                               |
+| [Runner History Guide](platform-guides/runner-history-guide.md)             | Runner execution history and log inspection                            |
 
 ## Contributing
 

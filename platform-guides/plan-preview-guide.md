@@ -2,7 +2,7 @@
 
 > ⚠️ This file is automatically deployed from the server. Do not edit it directly.
 
-This guide defines guardrails for AI-authored HTML summaries of plans. Use it when you generate a human-facing HTML preview and upload it with the AgentTeams CLI.
+This guide defines guardrails for AI-authored HTML summaries of legacy V1 plans. V2 plans render structured sections and tasks directly in the web UI and do not display uploaded HTML previews; do not use this workflow for V2 plans.
 
 ## Purpose
 

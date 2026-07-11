@@ -90,15 +90,24 @@ Use this structure for the `--content` field or the `--file` content:
 
 ## Post Mortem File Naming
 
-Use `{first 8 characters of planId}-postmortem.md`. Example: if planId is `57a51ec2-cf70-...`, the file name is `57a51ec2-postmortem.md`.
+- **Plan-linked post mortem:** use `{first 8 characters of planId}-postmortem.md`. Example: if planId is `57a51ec2-cf70-...`, use `57a51ec2-postmortem.md`.
+- **Standalone service incident:** use a concise descriptive name such as `checkout-outage-postmortem.md`.
 
 ## Useful Commands
 
 ```bash
+# Plan-linked incident or development execution issue
 agentteams postmortem create \
   --plan-id {planId} \
   --title "<what broke — e.g., 'API 500 on plan finish after schema migration'>" \
   --file .agentteams/cli/temp/{planId-first-8-chars}-postmortem.md \
+  --action-items "<specific preventive action 1>,<specific preventive action 2>" \
+  --status OPEN
+
+# Standalone service incident. Omit `--plan-id` when no plan is associated.
+agentteams postmortem create \
+  --title "<user-facing incident summary>" \
+  --file .agentteams/cli/temp/{descriptive-name}-postmortem.md \
   --action-items "<specific preventive action 1>,<specific preventive action 2>" \
   --status OPEN
 ```

@@ -68,7 +68,7 @@ Standalone insights attached to (but separate from) the content. Create one when
 ## Commands
 
 ```bash
-# Create (omit --visibility to use the project default; pass PRIVATE/PROJECT only to override)
+# Create. Omit `--visibility` for `PRIVATE`; pass `--visibility PROJECT` explicitly to share with project members.
 agentteams coaction create \
   --title "<handoff title>" \
   --file .agentteams/cli/temp/{name}-coaction.md
