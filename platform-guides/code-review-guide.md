@@ -45,11 +45,14 @@ agentteams code-review create \
 
 Do not use reviewer names, agent names, or author names as substitutes for `--runner-type` or `--model`. If either value is unknown, stop and ask for the correct execution environment before creating the record.
 
-Review status is decided by whether the reviewer has produced a result:
+Review status is derived from the review result and finding lifecycle:
 
-- Omit `--findings-file`: review is registered as `PENDING`. Use only when the reviewer agent has not yet produced findings.
-- `--findings-file` pointing at an empty array (`[]`): review is registered as `COMPLETED` with `findingCount: 0` and a `completedAt` timestamp. Use this when the reviewer ran and explicitly found no issues.
-- `--findings-file` with a non-empty array: review is registered as `COMPLETED` with the findings attached.
+- Omit `--findings-file`: the review is registered as `PENDING`. Use this only when the reviewer has not produced a result.
+- Empty findings array (`[]`): the review is registered as `COMPLETED` with `findingCount: 0` and a `completedAt` timestamp.
+- Non-empty findings array: the review is registered as `OPEN` with the findings attached.
+- Some findings resolved or dismissed: the review becomes `PARTIAL`.
+- Every finding resolved or dismissed: the review becomes `COMPLETED`.
+- Failed review execution: submit the result with status `FAILED`.
 
 Do not omit `--findings-file` to represent a "no issues found" result — that incorrectly leaves the review in `PENDING`.
 
@@ -134,6 +137,53 @@ Prefer actionable findings over broad commentary. Do not include items that cann
 
 Required fields per item: `severity`, `title`, `filePath`, `problem`, `impact`, `suggestion`. The CLI rejects the file with a clear error when any required field is missing or the top-level value is not an array.
 
+## Finding Lifecycle
+
+Finding status represents remediation progress:
+
+- `OPEN` — requires action.
+- `PLANNED` — selected into a generated remediation plan.
+- `RESOLVED` — fixed and verified.
+- `DISMISSED` — intentionally not fixed because the finding is invalid or explicitly accepted.
+
+Mark a finding `RESOLVED` only after the described problem has been fixed, its focused verification has passed, and the fix still satisfies the source plan's acceptance criteria and conventions. Do not resolve a finding merely because implementation has started. Leave it `OPEN` when the fix or verification is incomplete.
+
+## Fixing Findings From a Plan-Based Review
+
+A review is plan-based when `sourcePlanId` is present, or when `sourceCompletionReportId` refers to a completion report linked to a plan.
+
+For a plan-based review, fix findings directly in the source plan's existing branch or pull request. Do not create a separate remediation plan or call `code-review create-plan`.
+
+### Required Flow
+
+1. Inspect the review and identify its unresolved findings:
+
+   ```bash
+   agentteams code-review get --id {codeReviewId}
+   ```
+
+2. Continue on the branch or pull request produced by the source plan.
+3. Fix one or more related findings.
+4. Run focused verification for every finding covered by the change.
+5. Immediately resolve each finding whose fix has passed verification:
+
+   ```bash
+   # Resolve one verified finding
+   agentteams code-review resolve \
+     --id {codeReviewId} \
+     --finding-id {findingId}
+
+   # Resolve findings covered by the same fix and verification
+   agentteams code-review resolve \
+     --id {codeReviewId} \
+     --finding-ids {findingId1},{findingId2}
+   ```
+
+6. Leave any unverified or incomplete finding `OPEN`.
+7. Re-run the source plan's relevant final verification before ending the fix run.
+
+Resolve multiple findings together only when the same verified change covers every listed finding. The code review automatically becomes `COMPLETED` when every active finding is `RESOLVED` or `DISMISSED`.
+
 ## Attaching Evidence
 
 When a finding's basis is easier to show than to describe, attach the file to the review so the evidence travels with it. **Review this list when findings exist — attach when ANY apply:**
@@ -159,9 +209,21 @@ agentteams attachment create \
 
 A fenced `mermaid` block (`flowchart` / `sequenceDiagram`) renders in the web viewer; it stays plain text in CLI/raw. Use one when it explains a regression path or control flow faster than words.
 
-## Creating Plans From Findings
+## Creating Plans From Standalone Review Findings
 
-Finding-to-plan conversion is **human-in-the-loop** — the user chooses which findings become a plan; do not auto-include every finding. The generated plan preserves each selected finding's severity / file path / problem / impact / suggestion, and is scoped to fixing those findings, not reopening the original implementation.
+Create a remediation plan only when the review has no source plan or plan-linked completion report. Finding-to-plan conversion is **human-in-the-loop** — the user chooses which `OPEN` findings become a plan; do not auto-include every finding. The generated plan preserves each selected finding's severity / file path / problem / impact / suggestion, and is scoped to fixing those findings, not reopening the original implementation.
+
+Do not call `code-review create-plan` for a plan-based review. Plan-based findings are fixed directly in the source branch or pull request.
+
+### Generated Remediation Plans
+
+When `code-review create-plan` creates a remediation plan:
+
+- Selected findings move from `OPEN` to `PLANNED`.
+- Completing the generated plan as `DONE` automatically moves its remaining `PLANNED` findings to `RESOLVED`.
+- Cancelling the generated plan moves its remaining `PLANNED` findings back to `OPEN`.
+
+Do not manually resolve planned findings before the generated plan is verified unless the remediation was explicitly completed outside that plan.
 
 ## Completion Flow
 

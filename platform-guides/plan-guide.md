@@ -2,7 +2,7 @@
 
 > ⚠️ This file is automatically deployed from the server. Do not edit it directly.
 
-This guide defines how to **write** a high-quality plan. For execution details (status transitions, CLI commands, comments), follow your project's workflow conventions and CLI help.
+This guide defines how to **author, execute, and complete** a high-quality tracked plan. Project conventions remain authoritative for repository-specific workflow, while this guide defines the AgentTeams plan and task lifecycle.
 
 ## What a Plan Is
 
@@ -208,6 +208,19 @@ agentteams dependency delete --plan-id {planId} --dep-id {depId}
 
 Typical flow: create all plans first, then link dependencies using the returned IDs.
 
+## Structured Task Authoring Contract
+
+V2 task rows are parsed from the plan body. The following markup is a machine-readable contract, not merely a visual recommendation:
+
+- Put tasks under the exact `## TODOs` heading.
+- Start each task with a numbered third-level heading in the form `### N. Task title`. Keep task numbers unique and sequential.
+- Express a dependency as `Blocked By: Task N` or `Depends On: Task N`. Use `Blocks: Task N` only on the blocking task.
+- Express an execution wave as `Parallel Group: Wave N`.
+- Reference only task numbers that exist in the same plan. Self-dependencies and unknown task numbers do not create usable dependency links.
+- Treat each task's Acceptance Criteria as the evidence required before that task can be marked `DONE`.
+
+The parser derives task rows, dependency links, and waves from these labels. Changing the headings or inventing equivalent labels can leave the plan without the intended structured task metadata.
+
 ## During Plan Execution
 
 Post comments to track progress:
@@ -218,21 +231,61 @@ Post comments to track progress:
 
 ### Task Lifecycle (V2 plans only)
 
-Only **V2 plans that carry tasks** get a task sidecar (`.agentteams/cli/active-plan/{filename}.tasks.json`), written alongside the runbook at download time. Each sidecar entry's `id` is the `--task-id`. As you work through the runbook, mark each task's start and finish so the plan's per-task progress stays live:
+Only **V2 plans that carry tasks** get a task sidecar (`.agentteams/cli/active-plan/{filename}.tasks.json`), written alongside the runbook at download time. Each sidecar entry contains the task's `id`, number, status, and dependency IDs. Use its `id` as the `--task-id`.
+
+For a downloaded V2 plan with tasks, lifecycle tracking is required. Do not treat the sidecar's status as permanently current: task commands update the server, not the downloaded file. Use command output as the latest state, or download the plan again when you need a refreshed local snapshot.
+
+### Selecting the Next Task
+
+A task is ready when it is `TODO` and every task in `dependsOnTaskIds` is `DONE` or `SKIPPED`. Tasks in the same wave may run in parallel only when there is no dependency edge between them. Do not start a dependent task while a prerequisite is `TODO`, `IN_PROGRESS`, or `BLOCKED`; the API rejects that start and returns the blocking task IDs.
+
+### Required Execution Loop
+
+Repeat this loop for every ready task:
 
 ```bash
-# When you begin a task
+# 1. Immediately before implementation
 agentteams task start --plan-id {planId} --task-id {taskId}
 
-# When you finish a task
+# 2. Implement the task, then run its Acceptance Criteria and QA Scenarios
+
+# 3. Record the verified result
 agentteams task finish --plan-id {planId} --task-id {taskId} --status <DONE | BLOCKED | SKIPPED>
 ```
 
-Finish status:
+Do not mark a task `DONE` merely because code was written. Verification is part of the task. If verification fails and cannot be resolved within scope, use `BLOCKED` and record the failure evidence in a plan comment.
 
-- `DONE` — completed as specified.
-- `BLOCKED` — cannot proceed (unmet dependency, missing decision, external blocker); explain in a `RISK` or `GENERAL` comment.
-- `SKIPPED` — intentionally not done (out of scope, obsoleted); note why in a comment.
+### Finish Status Semantics
+
+| Status        | Meaning                                                                    | Counts as complete | Required follow-up                    |
+| ------------- | -------------------------------------------------------------------------- | ------------------ | ------------------------------------- |
+| `TODO`        | Not started                                                                | No                 | Start it, or intentionally skip it    |
+| `IN_PROGRESS` | Work or verification is active                                             | No                 | Move it to a terminal status          |
+| `DONE`        | Acceptance Criteria and required verification passed                       | Yes                | Preserve useful verification evidence |
+| `BLOCKED`     | Work cannot proceed because of a decision, dependency, or external blocker | No                 | Add a `RISK` or `GENERAL` comment     |
+| `SKIPPED`     | Intentionally not performed because it is out of scope or obsolete         | Yes                | Add a comment explaining why          |
+
+`DONE` and `SKIPPED` satisfy downstream task dependencies. Task status changes do not finish the parent plan; `plan finish` performs that separate lifecycle transition.
+
+### Lifecycle Error Recovery
+
+| Reason                | Action                                                                 |
+| --------------------- | ---------------------------------------------------------------------- |
+| `DEPENDENCY_BLOCKED`  | Inspect `blockedByTaskIds`; finish those prerequisites first           |
+| `NOT_V2`              | This plan has no V2 task lifecycle; track execution with plan comments |
+| `NO_STRUCTURED_TASKS` | Re-check the authored `## TODOs` structure or use comment tracking     |
+| `PLAN_TERMINAL`       | Do not mutate tasks on a completed or cancelled plan                   |
+
+### Finish Preflight
+
+Before `plan finish`, verify every item:
+
+- [ ] No task remains `TODO`.
+- [ ] No task remains `IN_PROGRESS`.
+- [ ] Every `DONE` task passed its Acceptance Criteria and required QA Scenarios.
+- [ ] Every `BLOCKED` or `SKIPPED` task has an explanatory plan comment.
+- [ ] Useful verification evidence has been preserved for the completion report.
+- [ ] Code changes have been committed, and a required PR has been opened.
 
 V1 plans (or V2 plans without tasks) have no sidecar and no per-task lifecycle — track progress with comments only.
 

@@ -137,6 +137,8 @@ flowchart LR
 
 ## TODOs
 
+> **Structured task contract**: Keep the exact `## TODOs` heading and numbered `### N. Task title` headings. The server parses dependencies from `Blocked By: Task N` or `Depends On: Task N`, and waves from `Parallel Group: Wave N`. Reference only task numbers that exist in this plan.
+
 ---
 
 ### 1. Task title
@@ -158,9 +160,9 @@ flowchart LR
 **Parallelization**:
 
 - **Can Run In Parallel**: <!-- YES / NO -->
-- **Parallel Group**: <!-- Wave N -->
-- **Blocks**: <!-- Task N or none -->
-- **Blocked By**: <!-- Task N or none -->
+- **Parallel Group**: <!-- Wave N; keep this label so the server can parse the wave -->
+- **Blocks**: <!-- Task N or none; reference only an existing task number -->
+- **Blocked By**: <!-- Task N or none; reference only an existing task number -->
 
 **Required Conventions**:
 
@@ -179,7 +181,7 @@ flowchart LR
 
 **Acceptance Criteria**:
 
-- <!-- Verifiable criterion — prefer one expressed as a test assertion (what you'd check to prove this task is done) -->
+- <!-- Verifiable criterion — this is the evidence required before marking the task `DONE`; prefer a test assertion -->
 
 **QA Scenarios**:
 

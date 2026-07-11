@@ -78,13 +78,29 @@ one trailer per line, all at the very end of the message.
 
 ## Plan Lifecycle (Quick Reference)
 
-Report status to AgentTeams **if you are working under a plan**.
+Report status to AgentTeams **if you are working under a plan**. For a downloaded V2 plan with structured
+tasks, per-task lifecycle tracking is required — it is not an optional progress note.
 
 ```bash
+# Prepare the runbook and check human guidance
+agentteams plan download --id {planId}
+agentteams comment list --plan-id {planId}
 agentteams plan start --id {planId}
-# ... do the work, then commit it (see Commit Attribution) ...
+
+# Repeat for every executable task
+agentteams task start --plan-id {planId} --task-id {taskId}
+# ... implement and verify the task's Acceptance Criteria ...
+agentteams task finish --plan-id {planId} --task-id {taskId} --status <DONE | BLOCKED | SKIPPED>
+
+# After every task reaches a terminal status, commit (see Commit Attribution), then finish
 agentteams plan finish --id {planId} ...   # registers the completion report
 ```
+
+- Call `task start` immediately before beginning each task.
+- Use `DONE` only after the task's Acceptance Criteria have been verified.
+- `BLOCKED` and `SKIPPED` require an explanatory plan comment.
+- Do not call `plan finish` while any task remains `TODO` or `IN_PROGRESS`.
+- `SKIPPED` is terminal and satisfies downstream task dependencies.
 
 > ⚠️ If your work produced code changes, **commit them before `plan finish`**. `plan finish` auto-collects commit metrics (`commitHash`, `branchName`, diff stats) from the current git state — finishing with uncommitted work records an empty or wrong snapshot. If the project requires a PR, open it before finishing too.
 >
@@ -92,12 +108,17 @@ agentteams plan finish --id {planId} ...   # registers the completion report
 
 ## Plan Workflow Rules
 
-Before starting work on a plan:
+When executing a plan:
 
 1. Download the runbook — `agentteams plan download --id {planId}` (saves to `.agentteams/cli/active-plan/{filename}.md`). Read it before starting.
 2. Check comments, especially `RISK` — `agentteams comment list --plan-id {planId}`.
-3. During execution (V2 plans only): mark per-task progress with `agentteams task start` / `task finish --status <DONE|BLOCKED|SKIPPED>` — details in `.agentteams/platform/plan-guide.md` (**During Plan Execution**).
-4. Full execution workflow (entity refs, comments, cleanup): `.agentteams/platform/plan-guide.md`.
+3. Start the plan lifecycle before starting any task.
+4. For a V2 plan, select only a task whose dependencies are complete, then run its required start → implement → verify → finish lifecycle.
+5. Repeat until no task remains `TODO` or `IN_PROGRESS`; explain every `BLOCKED` or `SKIPPED` result in a plan comment.
+6. Commit code changes before `plan finish`, then complete the report and cleanup flow.
+
+The detailed execution workflow (task selection, statuses, errors, comments, and cleanup) is in
+`.agentteams/platform/plan-guide.md` (**During Plan Execution**).
 
 ## Work Completion Rules
 
@@ -142,18 +163,18 @@ agentteams search --query "<keyword>" --format json
 
 Before writing or updating **platform records** (plans, reports, conventions, postmortems, code reviews, documents), read the matching guide:
 
-| Record type                            | Guide to read                                        |
-| -------------------------------------- | ---------------------------------------------------- |
-| Plan execution                         | `.agentteams/platform/plan-guide.md`                 |
-| New plan                               | `.agentteams/platform/plan-template.md`              |
-| Completion report                      | `.agentteams/platform/completion-report-guide.md`    |
-| Postmortem                             | `.agentteams/platform/post-mortem-guide.md`          |
-| Convention (create)                    | `.agentteams/platform/convention-authoring-guide.md` |
-| Convention (update/delete)             | `.agentteams/platform/convention-ud-guide.md`        |
-| Co-action (handoff)                    | `.agentteams/platform/co-action-guide.md`            |
-| Code review (independent verification) | `.agentteams/platform/code-review-guide.md`          |
-| Document (human-facing artifact)       | `.agentteams/platform/document-guide.md`             |
-| Linear (issue/comment)                 | `.agentteams/platform/linear-guide.md`               |
+| Record type                            | Guide to read                                                                    |
+| -------------------------------------- | -------------------------------------------------------------------------------- |
+| Plan authoring                         | `.agentteams/platform/plan-guide.md` and `.agentteams/platform/plan-template.md` |
+| Plan execution                         | `.agentteams/platform/plan-guide.md` (**Task Lifecycle**)                        |
+| Completion report                      | `.agentteams/platform/completion-report-guide.md`                                |
+| Postmortem                             | `.agentteams/platform/post-mortem-guide.md`                                      |
+| Convention (create)                    | `.agentteams/platform/convention-authoring-guide.md`                             |
+| Convention (update/delete)             | `.agentteams/platform/convention-ud-guide.md`                                    |
+| Co-action (handoff)                    | `.agentteams/platform/co-action-guide.md`                                        |
+| Code review (independent verification) | `.agentteams/platform/code-review-guide.md`                                      |
+| Document (human-facing artifact)       | `.agentteams/platform/document-guide.md`                                         |
+| Linear (issue/comment)                 | `.agentteams/platform/linear-guide.md`                                           |
 
 ---
 
