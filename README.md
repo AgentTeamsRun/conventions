@@ -26,16 +26,27 @@ Guides that AI agents reference when working with the AgentTeams platform.
 | [Linear Guide](platform-guides/linear-guide.md)                             | Linear issue integration                                               |
 | [Runner History Guide](platform-guides/runner-history-guide.md)             | Runner execution history and log inspection                            |
 
+## Skills
+
+Installable skills that connect supported agent environments to AgentTeams.
+
+| Skill                                    | Description                                                     |
+| ---------------------------------------- | --------------------------------------------------------------- |
+| [AgentTeams](skills/agentteams/SKILL.md) | Use AgentTeams governance from agents running in Orca worktrees |
+
+Install the AgentTeams skill from this repository:
+
+```bash
+npx skills add https://github.com/AgentTeamsRun/conventions --skill agentteams
+```
+
 ## Contributing
 
-We welcome contributions! If you'd like to improve a guide or add a convention template:
-
-1. Fork this repository
-2. Create a branch (`feat/your-change`)
-3. Make your changes
-4. Submit a Pull Request
-
-All contributions are reviewed by the AgentTeams team before merging.
+This repository is a read-only mirror generated from the AgentTeams source
+repository. Direct changes would be overwritten by the next mirror sync. To
+suggest an improvement or report a problem, please
+[open an issue](https://github.com/AgentTeamsRun/conventions/issues/new) so the
+AgentTeams team can update the source.
 
 ### Guidelines
 
