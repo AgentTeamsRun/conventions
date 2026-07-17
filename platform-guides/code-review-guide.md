@@ -242,4 +242,24 @@ Do not manually resolve planned findings before the generated plan is verified u
 
 ## Completion Flow
 
+## Cross-repo Change Set
+
+When code reviews across multiple repositories belong to one delivery unit, create a Change Set and link each review with its merge order.
+
+```bash
+agentteams change-set create \
+  --project-id {projectId} \
+  --title "{changeSetTitle}"
+
+agentteams change-set add-item \
+  --change-set-id {changeSetId} \
+  --repository-remote-url {repositoryRemoteUrl} \
+  --branch-name {branchName} \
+  --target-url {pullRequestUrl} \
+  --merge-order 1 \
+  --code-review-id {codeReviewId}
+```
+
+Add every paired review and repository separately, and use `--merge-order` to record the actual merge sequence. The free-text workaround of placing sibling review UUIDs in `reviewerContext` is deprecated. A v1 Change Set is informational only; it neither blocks nor automatically performs merges.
+
 After a completion report, review whether a code review should be recommended. If it is recommended, present it as a separate explicit action. Keep co-action and post-mortem decisions separate from code review decisions.
