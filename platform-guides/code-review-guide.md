@@ -94,6 +94,21 @@ Editable fields are `title`, `targetType`, `targetRef`, `sourceCommitStart`, `so
 
 Do not use `code-review update` for `findings`, `status`, `resultSummary`, `errorMessage`, source links, repository links, or creator metadata. Use `code-review submit-result` for results and the finding commands for finding state changes.
 
+## Related History Matches
+
+Code review create and detail responses include `historyMatchStatus`; detail responses also include `relatedHistories`. Use these automatically matched plans, completion reports, and post-mortems as context for recurring risks, prior decisions, and useful verification ideas. They are references, not evidence that the current change is correct.
+
+Interpret the status as follows:
+
+- `MATCHED` — one or more related records were found. An empty visible list is still possible when matched records were deleted or are not visible to the current caller.
+- `NO_MATCH` — matching ran successfully but found no sufficiently related record.
+- `SKIPPED` — there was not enough diff or file-path context to run matching.
+- `FAILED` — matching could not complete. The code review operation itself can still succeed.
+
+A completion report's `qualityScore` describes that historical report only. Do not treat it as a score for the current review or as proof that an old approach should be repeated.
+
+Updating `diffSummary` on a `PENDING` review recalculates and replaces its related-history matches. Updating other metadata preserves the existing matches. If matching is `FAILED`, continue the review and use `agentteams search` manually when historical context is important.
+
 ## Severity
 
 Use these severities consistently:
