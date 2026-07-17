@@ -39,13 +39,15 @@ User messages from the AgentTeams web UI may contain entity references in `[labe
 
 - **ID prefix stripping (IMPORTANT)**: The `id` part can include a type prefix. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.). The CLI also normalizes a prefixed id automatically if one slips through, but strip it yourself to keep commands portable.
   - Example: `[Safari pull-to-refresh](plan:agentteams_pln_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
-  - Canonical prefix list: `agentteams_pln_` (plan) · `agentteams_rpt_` (completionReport) · `agentteams_rev_` (codeReview) · `agentteams_act_` (coAction) · `agentteams_cnv_` (convention) · `agentteams_pmt_` (postMortem) · `agentteams_doc_` (document)
+  - Canonical prefix list: `agentteams_pln_` (plan) · `agentteams_rpt_` (completionReport) · `agentteams_rev_` (codeReview) · `agentteams_act_` (coAction) · `agentteams_cnv_` (convention) · `agentteams_pmt_` (postMortem) · `agentteams_doc_` (document) · `agentteams_rvf_` (codeReviewFinding) · `agentteams_tsk_` (planTask)
 - Resolution by type:
   - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
   - `completionReport:id` → Download with `agentteams report download --id {id}` and read the local file
   - `postMortem:id` → Download with `agentteams postmortem download --id {id}` and read the local file
   - `coAction:id` → Download with `agentteams coaction download --id {id}` and read the local file
   - `codeReview:id` → Fetch the review record with `agentteams code-review get --id {id}` and use the response as context
+  - `codeReviewFinding:id` → Fetch a single finding (with its parent review header) via `agentteams code-review get --finding-id {id}` and use the response as context. The 3-part form `codeReview:reviewId:findingId` resolves the same way — the trailing `path` segment is the finding id.
+  - `planTask:id` → Fetch a single plan task (with its parent plan header) via `agentteams task get --task-id {id}` and use the response as context. `--plan-id` is optional here (add it only to disambiguate). The 3-part form `plan:planId:taskId` resolves the same way — the trailing `path` segment is the task id.
   - `document:id` → Download with `agentteams document download --id {id}` and read the local file
   - `LINEAR_ISSUE:uuid` → Fetch issue details with `agentteams linear issue get --issue-id {uuid}` and use the response as context. No prefix stripping needed — the value after `LINEAR_ISSUE:` is the raw Linear issue UUID.
   - `GITHUB_ISSUE:owner/repo#number` → GitHub issue. Use `gh issue view {number} --repo {owner/repo}` or GitHub API to fetch details. No prefix stripping needed.
