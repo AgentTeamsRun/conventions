@@ -153,11 +153,23 @@ agentteams plan quick --title "<brief work summary>" \
 
 > The `--content` body format (and when to choose a quick log over the full lifecycle) is the SSOT in `.agentteams/platform/plan-guide.md` (**Quick Log**).
 
-## Unified Search
+## AgentTeams Read Tools (MCP First)
 
-Use `agentteams search` to find entities (plans, co-actions, reports, post-mortems, conventions) across the project in a single call.
+When the AgentTeams MCP server is connected and the matching tool is available, use MCP first for read-only entity access. Choose the tool by intent:
+
+| Intent                                                                                                   | Preferred read path                                                                                                                                                                                                                                                                                 |
+| -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Exact count, server-side filters, or complete inventory                                                  | Call the matching `agentteams_*_list` tool. A list call returns one page: use `meta.total` for the exact visible count and request every page from 1 through `meta.totalPages` for the complete visible inventory. For example, count open co-actions with `agentteams_coaction_list(status=OPEN)`. |
+| Topic or relevance discovery                                                                             | Call `agentteams_search`, then inspect `meta.truncatedByTokenBudget`; semantic search is not an exact count or complete inventory.                                                                                                                                                                  |
+| Known ID, or an item selected from list/search                                                           | Call the matching `agentteams_*_get` tool directly to fetch the full record.                                                                                                                                                                                                                        |
+| Mutation, download, workflow that creates local files, MCP unavailable, or matching MCP tool unavailable | Use the corresponding `agentteams` CLI command.                                                                                                                                                                                                                                                     |
+
+Comment lists are exact only within a known plan, code-review finding, or plan-task parent; there is no project-wide comment list tool.
+
+CLI commands call AgentTeams HTTP APIs directly; they do not use MCP as an internal transport. MCP and CLI share the same authenticated server APIs and project scope, while the fallback rule above only controls which read interface an agent selects.
 
 ```bash
+# CLI fallback example when MCP is unavailable
 agentteams search --query "<keyword>" --format json
 ```
 
