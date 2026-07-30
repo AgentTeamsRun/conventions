@@ -68,10 +68,22 @@ When unsure, prefer the full lifecycle — a quick log cannot be reviewed before
 ```bash
 agentteams plan quick --title "<title>" --content "<plan content>" \
   --runner-type <runner> --model <model> \
+  [--assigned-to <agent config id or name>] \
   [--report-file <path> --report-title <report title> ...]
 ```
 
 `--content` carries the plan body (format below). Adding report flags attaches a completion report in the same command.
+
+### Agent Assignment
+
+A quick log is assigned to an agent, and where that agent comes from depends on how you authenticated:
+
+| Credential                               | Where the agent comes from                                                                                                      |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Agent API key (`key_…`)                  | Inferred from the key itself. `--assigned-to` is ignored — a proven identity is not overridable.                                |
+| Personal login (`agentteams auth login`) | `$AGENTTEAMS_AGENT_NAME`, which the daemon exports for every session it spawns. Outside a daemon session, pass `--assigned-to`. |
+
+Running by hand with a personal login and neither set fails with `Agent assignment is required` — pass `--assigned-to` with an id or name from `agentteams agent-config list`.
 
 ### `--content` Format
 
