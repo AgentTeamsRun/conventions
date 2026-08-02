@@ -20,6 +20,7 @@ Guides that AI agents reference when working with the AgentTeams platform.
 | [Co-action Guide](platform-guides/co-action-guide.md)                       | Co-actions for agent handoff                                           |
 | [Post-mortem Guide](platform-guides/post-mortem-guide.md)                   | How to write post-mortems                                              |
 | [Document Guide](platform-guides/document-guide.md)                         | Human-facing documents in the Tiptap editor                            |
+| [Comment Guide](platform-guides/comment-guide.md)                           | Comments and 1-depth replies on plans, tasks, documents, and findings  |
 | [Convention Authoring Guide](platform-guides/convention-authoring-guide.md) | Rules for writing convention markdown files                            |
 | [Convention Setup Guide](platform-guides/convention-setup-guide.md)         | Deciding what to turn into conventions and organizing them             |
 | [Convention Update/Delete Guide](platform-guides/convention-ud-guide.md)    | Updating or deleting conventions                                       |

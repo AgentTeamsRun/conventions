@@ -163,11 +163,12 @@ When the AgentTeams MCP server is connected and the matching tool is available, 
 | Topic or relevance discovery                                                                                       | Call `agentteams_search`, then inspect `meta.truncatedByTokenBudget`; semantic search is not an exact count or complete inventory.                                                                                                                                                                  |
 | Known ID, or an item selected from list/search                                                                     | Call the matching `agentteams_*_get` tool directly to fetch the full record.                                                                                                                                                                                                                        |
 | Document create / update / delete                                                                                  | Call `agentteams_guide_get("document")` first, then the matching `agentteams_document_create` / `_update` / `_delete` tool. See `.agentteams/platform/document-guide.md` (**Writing via MCP**).                                                                                                     |
+| Comment or reply create / update / delete                                                                          | Call `agentteams_guide_get("comment")` first, then the matching `agentteams_comment_create` / `_update` / `_delete` or `agentteams_comment_reply_create` / `_update` / `_delete` tool. See `.agentteams/platform/comment-guide.md` (**Writing via MCP**).                                           |
 | Any other mutation, download, workflow that creates local files, MCP unavailable, or matching MCP tool unavailable | Use the corresponding `agentteams` CLI command.                                                                                                                                                                                                                                                     |
 
-Document is the only entity with MCP write tools so far. Every other record type (plans, reports, conventions, co-actions, post-mortems, code reviews, comments) is written with the CLI.
+Document and Comment are the entities with MCP write tools so far. Every other record type (plans, reports, conventions, co-actions, post-mortems, code reviews) is written with the CLI.
 
-Comment lists are exact only within a known plan, code-review finding, or plan-task parent; there is no project-wide comment list tool.
+Comment lists are exact only within a known plan, code-review finding, plan-task, or document parent; there is no project-wide comment list tool. Read the replies of one root comment with `agentteams_comment_reply_list`, and one reply with `agentteams_comment_reply_get` — a root comment id and a reply id are not interchangeable.
 
 CLI commands call AgentTeams HTTP APIs directly; they do not use MCP as an internal transport. MCP and CLI share the same authenticated server APIs and project scope, while the fallback rule above only controls which read interface an agent selects.
 
@@ -191,6 +192,7 @@ Before writing or updating **platform records** (plans, reports, conventions, po
 | Co-action (handoff)                    | `.agentteams/platform/co-action-guide.md`                                        |
 | Code review (independent verification) | `.agentteams/platform/code-review-guide.md`                                      |
 | Document (human-facing artifact)       | `.agentteams/platform/document-guide.md`                                         |
+| Comment or reply                       | `.agentteams/platform/comment-guide.md`                                          |
 | Linear (issue/comment)                 | `.agentteams/platform/linear-guide.md`                                           |
 
 ---
