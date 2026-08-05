@@ -35,27 +35,16 @@ Rules for interacting with the AgentTeams platform (CLI, plans, reports, convent
 
 ## Entity References & ID Handling
 
-User messages from the AgentTeams web UI may contain entity references in `[label](type:id)` or `[label](type:id:path)` format.
+User messages may carry entity references as `[label](type:id)` or `[label](type:id:path)`. Hand the reference token to the CLI verbatim — it detects the type, strips the id prefix, and dispatches:
 
-- **ID prefix stripping (IMPORTANT)**: The `id` part can include a type prefix. Always strip this prefix before passing the id to any CLI flag (`--id`, `--plan-id`, etc.). The CLI also normalizes a prefixed id automatically if one slips through, but strip it yourself to keep commands portable.
-  - Example: `[Safari pull-to-refresh](plan:agentteams_pln_f62762fc-730a-4201-8586-e2541505ed1b)` → use `f62762fc-730a-4201-8586-e2541505ed1b`
-  - Canonical prefix list: `agentteams_pln_` (plan) · `agentteams_rpt_` (completionReport) · `agentteams_rev_` (codeReview) · `agentteams_act_` (coAction) · `agentteams_cnv_` (convention) · `agentteams_pmt_` (postMortem) · `agentteams_doc_` (document) · `agentteams_rvf_` (codeReviewFinding) · `agentteams_tsk_` (planTask)
-- Resolution by type:
-  - `convention:id:.agentteams/path` → Read the local file at the given path (e.g., `.agentteams/rules/context.md`)
-  - `completionReport:id` → Download with `agentteams report download --id {id}` and read the local file
-  - `postMortem:id` → Download with `agentteams postmortem download --id {id}` and read the local file
-  - `coAction:id` → Download with `agentteams coaction download --id {id}` and read the local file
-  - `codeReview:id` → Fetch the review record with `agentteams code-review get --id {id}` and use the response as context
-  - `codeReviewFinding:id` → Fetch a single finding (with its parent review header) via `agentteams code-review get --finding-id {id}` and use the response as context. The 3-part form `codeReview:reviewId:findingId` resolves the same way — the trailing `path` segment is the finding id.
-  - `planTask:id` → Fetch a single plan task (with its parent plan header) via `agentteams task get --task-id {id}` and use the response as context. `--plan-id` is optional here (add it only to disambiguate). The 3-part form `plan:planId:taskId` resolves the same way — the trailing `path` segment is the task id.
-  - `document:id` → Download with `agentteams document download --id {id}` and read the local file
-  - `LINEAR_ISSUE:uuid` → Fetch issue details with `agentteams linear issue get --issue-id {uuid}` and use the response as context. No prefix stripping needed — the value after `LINEAR_ISSUE:` is the raw Linear issue UUID.
-  - `GITHUB_ISSUE:owner/repo#number` → GitHub issue. Use `gh issue view {number} --repo {owner/repo}` or GitHub API to fetch details. No prefix stripping needed.
-  - `GITHUB_PR:owner/repo#number` → GitHub pull request. Use `gh pr view {number} --repo {owner/repo}` or GitHub API to fetch details. No prefix stripping needed.
-  - `GITLAB_ISSUE:projectPath#iid` → GitLab issue. Use `glab issue view {iid} --repo {projectPath}` or GitLab API to fetch details. No prefix stripping needed.
-  - `GITLAB_MERGE_REQUEST:projectPath!iid` → GitLab merge request. Use `glab mr view {iid} --repo {projectPath}` or GitLab API to fetch details. No prefix stripping needed.
-  - `BITBUCKET_ISSUE:workspace/repo#id` → Bitbucket issue. Resolves to `https://bitbucket.org/{workspace}/{repo}/issues/{id}`; use the URL or `agentteams search` to fetch context. No prefix stripping needed. Bitbucket issues are also extracted as plan origin issues.
-  - `BITBUCKET_PR:workspace/repo#id` → Bitbucket pull request. Resolves to `https://bitbucket.org/{workspace}/{repo}/pull-requests/{id}`; use the URL or `agentteams search` to fetch context. No prefix stripping needed.
+```bash
+agentteams resolve "plan:agentteams_pln_f62762fc-730a-4201-8586-e2541505ed1b"
+```
+
+Act on the returned `kind`: `file` / `localFile` → read `filePath`; `record` → use the inline payload; `external` → open `url` or run `suggestedCommand` (`gh`, `glab`).
+
+- **MCP first**: when the AgentTeams MCP server is connected and the type is already known, the typed `agentteams_*_get` tool wins (see **AgentTeams Read Tools**); use `resolve` when MCP is unavailable or the type has to be worked out from the token. Exception: `convention:id:path` already carries the deployed local path — read that file directly, no call.
+- **Older CLI without `resolve`** (the command fails with `unknown command 'resolve'` — that is the signal, not an error to report): fall back to `plan|report|postmortem|coaction|document download --id`, `code-review get --id|--finding-id`, `task get --task-id`, `linear issue get --issue-id`; a `convention:id:path` reference is just a local file — read the path.
 
 ## CLI Output Rules
 
@@ -155,24 +144,11 @@ agentteams plan quick --title "<brief work summary>" \
 
 ## AgentTeams Read Tools (MCP First)
 
-When the AgentTeams MCP server is connected and the matching tool is available, use MCP first for read-only entity access. Choose the tool by intent:
+When the AgentTeams MCP server is connected, prefer MCP for read-only entity access. **Each tool's own description is the SSOT** for paging, filter defaults, and truncation, and it always matches the tools actually exposed — read it and decide, rather than following a copy kept here.
 
-| Intent                                                                                                             | Preferred read path                                                                                                                                                                                                                                                                                                                                                                                                     |
-| ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Exact count, server-side filters, or complete inventory                                                            | Call the matching `agentteams_*_list` tool. A list call returns one page: use `meta.total` for the exact visible count and request every page from 1 through `meta.totalPages` for the complete visible inventory. For example, `agentteams_coaction_list(status=OPEN)` counts open manual handoffs: co-action lists default to `source=MANUAL`, so pass `source=ALL` when the count must include runner session dumps. |
-| Topic or relevance discovery                                                                                       | Call `agentteams_search`, then inspect `meta.truncatedByTokenBudget`; semantic search is not an exact count or complete inventory.                                                                                                                                                                                                                                                                                      |
-| Known ID, or an item selected from list/search                                                                     | Call the matching `agentteams_*_get` tool directly to fetch the full record.                                                                                                                                                                                                                                                                                                                                            |
-| Document create / update / delete                                                                                  | Call `agentteams_guide_get("document")` first, then the matching `agentteams_document_create` / `_update` / `_delete` tool. See `.agentteams/platform/document-guide.md` (**Writing via MCP**).                                                                                                                                                                                                                         |
-| Comment or reply create / update / delete                                                                          | Call `agentteams_guide_get("comment")` first, then the matching `agentteams_comment_create` / `_update` / `_delete` or `agentteams_comment_reply_create` / `_update` / `_delete` tool. See `.agentteams/platform/comment-guide.md` (**Writing via MCP**).                                                                                                                                                               |
-| Any other mutation, download, workflow that creates local files, MCP unavailable, or matching MCP tool unavailable | Use the corresponding `agentteams` CLI command.                                                                                                                                                                                                                                                                                                                                                                         |
+Use the `agentteams` CLI for everything else: mutations without an MCP write tool, downloads, workflows that create local files, and any environment where MCP or the matching tool is unavailable.
 
-The CLI follows the same counting rule: `agentteams coaction list` defaults to `--source MANUAL`; pass `--source ALL` when the count must include runner session dumps.
-
-Document and Comment are the entities with MCP write tools so far. Every other record type (plans, reports, conventions, co-actions, post-mortems, code reviews) is written with the CLI.
-
-Comment lists are exact only within a known plan, code-review finding, plan-task, or document parent; there is no project-wide comment list tool. Read the replies of one root comment with `agentteams_comment_reply_list`, and one reply with `agentteams_comment_reply_get` — a root comment id and a reply id are not interchangeable.
-
-CLI commands call AgentTeams HTTP APIs directly; they do not use MCP as an internal transport. MCP and CLI share the same authenticated server APIs and project scope, while the fallback rule above only controls which read interface an agent selects.
+CLI commands call AgentTeams HTTP APIs directly; they do not use MCP as an internal transport. Both surfaces share the same authenticated APIs and project scope.
 
 ```bash
 # CLI fallback example when MCP is unavailable
