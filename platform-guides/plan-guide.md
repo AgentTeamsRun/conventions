@@ -256,14 +256,21 @@ A task is ready when it is `TODO` and every task in `dependsOnTaskIds` is `DONE`
 Repeat this loop for every ready task:
 
 ```bash
-# 1. Immediately before implementation
+# 1. Read the task's own comments before touching the task
+agentteams comment list --task-id {taskId}
+
+# 2. Immediately before implementation
 agentteams task start --plan-id {planId} --task-id {taskId}
 
-# 2. Implement the task, then run its Acceptance Criteria and QA Scenarios
+# 3. Implement the task, then run its Acceptance Criteria and QA Scenarios
 
-# 3. Record the verified result
+# 4. Record the verified result
 agentteams task finish --plan-id {planId} --task-id {taskId} --status <DONE | BLOCKED | SKIPPED>
 ```
+
+The plan-level comment check in "Plan Start → Execution Flow" does not cover task comments — they hang off the task and only `--task-id` returns them. Treat a task comment as part of that task's specification: it narrows acceptance criteria, names a blocker, or carries evidence the plan body does not. Reflect it in the implementation and in the verification you run.
+
+Task comments carry no `type` and are not a stop signal — unlike a plan `RISK` or `MODIFICATION` comment, they do not pause execution. Keep working. When a task comment contradicts the plan body or demands a decision outside your scope, reflect what you can, then raise it on the plan with `agentteams comment create --plan-id {planId} --type RISK` and follow the existing plan-comment rules.
 
 Do not mark a task `DONE` merely because code was written. Verification is part of the task. If verification fails and cannot be resolved within scope, use `BLOCKED` and record the failure evidence in a plan comment.
 

@@ -17,6 +17,23 @@ Every root comment attaches to exactly **one** of four targets. Pick the record 
 
 Never pass two of them in a single write. A comment has one parent by construction, and the write tools reject a call that names more than one.
 
+## Read Before You Act on a Record
+
+A comment is only worth writing because someone reads it. Each target has a moment where reading is mandatory:
+
+| Target    | List them before                   | Command                                              |
+| --------- | ---------------------------------- | ---------------------------------------------------- |
+| `PLAN`    | starting the plan                  | `agentteams comment list --plan-id {planId}`         |
+| Plan task | starting that task                 | `agentteams comment list --task-id {taskId}`         |
+| Document  | editing or acting on that document | `agentteams document comment-list --id {documentId}` |
+| Finding   | fixing that finding                | `agentteams comment list --finding-id {findingId}`   |
+
+Each parent's comments are reachable only by that parent's id. Listing a plan's comments does not return its tasks' comments, and fetching a code review does not return its findings' comments — read each target separately.
+
+Check `replyCount` on every root comment you read, and pull the thread with `agentteams comment reply-list --id {commentId}` when it is non-zero. The decisive answer often sits in a reply, not the root.
+
+**Only plan comments can halt work.** An unresolved `RISK` or `MODIFICATION` on a plan stops a runner until a human confirms. Task, document, and finding comments carry no type and are not stop signals: read them, reflect them in what you do and in the verification you run, and keep going. When one of them contradicts the record it hangs off or forces a decision above your scope, raise that on the **plan** as a `RISK` comment — that is the only channel that blocks.
+
 ## Plan Comments Carry a Type
 
 A **plan** root comment additionally carries a `type`, and it is the only target that does:
@@ -105,6 +122,9 @@ When MCP is unavailable or a tool is missing, use the CLI — it reaches the sam
 ```bash
 # Root comments
 agentteams comment list --plan-id {planId}
+agentteams comment list --task-id {taskId}
+agentteams comment list --finding-id {findingId}
+agentteams document comment-list --id {documentId}
 agentteams comment create --plan-id {planId} --type RISK --content "<markdown>"
 agentteams comment create --task-id {taskId} --content "<markdown>"
 agentteams comment create --finding-id {findingId} --content "<markdown>"

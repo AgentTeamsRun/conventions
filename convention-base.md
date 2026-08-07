@@ -104,7 +104,7 @@ When executing a plan:
 1. Download the runbook — `agentteams plan download --id {planId}` (saves to `.agentteams/cli/active-plan/{filename}.md`). Read it before starting.
 2. Check comments, especially `RISK` — `agentteams comment list --plan-id {planId}`.
 3. Start the plan lifecycle before starting any task.
-4. For a V2 plan, select only a task whose dependencies are complete, then run its required start → implement → verify → finish lifecycle.
+4. For a V2 plan, select only a task whose dependencies are complete, read its own comments (`agentteams comment list --task-id {taskId}`), then run its required start → implement → verify → finish lifecycle.
 5. Repeat until no task remains `TODO` or `IN_PROGRESS`; explain every `BLOCKED` or `SKIPPED` result in a plan comment.
 6. Commit code changes before `plan finish`, then complete the report and cleanup flow.
 

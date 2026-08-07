@@ -177,10 +177,18 @@ For a plan-based review, fix findings directly in the source plan's existing bra
    agentteams code-review get --id {codeReviewId}
    ```
 
-2. Continue on the branch or pull request produced by the source plan.
-3. Fix one or more related findings.
-4. Run focused verification for every finding covered by the change.
-5. Immediately resolve each finding whose fix has passed verification:
+2. Read the comments on every finding you are about to fix. `code-review get` does not return them — a finding's conversation is only reachable by its own id:
+
+   ```bash
+   agentteams comment list --finding-id {findingId}
+   ```
+
+   A finding comment is where a reviewer or teammate narrows the fix: a preferred direction, a correction to the finding's premise, a note that the problem was already handled elsewhere. Reflect it in the fix and in the verification you run. It is not a stop signal — keep working. When a comment establishes that the finding is invalid or explicitly accepted, `agentteams code-review dismiss --id {codeReviewId} --finding-id {findingId}` is the correct outcome, not `resolve`.
+
+3. Continue on the branch or pull request produced by the source plan.
+4. Fix one or more related findings.
+5. Run focused verification for every finding covered by the change.
+6. Immediately resolve each finding whose fix has passed verification:
 
    ```bash
    # Resolve one verified finding
@@ -194,8 +202,8 @@ For a plan-based review, fix findings directly in the source plan's existing bra
      --finding-ids {findingId1},{findingId2}
    ```
 
-6. Leave any unverified or incomplete finding `OPEN`.
-7. Re-run the source plan's relevant final verification before ending the fix run.
+7. Leave any unverified or incomplete finding `OPEN`.
+8. Re-run the source plan's relevant final verification before ending the fix run.
 
 Resolve multiple findings together only when the same verified change covers every listed finding. The code review automatically becomes `COMPLETED` when every active finding is `RESOLVED` or `DISMISSED`.
 
