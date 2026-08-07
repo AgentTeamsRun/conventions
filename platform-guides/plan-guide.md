@@ -167,7 +167,7 @@ The phrase "start the plan" is an explicit approval signal — do not stop after
 
 ## Entity Reference Resolution
 
-Plan bodies may contain `[label](type:id)` / `[label](type:id:path)` references. Resolve them per the always-on convention's **Entity References & ID Handling** rules — pass the reference token to `agentteams resolve` as-is and act on the returned `kind`. No plan-specific rules beyond those.
+Plan bodies may contain `[label](type:id)` / `[label](type:id:path)` references. Resolve them per the always-on convention's **Entity References & ID Handling** rules — pass the reference token as-is to the `agentteams_resolve` tool if your tool list has it, or to `agentteams resolve` otherwise, and act on the returned `kind`. No plan-specific rules beyond those.
 
 ## Origin Issue Linking
 
