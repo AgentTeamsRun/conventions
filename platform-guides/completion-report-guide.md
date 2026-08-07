@@ -169,6 +169,18 @@ Otherwise set `NOT_NEEDED` with a brief reason (e.g., "docs-only", "test-only, n
 
 > This only **declares intent** for the review inbox. It does not by itself create a code review record — review creation remains an explicit, independent action (see `code-review-guide.md`).
 
+### Dismissing a Recommendation After Creation
+
+If a completion report was created with `REQUIRED` but independent review is no longer needed, dismiss the recommendation through its dedicated action:
+
+```bash
+agentteams report dismiss-review --id {reportId}
+```
+
+The recommendation cannot be changed with `agentteams report update`. Dismissing changes only the recommendation; any existing `reviewReason` remains. If that reason no longer matches the new state, a human must correct it in the web UI.
+
+Use `dismiss-review` only while no active (non-cancelled) code review is linked to the report; if an active code review is already linked, the server rejects the request with HTTP 409.
+
 ## Verification Examples
 
 Run **your project's** typecheck/test/build commands — use whatever the project's stack and layout define (the right working directory, package manager, and task names). The shape is:
