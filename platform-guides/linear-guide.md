@@ -13,7 +13,7 @@ agentteams linear issue get --issue-id <linearIssueId>
 ```
 
 - Returns the issue title, description, status, assignee, priority, labels, and URL.
-- Use `--format json` when another tool needs structured output.
+- Commands emit structured JSON by default.
 
 ### Create an Issue
 
@@ -50,7 +50,7 @@ agentteams linear comment list --issue-id <linearIssueId>
 
 - Returns all comments on the specified issue.
 - Each comment includes `id`, `body`, `user` (author name, nullable), `createdAt`, and `updatedAt`.
-- Use `--format json` when another tool needs structured output.
+- Commands emit structured JSON by default.
 
 ### Create a Comment
 

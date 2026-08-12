@@ -152,7 +152,7 @@ CLI commands call AgentTeams HTTP APIs directly; they do not use MCP as an inter
 
 ```bash
 # CLI fallback example when MCP is unavailable
-agentteams search --query "<keyword>" --format json
+agentteams search --query "<keyword>"
 ```
 
 ## Guide Checks Before Writing Platform Records

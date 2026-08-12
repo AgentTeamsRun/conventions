@@ -195,7 +195,7 @@ agentteams plan link-issue --id {planId} --provider BITBUCKET \
   --external-id <workspace/repo#id> --external-url <issueUrl> --title "{issueTitle}"
 ```
 
-Repeat `agentteams plan link-issue` for multiple issues. `agentteams plan issue` exists as a short alias, but platform guides should prefer the official action shown in `agentteams plan --help`: `link-issue`.
+Repeat `agentteams plan link-issue` for multiple issues.
 
 **Fallback — Entity reference in plan content:**
 

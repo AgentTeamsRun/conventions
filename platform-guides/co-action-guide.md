@@ -16,7 +16,7 @@ If the work just needs "what I did", use a completion report instead — not a c
 
 ## Guardrails (read first)
 
-- `coaction create` / `update` print tips to **stderr**; structured result (`--format json`) stays on **stdout**. Redirect `2>` when piping JSON.
+- `coaction create` / `update` print tips to **stderr**; the structured result stays on **stdout**. Redirect `2>` when piping JSON.
 - Do not dump raw session logs — curate.
 - Do not put implementation detail here — that belongs in the completion report.
 - Never skip `## Follow-up / Known Constraints` — it is the highest-value section for handoff.
@@ -88,7 +88,7 @@ agentteams coaction takeaway-create --id {id} --content "<insight>"
 agentteams coaction takeaway-list   --id {id}
 
 # Keep stdout clean for JSON consumers
-agentteams coaction create --title "<t>" --file <f> --format json 2>/tmp/tips.log
+agentteams coaction create --title "<t>" --file <f> 2>/tmp/tips.log
 ```
 
 > Full flags for any subcommand: `agentteams coaction <subcommand> --help`
