@@ -44,7 +44,8 @@ agentteams resolve "plan:agentteams_pln_f62762fc-730a-4201-8586-e2541505ed1b"
 Act on the returned `kind`: `file` / `localFile` → read `filePath`; `record` → use the inline payload; `external` → open `url` or run `suggestedCommand` (`gh`, `glab`). The `agentteams_resolve` tool answers with the same `kind`s minus `file` (bodies come back inline as `record`), and its `localFile` result carries `filePath` only when the session is bound to a local checkout — otherwise read its project-root-relative `path`.
 
 - **MCP first**: when the AgentTeams MCP server is connected and the type is already known, the typed `agentteams_*_get` tool wins (see **AgentTeams Read Tools**). When the type has to be worked out from the token, use `agentteams_resolve` **if your tool list has it** — otherwise the `resolve` command above does the same job. Exception: `convention:id:path` already carries the deployed local path — read that file directly, no call.
-- **Older CLI without `resolve`** (the command fails with `unknown command 'resolve'` — that is the signal, not an error to report): fall back to `plan|report|postmortem|coaction|document download --id`, `code-review get --id|--finding-id`, `task get --task-id`, `linear issue get --issue-id`; a `convention:id:path` reference is just a local file — read the path.
+- **Older CLI without `resolve`** (the command fails with `unknown command 'resolve'` — that is the signal, not an error to report): fall back to `plan|report|postmortem|coaction|document download --id`, `code-review get --id|--finding-id`, `task get --task-id`, `linear issue get --issue-id`, `sentry issue get --issue-id`; a `convention:id:path` reference is just a local file — read the path.
+- A `SENTRY_ISSUE:<numeric-id>` reference carries only Sentry's canonical issue ID. Never build a permalink from that ID. Read it through `agentteams sentry issue get --issue-id <numeric-id>` so the server verifies the project binding and returns the stored Sentry permalink.
 
 ## CLI Output Rules
 
@@ -172,6 +173,7 @@ Before writing or updating **platform records** (plans, reports, conventions, po
 | Document (human-facing artifact)       | `.agentteams/platform/document-guide.md`                                         |
 | Comment or reply                       | `.agentteams/platform/comment-guide.md`                                          |
 | Linear (issue/comment)                 | `.agentteams/platform/linear-guide.md`                                           |
+| Sentry (project issue context)         | `.agentteams/platform/sentry-guide.md`                                           |
 
 ---
 
