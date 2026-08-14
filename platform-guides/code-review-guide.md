@@ -43,7 +43,7 @@ agentteams code-review create \
   --model <model-id>
 ```
 
-Do not use reviewer names, agent names, or author names as substitutes for `--runner-type` or `--model`. If either value is unknown, stop and ask for the correct execution environment before creating the record.
+Do not use reviewer names, agent names, or author names as substitutes for `--runner-type` or `--model`. Inside a runner session both flags are filled in from the session, so omit them rather than restating what the runner already knows. Outside one, if either value is unknown, stop and ask for the correct execution environment before creating the record — never guess it.
 
 Review status is derived from the review result and finding lifecycle:
 

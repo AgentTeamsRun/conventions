@@ -78,12 +78,16 @@ agentteams plan quick --title "<title>" --content "<plan content>" \
 
 A quick log is assigned to an agent, and where that agent comes from depends on how you authenticated:
 
-| Credential                               | Where the agent comes from                                                                                                      |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Agent API key (`key_…`)                  | Inferred from the key itself. `--assigned-to` is ignored — a proven identity is not overridable.                                |
-| Personal login (`agentteams auth login`) | `$AGENTTEAMS_AGENT_NAME`, which the daemon exports for every session it spawns. Outside a daemon session, pass `--assigned-to`. |
+| Credential                               | Where the agent comes from                                                                                              |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Agent API key (`key_…`)                  | Inferred from the key itself. `--assigned-to` is ignored — a proven identity is not overridable.                        |
+| Personal login (`agentteams auth login`) | `$AGENTTEAMS_AGENT_NAME` when a runner spawned the session; otherwise the server identifies the agent from the session. |
 
-Running by hand with a personal login and neither set fails with `Agent assignment is required` — pass `--assigned-to` with an id or name from `agentteams agent-config list`.
+The server's step is a fallback, not a guess: it matches the calling machine against the agents **you** registered in this project, and narrows by project root when one machine holds several. If that does not land on exactly one agent, it assigns nothing rather than picking — the call then fails with `Agent assignment is required`, and you pass `--assigned-to` with an id or name from `agentteams agent-config list`.
+
+`--assigned-to` always beats the server's judgment, so naming a different agent still works.
+
+> This applies to `plan start` and `plan quick`. Both accept `--assigned-to`; neither requires it when the session identifies one agent.
 
 ### `--content` Format
 
@@ -126,15 +130,21 @@ A quick log's body **scales to whether you attach a completion report**, so the 
 
 ## Runner Type & Model Reference
 
-`--runner-type` and `--model` are **required** for `plan create`, `plan quick`, `report create`, and report-attaching `plan finish` — the creator snapshot (`Plan.*`) at create, the executor snapshot (`CompletionReport.*`) at report; the two can differ. Not required for `plan start` or report-less `plan finish`. Always required for `plan quick`, whether or not it attaches a report.
+`--runner-type` and `--model` are **required** for `plan create`, `plan quick`, `report create`, `code-review create`, and report-attaching `plan finish` — the creator snapshot (`Plan.*`) at create, the executor snapshot (`CompletionReport.*`) at report; the two can differ. Not required for `plan start` or report-less `plan finish`. Always required for `plan quick`, whether or not it attaches a report.
+
+**Inside a runner session you do not pass either flag.** The runner exports the execution snapshot to every session it spawns, and the CLI fills both in from it. Pass them explicitly only to override, or when running outside a runner session (a local terminal, a manual desktop run) — there is nothing there that knows which model you are on, so the commands above still fail without them.
 
 | Runner Type   | Description            |
 | ------------- | ---------------------- |
+| `OPENCODE`    | OpenCode               |
 | `CLAUDE_CODE` | Claude Code CLI        |
 | `CODEX`       | OpenAI Codex CLI       |
 | `ANTIGRAVITY` | Google Antigravity CLI |
 | `AMP`         | Amp Code               |
-| `OPENCODE`    | OpenCode               |
+| `COPILOT_CLI` | GitHub Copilot CLI     |
+| `CURSOR_CLI`  | Cursor CLI             |
+| `KIMI_CLI`    | Moonshot Kimi Code CLI |
+| `KIRO_CLI`    | Kiro CLI               |
 
 `--model` accepts any model ID string used by the runner engine (e.g., `claude-opus-4-6`, `o3`).
 
