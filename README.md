@@ -24,6 +24,7 @@ Guides that AI agents reference when working with the AgentTeams platform.
 | [Convention Authoring Guide](platform-guides/convention-authoring-guide.md) | Rules for writing convention markdown files                            |
 | [Convention Setup Guide](platform-guides/convention-setup-guide.md)         | Deciding what to turn into conventions and organizing them             |
 | [Convention Update/Delete Guide](platform-guides/convention-ud-guide.md)    | Updating or deleting conventions                                       |
+| [Skill Package Guide](platform-guides/skill-package-guide.md)               | Skill package contract, decisions, and runner discovery                |
 | [Linear Guide](platform-guides/linear-guide.md)                             | Linear issue integration                                               |
 | [Sentry Guide](platform-guides/sentry-guide.md)                             | Project-bound Sentry issue context                                     |
 | [Runner History Guide](platform-guides/runner-history-guide.md)             | Runner execution history and log inspection                            |

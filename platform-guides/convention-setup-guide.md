@@ -52,11 +52,17 @@ Scan for AI tool rule files that may already contain valuable conventions:
 
 ### Recommended structure
 
-| Convention            | Purpose                                                                 | Trigger                         |
-| --------------------- | ----------------------------------------------------------------------- | ------------------------------- |
-| `context`             | Project identity, tech stack, directory structure                       | `always_on`                     |
-| `conventions`         | Common coding conventions (naming, logging, Git branching)              | `always_on`                     |
-| Domain-specific rules | Detailed rules for schemas, routes, frontend, testing, deployment, etc. | `model_decision` or conditional |
+| Convention            | Category     | Purpose                                                                 | Trigger                         |
+| --------------------- | ------------ | ----------------------------------------------------------------------- | ------------------------------- |
+| `context`             | `rules`      | Project identity, tech stack, directory structure                       | `always_on`                     |
+| `conventions`         | `rules`      | Common coding conventions (naming, logging, Git branching)              | `always_on`                     |
+| Domain-specific rules | `rules`      | Detailed rules for schemas, routes, frontend, testing, deployment, etc. | `model_decision` or conditional |
+| Recurring procedures  | `guides`     | Release checklist, incident triage, environment setup steps             | `model_decision` or `-`         |
+| Lookup material       | `references` | Terminology, env var inventory, external error-code tables              | `-`                             |
+
+> Do not put everything in `rules`. Use the discriminating questions in `convention-authoring-guide.md` §3: a
+> constraint is `rules`, an ordered procedure is `guides`, lookup material is `references`. A capability the agent
+> performs on demand is not a Convention at all — it is a Skill (`skill-package-guide.md`).
 
 ### Size guidelines
 
@@ -77,7 +83,8 @@ Scan for AI tool rule files that may already contain valuable conventions:
 ## 6) Step 5 — Create and Register Conventions
 
 1. Write each Convention file following `convention-authoring-guide.md` format rules.
-2. Place files under `.agentteams/<category>/` (`rules`, `skills`, `guides`, or `references`).
+2. Place files under `.agentteams/<category>/` (`rules`, `guides`, or `references`). If the content is a capability
+   package rather than policy, register it as a Skill instead (`agentteams skill create`, see `skill-package-guide.md`).
 3. Register with the CLI:
 
 ```bash
@@ -110,7 +117,12 @@ agentteams convention download
     data-modeling.md    # model_decision — Persistence or schema design rules
     interfaces.md       # model_decision — API, CLI, UI, or integration contracts
     testing.md          # model_decision — Test framework, commands, and patterns
-    release-process.md  # model_decision — Deploy, release, or publishing checklist
+  guides/
+    release-process.md  # model_decision — Deploy, release, or publishing steps
+  references/
+    terminology.md      # -            — Product wording and glossary lookups
+  skills/
+    add-a-runner/       # Skill package (SKILL.md) — not a Convention
 ```
 
 > This is an illustrative example. Adapt the set to your project's actual stack and workflow — not every project needs all of these, and some projects may need different domains entirely.

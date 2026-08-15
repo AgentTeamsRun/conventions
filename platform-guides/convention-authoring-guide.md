@@ -56,10 +56,42 @@ Place a `# AGENT_RULES` heading at the top of the body (right after frontmatter)
 ## 3) Category / path rules
 
 - Use one of the following values for `<category>`:
-  - `rules`, `skills`, `guides`, `references`
+  - `rules`, `guides`, `references`
 - Use the path format `.agentteams/<category>/<fileName>.md`.
 - Prefer lowercase, hyphen-based file names (e.g. `coding-standards.md`).
 - Avoid file name collisions within the same category; depending on policy, the server/CLI may reject conflicts.
+
+### Is this a Convention at all?
+
+Ask this **before** picking a category. A capability — a procedure the agent performs when it decides the task calls
+for it — is a **Skill**, not a Convention. Skills are packages (`SKILL.md` + optional `references/`, `scripts/`),
+they live under `.agentteams/skills/<slug>/`, and they are created with `agentteams skill create`. See
+`skill-package-guide.md`.
+
+- ✅ Convention: "Route files live at `src/routes/{plural}/index.ts`." — a rule that holds whether or not anyone is
+  performing a task right now.
+- ✅ Skill: "How to add a new runner: implement the interface, register the factory case, wire the parser." — a
+  procedure that is loaded only when that job comes up.
+- 🚫 `skills` is **not** a Convention category. It is rejected for new conventions; existing rows stay readable.
+
+### Choosing between `rules`, `guides`, and `references`
+
+| Category     | Holds                                                                | Discriminating question                                                      | Typical trigger                 |
+| ------------ | -------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------- |
+| `rules`      | Constraints the agent must comply with                               | "If an agent ignores this, is the work wrong?" → yes                         | `always_on` or `model_decision` |
+| `guides`     | Procedures for a recurring task — the ordered steps and the checks   | "Is this _how we do_ a recurring task, rather than a constraint?" → yes      | `model_decision` or `-`         |
+| `references` | Lookup material: tables, glossaries, inventories, external contracts | "Is this something an agent looks **up**, not something it must obey?" → yes | `-`                             |
+
+Worked examples:
+
+- ✅ `rules`: naming conventions, layering direction, branch policy, "never commit to `dev` directly".
+- ✅ `guides`: release checklist, incident triage steps, how to capture authenticated screenshots.
+- ✅ `references`: terminology table, environment variable inventory, third-party API error-code list.
+- ❌ Do not file a release checklist under `rules` just because it is important — importance is not the axis.
+  Compliance is: a checklist tells you _how_, a rule tells you what is _not allowed_.
+- ❌ Do not file a glossary under `guides` — nothing is being performed.
+- ❌ Do not split one topic across two categories. If a document contains both a hard constraint and a long
+  procedure, keep the constraint in `rules` and link out to the `guides` document.
 
 ## 4) Body authoring rules (Web editor toolbar baseline)
 
@@ -92,6 +124,8 @@ agentteams convention create --file .agentteams/{category}/{convention-name}.md
 agentteams convention download
 ```
 
-> Place the file under `.agentteams/<category>/` before running `convention create`. The `<category>` must be one of: `rules`, `skills`, `guides`, `references`.
+> Place the file under `.agentteams/<category>/` before running `convention create`. The `<category>` must be one of: `rules`, `guides`, `references`.
+>
+> Authoring a capability package instead? Use `agentteams skill create` — see `skill-package-guide.md`.
 >
 > Updating or deleting conventions: see `convention-ud-guide.md`.

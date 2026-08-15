@@ -33,6 +33,28 @@ Rules for interacting with the AgentTeams platform (CLI, plans, reports, convent
 
 > Run this check **once per session**, not before every command. Only `agentteams convention download` writes anything; `agentteams convention status` is safe to call anytime.
 
+## Skill Freshness
+
+> ⚠️ Skill packages are **not** synced by the convention check above — `.agentteams/skills/` has a separate owner. Nothing else fetches them either, so a fresh clone or a new git worktree starts with no packages at all, and the Skill Index below then points at files that do not exist.
+
+5. In the same session-start step, check skills (read-only):
+
+   ```bash
+   agentteams skill status
+   ```
+
+6. If updates are reported (`updateAvailable: true`), sync:
+
+   ```bash
+   agentteams skill download
+   ```
+
+   The same command also copies each package into the engine-native paths. If you are `CLAUDE_CODE` and the repository has no `.claude/` directory, that mirror is skipped by default — pass `--skill-targets agents,claude` so your own engine gets one. See `.agentteams/platform/skill-package-guide.md` for the per-engine paths.
+
+7. If the command fails with `unknown command 'skill'`, the installed CLI predates skill packages. **Skip silently and continue** — that is the signal, not an error to report.
+
+> **A skill you need right now**: read `.agentteams/skills/<slug>/SKILL.md` directly from the Skill Index below. Downloading is enough to make that possible. Engine-native loading happens when a session starts, so a package fetched mid-session is picked up natively from the next session on.
+
 ## Entity References & ID Handling
 
 User messages may carry entity references as `[label](type:id)` or `[label](type:id:path)`. Hand the reference token to the CLI verbatim — it detects the type, strips the id prefix, and dispatches:
@@ -49,7 +71,9 @@ Act on the returned `kind`: `file` / `localFile` → read `filePath`; `record` �
 
 ## CLI Output Rules
 
-> ⚠️ When creating, updating, or deleting platform records (plans, conventions, reports, postmortems, co-actions, code reviews, documents), do not stop at writing local files — always register the result to the server via the CLI.
+> ⚠️ When creating, updating, or deleting platform records (plans, conventions, skills, reports, postmortems, co-actions, code reviews, documents), do not stop at writing local files — always register the result to the server via the CLI.
+
+> ⚠️ **Skills are the easiest one to leave unregistered**, because a skill package is a local directory and writing the files feels like finishing. It is not: until `agentteams skill create --dir .agentteams/skills/<slug> --apply` runs, the package exists only on this machine — the web list, the Skill Index in this file, and every other runner stay empty.
 
 > ⚠️ **Always display `webUrl`**: When a CLI command output contains a `webUrl` field, you **must** show it to the user as a clickable markdown link (e.g., `[View in AgentTeams](https://...)`) — not as raw text or inline code. Do not omit or summarize it away — the URL is the primary way users navigate to the created or updated entity.
 
@@ -158,7 +182,7 @@ agentteams search --query "<keyword>"
 
 ## Guide Checks Before Writing Platform Records
 
-Before writing or updating **platform records** (plans, reports, conventions, postmortems, code reviews, documents), read the matching guide:
+Before writing or updating **platform records** (plans, reports, conventions, skills, postmortems, code reviews, documents), read the matching guide:
 
 | Record type                            | Guide to read                                                                    |
 | -------------------------------------- | -------------------------------------------------------------------------------- |
@@ -168,6 +192,7 @@ Before writing or updating **platform records** (plans, reports, conventions, po
 | Postmortem                             | `.agentteams/platform/post-mortem-guide.md`                                      |
 | Convention (create)                    | `.agentteams/platform/convention-authoring-guide.md`                             |
 | Convention (update/delete)             | `.agentteams/platform/convention-ud-guide.md`                                    |
+| Skill (capability package)             | `.agentteams/platform/skill-package-guide.md`                                    |
 | Co-action (handoff)                    | `.agentteams/platform/co-action-guide.md`                                        |
 | Code review (independent verification) | `.agentteams/platform/code-review-guide.md`                                      |
 | Document (human-facing artifact)       | `.agentteams/platform/document-guide.md`                                         |
