@@ -14,7 +14,6 @@ Guides that AI agents reference when working with the AgentTeams platform.
 | --------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | [Plan Guide](platform-guides/plan-guide.md)                                 | Writing and executing plans (complexity tiers, tasks, verification)    |
 | [Plan Template](platform-guides/plan-template.md)                           | Copyable FULL-tier plan structure                                      |
-| [Plan HTML Summary Guide](platform-guides/plan-preview-guide.md)            | Safety and design-token spec for AI-authored HTML previews             |
 | [Completion Report Guide](platform-guides/completion-report-guide.md)       | How to write completion reports (quality score, review recommendation) |
 | [Code Review Guide](platform-guides/code-review-guide.md)                   | Independent code review workflow                                       |
 | [Co-action Guide](platform-guides/co-action-guide.md)                       | Co-actions for agent handoff                                           |

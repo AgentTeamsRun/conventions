@@ -3,7 +3,7 @@
 > ⚠️ This file is automatically deployed from the server. Do not edit it directly.
 
 > This template is for **FULL complexity** plans (4+ tasks, multi-wave, or risk signals).
-> Set `--complexity FULL` at creation. V2 plans render this structured content directly and do not use an HTML preview.
+> Set `--complexity FULL` at creation. V2 plans render this structured content directly in the web UI.
 > For MINIMAL or STANDARD plans, refer to the Plan Complexity section in `plan-guide.md` and extract only the sections you need.
 
 ## TL;DR

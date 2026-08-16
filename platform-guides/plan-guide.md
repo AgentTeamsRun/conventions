@@ -361,12 +361,6 @@ The tier determines how much structure the plan body needs.
 
 `## TL;DR` opens with an **In Plain Terms** line — the one part of the plan a non-expert (requester, stakeholder) reads to confirm the work matches their intent. Write it in everyday language in the plan's own language: state the problem and what visibly changes for the user. Do **not** put file paths, code identifiers, or internal abbreviations (e.g. `SSOT`, `projectId`) in it. Everything below the TL;DR — Context, TODOs, verification — is the work order for the executing agent and may be as technical and detailed as the task requires. Keep the easy summary and the technical detail separate, not blended.
 
-### Preview
-
-V2 plans render their structured sections and tasks directly in the web UI; they do **not** render an uploaded HTML preview. Do not generate or upload a preview for a V2 plan.
-
-The HTML preview workflow in `plan-preview-guide.md` remains only for legacy V1 plans that still expose the visualization tab.
-
 ### Immutability & Change History
 
 - `estimatedComplexity` is set once at creation and is **never changed** by updates — it preserves the original AI judgment for later comparison.
@@ -431,4 +425,3 @@ Bake verification into the plan at writing time, not as a trailing afterthought:
 ## References
 
 - `plan-template.md` — copyable FULL-tier plan template
-- `plan-preview-guide.md` — HTML preview for legacy V1 plans only
