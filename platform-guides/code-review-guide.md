@@ -174,8 +174,10 @@ For a plan-based review, fix findings directly in the source plan's existing bra
 1. Inspect the review and identify its unresolved findings:
 
    ```bash
-   agentteams code-review get --id {codeReviewId}
+   agentteams code-review finding-list --id {codeReviewId}
    ```
+
+   Repeat with `--page` until `meta.page` equals `meta.totalPages`. The review header from `code-review get --id` no longer inlines findings.
 
 2. Read the comments on every finding you are about to fix. `code-review get` does not return them — a finding's conversation is only reachable by its own id:
 
