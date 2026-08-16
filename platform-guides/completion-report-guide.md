@@ -106,7 +106,7 @@ agentteams plan quick --title "<brief work summary>" \
 
 > All completion report parameters from `plan finish` are supported on `plan quick` when attaching a report.
 
-> **Avoid duplication with the plan body.** In a quick log with a report, the report is the SSOT for _what changed_ (`## Summary`) and _how it was verified_ (`## Verification`); the plan `--content` should carry only the intent/scope (`## TL;DR`). See `plan-guide.md` → Quick Log → `--content` Format for the ownership split.
+> **Avoid duplication with the plan body.** In a quick log with a report, the report is the SSOT for _what changed_ (`## Summary`) and _how it was verified_ (`## Verification`); the plan `--content` should carry only the intent/scope (`## TL;DR`). See `plan-execution-guide.md` → Quick Log → `--content` Format for the ownership split.
 
 ## Metrics (Auto + Manual)
 

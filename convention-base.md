@@ -134,7 +134,7 @@ When executing a plan:
 6. Commit code changes before `plan finish`, then complete the report and cleanup flow.
 
 The detailed execution workflow (task selection, statuses, errors, comments, and cleanup) is in
-`.agentteams/platform/plan-guide.md` (**During Plan Execution**).
+`.agentteams/platform/plan-execution-guide.md` (**During Plan Execution**).
 
 ## Work Completion Rules
 
@@ -165,7 +165,7 @@ agentteams plan quick --title "<brief work summary>" \
   [report-flags...]
 ```
 
-> The `--content` body format (and when to choose a quick log over the full lifecycle) is the SSOT in `.agentteams/platform/plan-guide.md` (**Quick Log**).
+> The `--content` body format (and when to choose a quick log over the full lifecycle) is the SSOT in `.agentteams/platform/plan-execution-guide.md` (**Quick Log**).
 
 ## AgentTeams Read Tools (MCP First)
 
@@ -184,21 +184,21 @@ agentteams search --query "<keyword>"
 
 Before writing or updating **platform records** (plans, reports, conventions, skills, postmortems, code reviews, documents), read the matching guide:
 
-| Record type                            | Guide to read                                                                    |
-| -------------------------------------- | -------------------------------------------------------------------------------- |
-| Plan authoring                         | `.agentteams/platform/plan-guide.md` and `.agentteams/platform/plan-template.md` |
-| Plan execution                         | `.agentteams/platform/plan-guide.md` (**Task Lifecycle**)                        |
-| Completion report                      | `.agentteams/platform/completion-report-guide.md`                                |
-| Postmortem                             | `.agentteams/platform/post-mortem-guide.md`                                      |
-| Convention (create)                    | `.agentteams/platform/convention-authoring-guide.md`                             |
-| Convention (update/delete)             | `.agentteams/platform/convention-ud-guide.md`                                    |
-| Skill (capability package)             | `.agentteams/platform/skill-package-guide.md`                                    |
-| Co-action (handoff)                    | `.agentteams/platform/co-action-guide.md`                                        |
-| Code review (independent verification) | `.agentteams/platform/code-review-guide.md`                                      |
-| Document (human-facing artifact)       | `.agentteams/platform/document-guide.md`                                         |
-| Comment or reply                       | `.agentteams/platform/comment-guide.md`                                          |
-| Linear (issue/comment)                 | `.agentteams/platform/linear-guide.md`                                           |
-| Sentry (project issue context)         | `.agentteams/platform/sentry-guide.md`                                           |
+| Record type                            | Guide to read                                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------------- |
+| Plan authoring                         | `.agentteams/platform/plan-authoring-guide.md` and the tier template it names |
+| Plan execution                         | `.agentteams/platform/plan-execution-guide.md` (**Task Lifecycle**)           |
+| Completion report                      | `.agentteams/platform/completion-report-guide.md`                             |
+| Postmortem                             | `.agentteams/platform/post-mortem-guide.md`                                   |
+| Convention (create)                    | `.agentteams/platform/convention-authoring-guide.md`                          |
+| Convention (update/delete)             | `.agentteams/platform/convention-ud-guide.md`                                 |
+| Skill (capability package)             | `.agentteams/platform/skill-package-guide.md`                                 |
+| Co-action (handoff)                    | `.agentteams/platform/co-action-guide.md`                                     |
+| Code review (independent verification) | `.agentteams/platform/code-review-guide.md`                                   |
+| Document (human-facing artifact)       | `.agentteams/platform/document-guide.md`                                      |
+| Comment or reply                       | `.agentteams/platform/comment-guide.md`                                       |
+| Linear (issue/comment)                 | `.agentteams/platform/linear-guide.md`                                        |
+| Sentry (project issue context)         | `.agentteams/platform/sentry-guide.md`                                        |
 
 ---
 

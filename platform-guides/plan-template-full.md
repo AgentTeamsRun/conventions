@@ -4,11 +4,11 @@
 
 > This template is for **FULL complexity** plans (4+ tasks, multi-wave, or risk signals).
 > Set `--complexity FULL` at creation. V2 plans render this structured content directly in the web UI.
-> For MINIMAL or STANDARD plans, refer to the Plan Complexity section in `plan-guide.md` and extract only the sections you need.
+> Smaller scope? Use `plan-template-minimal.md` or `plan-template-standard.md` instead of deleting sections from this one. The tier rule is in `plan-authoring-guide.md` (**Plan Complexity**).
 
 ## TL;DR
 
-> **In Plain Terms**: <!-- 1-2 sentences a non-expert (the requester/stakeholder) can read to confirm the plan matches their intent. State the problem and what visibly changes for the user. Write in the plan's language. NO file paths, code identifiers, or internal jargon (e.g. SSOT, projectId). See plan-guide.md → TL;DR Audience. -->
+> **In Plain Terms**: <!-- 1-2 sentences a non-expert (the requester/stakeholder) can read to confirm the plan matches their intent. State the problem and what visibly changes for the user. Write in the plan's language. NO file paths, code identifiers, or internal jargon (e.g. SSOT, projectId). See plan-authoring-guide.md → TL;DR Audience. -->
 >
 > **Quick Summary**: <!-- 1-2 sentence technical summary of what this plan achieves -->
 >
@@ -42,7 +42,7 @@
 
 <!--
 Project-specific claims you could NOT verify against this repo — kept separate
-from the confirmed facts above (see plan-guide.md → Grounding: Evidence Over
+from the confirmed facts above (see plan-authoring-guide.md → Grounding: Evidence Over
 Memory). Do not blend these into the body as if confirmed. Write "none" if every
 stack / command / path / symbol used in this plan was verified from the source.
 
@@ -58,8 +58,8 @@ Example:
 ### Conventions Referenced
 
 <!--
-Required. List `.agentteams/rules/*.md` files you actually consulted while
-drafting this plan — do not guess. Same format as completion reports so the
+Required at every tier. List the project convention files you actually consulted
+while drafting this plan — do not guess. Same format as completion reports so the
 platform can auto-link plan-stage convention usage to execution-stage usage.
 
 Example:
@@ -83,9 +83,7 @@ Example:
 
 - <!-- Criterion 1 -->
 - <!-- Criterion 2 -->
-- Completion Report is created, then Co-Action and Post-Mortem needs are reviewed immediately.
-- Co-Action is created and linked when implicit knowledge, design decisions, follow-up work, known constraints, or handoff context exist.
-- Post-Mortem is created only when a reproducible or systemic failure, regression, or unexpected execution issue significantly delayed or blocked the work and has a preventable cause.
+- Completion Report is created, then Co-Action and Post-Mortem needs are reviewed immediately and any required record is created and linked. `completion-report-guide.md` owns the criteria for each — state the obligation here once, not again per task or in Final Verification.
 
 ### Must Have
 
@@ -103,7 +101,7 @@ Example:
 
 ### QA Policy
 
-- <!-- Tool/command mapping: API→typecheck+test, CLI→test, Web→build -->
+- <!-- Tool/command mapping per this project's testing convention -->
 - <!-- Test-first: list the tests that prove each Definition of Done item. For BUG_FIX, include a failing reproduction test that a later task makes pass. -->
 
 ---
@@ -181,7 +179,7 @@ flowchart LR
 
 **Acceptance Criteria**:
 
-- <!-- Verifiable criterion — this is the evidence required before marking the task `DONE`; prefer a test assertion -->
+- <!-- Verifiable criterion — the SSOT for this task being complete: the evidence required before marking the task `DONE`; prefer a test assertion -->
 
 **QA Scenarios**:
 
@@ -204,28 +202,14 @@ Scenario: description
 
 ## Final Verification Wave
 
+Workspace-level integration verification only — the checks that no single task can prove on its own. Per-task evidence belongs to that task's Acceptance Criteria; do not restate it here.
+
 - F1. **Final check** — `quick`
 
-  1. <!-- verification command 1 -->
-  2. <!-- verification command 2 -->
-  3. Create the Completion Report, then immediately review and create any required Co-Action or Post-Mortem linked documents.
+  1. <!-- integration verification command 1 -->
+  2. <!-- integration verification command 2 -->
 
   Output: `<!-- result format -->`
-
----
-
-## Commit Strategy
-
-- **Task 1**: `<!-- commit message -->`
-- **Task 2**: `<!-- commit message -->`
-
-## Success Criteria
-
-```bash
-# <!-- description -->
-<!-- command -->
-# Expected: <!-- result -->
-```
 
 ---
 

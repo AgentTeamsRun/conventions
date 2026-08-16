@@ -12,8 +12,12 @@ Guides that AI agents reference when working with the AgentTeams platform.
 
 | Guide                                                                       | Description                                                            |
 | --------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| [Plan Guide](platform-guides/plan-guide.md)                                 | Writing and executing plans (complexity tiers, tasks, verification)    |
-| [Plan Template](platform-guides/plan-template.md)                           | Copyable FULL-tier plan structure                                      |
+| [Plan Guide](platform-guides/plan-guide.md)                                 | Index — routes to the plan authoring or execution guide                |
+| [Plan Authoring Guide](platform-guides/plan-authoring-guide.md)             | Writing a plan (complexity tiers, task contract, gap analysis)         |
+| [Plan Execution Guide](platform-guides/plan-execution-guide.md)             | Running a plan (runbook, task lifecycle, quick log)                    |
+| [Plan Template (MINIMAL)](platform-guides/plan-template-minimal.md)         | Copyable MINIMAL-tier plan structure                                   |
+| [Plan Template (STANDARD)](platform-guides/plan-template-standard.md)       | Copyable STANDARD-tier plan structure                                  |
+| [Plan Template (FULL)](platform-guides/plan-template-full.md)               | Copyable FULL-tier plan structure                                      |
 | [Completion Report Guide](platform-guides/completion-report-guide.md)       | How to write completion reports (quality score, review recommendation) |
 | [Code Review Guide](platform-guides/code-review-guide.md)                   | Independent code review workflow                                       |
 | [Co-action Guide](platform-guides/co-action-guide.md)                       | Co-actions for agent handoff                                           |

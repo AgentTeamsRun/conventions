@@ -95,4 +95,4 @@ agentteams coaction create --title "<t>" --file <f> 2>/tmp/tips.log
 
 ## References
 
-`plan-guide.md` · `completion-report-guide.md` · `post-mortem-guide.md`
+`plan-execution-guide.md` · `completion-report-guide.md` · `post-mortem-guide.md`
