@@ -42,15 +42,22 @@ task calls for it.
 ---
 name: <slug>
 description: >-
-  One or more sentences stating what the skill does and when to load it.
+  The situation that calls for this skill.
 ---
 
 # <Human-readable title>
 ```
 
 - `name` — required. Must equal the directory `<slug>`.
-- `description` — required. This is the only text the model sees before deciding to load the package, so it must state
-  both **what** the skill does and **when** to use it.
+- `description` — required. This is the only text the model sees before deciding to load the package, and it is also
+  rendered into the **Project Skill Index**, so every session pays for it. Write the **situation that calls for the
+  skill**, not what the skill contains — the slug already names the subject. This mirrors the `description` rule in
+  `convention-authoring-guide.md` §2-2.
+  - ❌ `A skill to reference when modifying the AgentTeams MCP server; it covers tools, profiles, and the catalog.`
+    The trailing "a skill to reference …" is filler, and the subject repeats the slug.
+  - ✅ `When adding an agentteams_* tool, changing a tool input schema, or adjusting the tool profile/catalog.`
+  - Open with the situation (`When ...`). Do not restate the slug or the title. Target **100 characters or fewer**;
+    unlike convention descriptions there is no server-side cap, so the target is the only limit.
 - Additional fields are ignored by the server. The published example skill in the public conventions mirror follows
   this same two-field contract; keep any change to the required set consistent with it.
 

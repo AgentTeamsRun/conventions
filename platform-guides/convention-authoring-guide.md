@@ -31,7 +31,7 @@ description: '...'
 ## 2) Recommended frontmatter fields
 
 - `trigger` (optional): a hint for auto-apply/reference triggers (e.g. `always_on`, `model_decision`, `-`)
-- `description` (optional): a short summary of purpose/scope
+- `description` (**required when `trigger` is `model_decision`**): the condition under which an agent should open this file — see §2-2
 
 Notes:
 
@@ -52,6 +52,25 @@ Place a `# AGENT_RULES` heading at the top of the body (right after frontmatter)
 
 ...
 ```
+
+## 2-2) Writing `description`
+
+`description` is not a summary. It is rendered into the **Project Convention Index** — the table an agent reads to decide which convention files to open — and it is the only signal in that decision. The file name already states the topic, so restating it costs context in every session without improving the choice.
+
+**Write the trigger condition. Do not write what the file defines.**
+
+| ❌ Avoid                                                                                                                                                                                                                  | ✅ Prefer                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Defines the design system spec. Referenced when creating modals, composing classNames, or writing variants.                                                                                                               | When creating or editing a modal, composing classNames, or writing a component variant.                                              |
+| A synchronization rule that forces the home feed and project screens to stay in step, because they implement the same entities in parallel. Refer to it when adding a feature screen or touching feed cache invalidation. | When adding or editing a project feature list/filter/status/card screen, adding an entity type, or touching feed cache invalidation. |
+
+Rules:
+
+- Open with the situation (`When ...`), not with the subject (`Defines ...`, `A rule that ...`).
+- Do not restate the file name or the category.
+- Do not put body content here. Facts that belong in the document (e.g. "the retention values themselves live in code") do not help the open/skip decision.
+- Target **100 characters or fewer**. The API enforces a hard cap of 500.
+- For `always_on` files the description renders in the `AGENT_RULES` list instead of the index. The same rule applies.
 
 ## 3) Category / path rules
 
