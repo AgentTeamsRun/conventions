@@ -51,7 +51,7 @@ If `--title` is omitted on create, the file name is used.
 
 ## Writing via MCP
 
-When the AgentTeams MCP server is connected, prefer the MCP write tools over shelling out to the CLI. Document is currently the **only** entity with MCP write tools; everything else is CLI-only.
+When the AgentTeams MCP server is connected, prefer the MCP write tools over shelling out to the CLI. The tools below are the document ones; every other record kind is covered by its own guide. A record kind whose guide has no `Writing via MCP` section has no MCP write tool yet — write it through the CLI.
 
 | Tool                               | Purpose                                                                                                                                                                      |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

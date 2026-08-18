@@ -65,6 +65,33 @@ A fenced `mermaid flowchart` renders in the web viewer; stays plain text in CLI/
 
 Standalone insights attached to (but separate from) the content. Create one when you found a non-obvious constraint, an undocumented decision, a reusable workaround, or a risk that doesn't fit the main sections.
 
+## Writing via MCP
+
+When the AgentTeams MCP server is connected, prefer the MCP write tools over shelling out to the CLI.
+
+| Tool                                | Purpose                                                                                           |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `agentteams_guide_get("co-action")` | Fetch this guide's current text plus its `guideHash`. **Call this before any co-action write.**   |
+| `agentteams_coaction_create`        | Create a co-action. Requires at least one of `planId`, `completionReportId`, `postMortemId`.      |
+| `agentteams_coaction_update`        | Update a co-action, including the `OPEN` to `CLOSED` transition. Only the fields you pass change. |
+| `agentteams_coaction_delete`        | Delete a co-action (destructive).                                                                 |
+
+The tools operate on the single project the MCP server is bound to. There is no `projectId` argument — a different project cannot be reached from an MCP session.
+
+Takeaways have no MCP tool of their own: create and list them through the CLI (see Commands below).
+
+### The three optional contract fields
+
+All three are optional; omitting them all is valid and behaves exactly like a plain write.
+
+- **`guideHash`** — the hash returned by `agentteams_guide_get("co-action")`. Pass it so the server can confirm you followed the current rules. Every write tool accepts it, delete included. If your local copy is stale, the write is rejected with `GUIDE_OUTDATED` and the response names the hash the server expects. Recover with `agentteams convention download`, re-read this guide, and retry.
+- **`idempotencyKey`** — a key of your choosing that makes a retry safe. Repeating a call with the same key and the same request replays the first result instead of creating a second co-action. Reusing a key with a _different_ request is rejected as a conflict — pick a new key for a new write. A retry that arrives while the first call is **still running** is rejected with a conflict that says so (wait a moment and repeat it to get the replay), and a key is remembered for **24 hours**.
+- **`expectedUpdatedAt`** — the `updatedAt` you last read (from `agentteams_coaction_get`). Pass it on update and delete so a concurrent edit is rejected instead of silently overwritten. **Without it, an update or delete is unconditional**: it overwrites or removes the co-action even if someone edited it after you read it.
+
+### Fallback to the CLI
+
+When MCP is unavailable or a tool is missing, use `agentteams coaction create/update/delete` — the CLI reaches the same endpoints with the same server-side validation and the same error codes, and accepts the same three fields as `--guide-hash`, `--idempotency-key`, and `--expected-updated-at`.
+
 ## Commands
 
 ```bash

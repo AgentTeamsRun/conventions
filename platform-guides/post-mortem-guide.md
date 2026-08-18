@@ -93,6 +93,32 @@ Use this structure for the `--content` field or the `--file` content:
 - **Plan-linked post mortem:** use `{first 8 characters of planId}-postmortem.md`. Example: if planId is `57a51ec2-cf70-...`, use `57a51ec2-postmortem.md`.
 - **Standalone service incident:** use a concise descriptive name such as `checkout-outage-postmortem.md`.
 
+## Writing via MCP
+
+When the AgentTeams MCP server is connected, prefer the MCP write tools over shelling out to the CLI.
+
+| Tool                                  | Purpose                                                                                           |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `agentteams_guide_get("post-mortem")` | Fetch this guide's current text plus its `guideHash`. **Call this before any post-mortem write.** |
+| `agentteams_postmortem_create`        | Create a post-mortem. Omit `planId` for a standalone service incident.                            |
+| `agentteams_postmortem_update`        | Update a post-mortem. Only the fields you pass change; `actionItems` is replaced as a whole.      |
+
+The tools operate on the single project the MCP server is bound to. There is no `projectId` argument — a different project cannot be reached from an MCP session.
+
+**There is no MCP delete tool for a post-mortem.** Deleting one is a CLI-only path (`agentteams postmortem delete --id {id}`). Treat that asymmetry as intentional: a post-mortem is a record of what happened, so removing it is a deliberate act rather than a routine agent write.
+
+### The three optional contract fields
+
+All three are optional; omitting them all is valid and behaves exactly like a plain write.
+
+- **`guideHash`** — the hash returned by `agentteams_guide_get("post-mortem")`. Pass it so the server can confirm you followed the current rules. If your local copy is stale, the write is rejected with `GUIDE_OUTDATED` and the response names the hash the server expects. Recover with `agentteams convention download`, re-read this guide, and retry.
+- **`idempotencyKey`** — a key of your choosing that makes a retry safe. Repeating a call with the same key and the same request replays the first result instead of creating a second post-mortem. Reusing a key with a _different_ request is rejected as a conflict — pick a new key for a new write. A retry that arrives while the first call is **still running** is rejected with a conflict that says so (wait a moment and repeat it to get the replay), and a key is remembered for **24 hours**.
+- **`expectedUpdatedAt`** — the `updatedAt` you last read (from `agentteams_postmortem_get`). Pass it on update so a concurrent edit is rejected instead of silently overwritten. **Without it, an update is unconditional**: it overwrites the post-mortem even if someone edited it after you read it.
+
+### Fallback to the CLI
+
+When MCP is unavailable or a tool is missing, use `agentteams postmortem create/update/delete` — the CLI reaches the same endpoints with the same server-side validation and the same error codes, and accepts the same three fields as `--guide-hash`, `--idempotency-key`, and `--expected-updated-at`. Because deletion has no MCP tool, the CLI is the only place `--expected-updated-at` guards a post-mortem delete.
+
 ## Useful Commands
 
 ```bash

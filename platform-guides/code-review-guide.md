@@ -94,6 +94,35 @@ Editable fields are `title`, `targetType`, `targetRef`, `sourceCommitStart`, `so
 
 Do not use `code-review update` for `findings`, `status`, `resultSummary`, `errorMessage`, source links, repository links, or creator metadata. Use `code-review submit-result` for results and the finding commands for finding state changes.
 
+## Writing via MCP
+
+When the AgentTeams MCP server is connected, prefer the MCP write tools over shelling out to the CLI.
+
+| Tool                                       | Purpose                                                                                           |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| `agentteams_guide_get("code-review")`      | Fetch this guide's current text plus its `guideHash`. **Call this before any code review write.** |
+| `agentteams_codereview_create`             | Create a review. Pass `findings` upfront when the result is already known.                        |
+| `agentteams_codereview_update`             | Update metadata on a `PENDING` review, or cancel it by passing `status: "CANCELLED"`.             |
+| `agentteams_codereview_finding_status_set` | Move one finding to `DISMISSED` (dismiss), `OPEN` (undismiss), or `RESOLVED`.                     |
+
+The tools operate on the single project the MCP server is bound to. There is no `projectId` argument — a different project cannot be reached from an MCP session.
+
+**A finding has no standalone create or delete tool.** Supply findings when you create the review; afterwards only their status changes. Submitting the result of a `PENDING` review is likewise a CLI-only path (`agentteams code-review submit-result`), as is creating a remediation plan from selected findings.
+
+### The three optional contract fields
+
+All three are optional; omitting them all is valid and behaves exactly like a plain write.
+
+- **`guideHash`** — the hash returned by `agentteams_guide_get("code-review")`. Pass it so the server can confirm you followed the current rules. Every write tool accepts it. If your local copy is stale, the write is rejected with `GUIDE_OUTDATED` and the response names the hash the server expects. Recover with `agentteams convention download`, re-read this guide, and retry.
+- **`idempotencyKey`** — a key of your choosing that makes a retry safe. Repeating a call with the same key and the same request replays the first result instead of creating a second review. Reusing a key with a _different_ request is rejected as a conflict — pick a new key for a new write. A retry that arrives while the first call is **still running** is rejected with a conflict that says so (wait a moment and repeat it to get the replay), and a key is remembered for **24 hours**.
+- **`expectedUpdatedAt`** — the `updatedAt` you last read (from `agentteams_codereview_get` for a review, `agentteams_codereview_finding_get` for a finding). Pass it on update and on a finding transition so a concurrent change is rejected instead of silently overwritten. **Without it, the write is unconditional**: it applies even if someone changed the record after you read it.
+
+**Retrying a create keeps the `findings` order you first sent.** The request fingerprint behind `idempotencyKey` preserves array order, so a retry that lists the same findings in a different order is not a retry — it is rejected as key reuse. Either resend the array exactly as before, or use a new key. If you regenerate findings between attempts and cannot guarantee the order, use a new key.
+
+### Fallback to the CLI
+
+When MCP is unavailable or a tool is missing, use `agentteams code-review create/update/cancel/dismiss/undismiss/resolve` — the CLI reaches the same endpoints with the same server-side validation and the same error codes, and accepts the same three fields as `--guide-hash`, `--idempotency-key`, and `--expected-updated-at`. One difference is worth knowing: `code-review resolve` accepts several findings at once, and each one is a separate request, so a single `--idempotency-key` cannot cover them. Resolve one finding per call when you need that key.
+
 ## Related History Matches
 
 Code review create and detail responses include `historyMatchStatus`; detail responses also include `relatedHistories`. Use these automatically matched plans, completion reports, and post-mortems as context for recurring risks, prior decisions, and useful verification ideas. They are references, not evidence that the current change is correct.
@@ -208,6 +237,8 @@ For a plan-based review, fix findings directly in the source plan's existing bra
 8. Re-run the source plan's relevant final verification before ending the fix run.
 
 Resolve multiple findings together only when the same verified change covers every listed finding. The code review automatically becomes `COMPLETED` when every active finding is `RESOLVED` or `DISMISSED`.
+
+`--idempotency-key` and `--expected-updated-at` each apply to one finding, so do not combine either option with `--finding-ids`. To keep retry or concurrency protection, resolve findings one at a time with `--finding-id`; pass that finding's own `updatedAt` as `--expected-updated-at`.
 
 ## Attaching Evidence
 
