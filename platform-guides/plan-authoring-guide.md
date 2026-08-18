@@ -91,6 +91,18 @@ V2 task rows are parsed from the plan body. The following markup is a machine-re
 
 The parser derives task rows, dependency links, and waves from these labels. Changing the headings or inventing equivalent labels can leave the plan without the intended structured task metadata.
 
+### Editing an Existing V2 Task Graph
+
+There is no separate task-edit command. A V2 plan's task titles, details, waves, and dependency graph are rewritten from the plan body on a content-only update (`plan download` → edit the markdown → `plan update`). That path is available only while the plan is `BACKLOG` or `TODO`. After the plan leaves those statuses, the task graph is frozen — do not rewrite the body to change task status.
+
+Inbound dependency authority, in order:
+
+1. If the task body has a `Blocked By` field — including `Blocked By: none` — that field is the whole inbound set. A generated `Depends on:` line next to it is snapshot metadata and does not keep a cleared edge alive.
+2. If there is no `Blocked By` field, `Depends On` / `Depends on` is the fallback so an unchanged re-upload does not drop stored edges.
+3. `Blocks: Task N` on another task still adds the reverse edge. That contract is independent of (1) and (2).
+
+Generated `Status:` / `Wave:` / `Category:` / `Depends on:` lines under a task heading are derived snapshot metadata, not author body. Do not copy them into the written contract; the parser strips them on the way back so a round-trip does not grow the body.
+
 ## Task Required Elements
 
 FULL tier requires all items. STANDARD tier requires ★ items only. MINIMAL needs ★ What to do + ★ Acceptance Criteria.
