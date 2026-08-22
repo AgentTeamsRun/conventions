@@ -158,19 +158,22 @@ pointing at files that do not exist. You are the one who closes that gap.
 
 ### At the start of a session
 
-Run the freshness pair once, alongside the convention check in `.agentteams/convention.md`:
-
 ```bash
-agentteams skill status     # read-only: { updateAvailable, changes[], summary }
-agentteams skill download   # only when updateAvailable is true
+agentteams session sync
 ```
 
-- `skill download` fetches the packages **and** writes the engine mirrors from §5 in the same step.
+One command covers both surfaces: it checks conventions and skills, downloads only what changed, and reports which
+always-on files you must re-read. It fetches the packages **and** writes the engine mirrors from §5 in the same step.
+
+- ⚠️ **The skill fetch is gated on `agentteams skill status`, and that gate is not optional.**
+  `agentteams skill download` overwrites every local package without consulting `updateAvailable`, so calling it
+  ungated erases a package you are still authoring. Running the pair by hand is fine, but keep that order — `status`
+  first, `download` only when `updateAvailable` is true.
 - `unknown command 'skill'` means the installed CLI predates skill packages. Skip silently and continue — that is the
   signal, not an error to report.
-- ⚠️ **If your engine's mirror is marker-gated and the marker is absent, pass the target explicitly.** `.claude/` and
-  `.github/` are only written when those directories already exist, and both are commonly gitignored — so a fresh
-  worktree has neither. Working as `CLAUDE_CODE` in such a repository, run
+- The mirror for the engine you are running is written even when its marker directory is absent, as long as the
+  session carries a runner type. In a session started outside the runner there is no runner type to read, so a
+  marker-gated mirror is skipped: working as `CLAUDE_CODE` in a repository with no `.claude/`, run
   `agentteams skill download --skill-targets agents,claude`. Match the target to your own engine's row in §4; do not
   guess targets for engines you are not running.
 

@@ -34,6 +34,8 @@ agentteams plan link-issue --id <planId> --provider SENTRY --external-id <numeri
 
 The markdown reference form is `[label](SENTRY_ISSUE:<numeric-id>)`. Do not put a permalink in the marker, and do not assemble a URL from the numeric ID yourself. The server verifies the project link, re-reads the Sentry detail, and then stores the permalink, short ID, title, and status metadata.
 
+Reading one back needs no special handling: `SENTRY_ISSUE` is a registered reference type, so `agentteams resolve "SENTRY_ISSUE:<numeric-id>"` — or `agentteams_resolve` where the tool is available — dispatches to the command above and returns the record with the **stored** permalink. That is why no caller ever has to build the URL.
+
 ## Execution safety
 
 A Sentry issue is read context and origin-issue tracking information. Do not create or start a plan, task, or runner from a webhook or an issue lookup alone. Execution starts separately, from an explicit user request and through the AgentTeams plan lifecycle.

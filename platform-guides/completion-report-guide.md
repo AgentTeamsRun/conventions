@@ -74,6 +74,8 @@ agentteams plan finish --id {planId} \
 
 > Git metrics (`commitHash`, `branchName`, `filesModified`, `linesAdded`, `linesDeleted`) are auto-collected. Use `--no-git` to disable. Manual overrides: `--duration-seconds`, `--commit-start`, `--commit-end`, `--pull-request-id`.
 
+> ⚠️ **Commit your code changes before finishing.** Those metrics are read from the current git state and nothing warns you when the working tree is dirty, so finishing with uncommitted work records an empty or wrong snapshot. If the project requires a PR, open it before finishing too.
+
 > `--review-recommendation` / `--review-reason` are **optional** (see the Code Review Recommendation section). An invalid `--review-recommendation` value is ignored with a warning.
 
 > `--runner-type` and `--model` are the **executor** snapshot — the runner/model that actually produced this report. This is independent of `Plan.runnerType` / `Plan.model`, which is the **creator** snapshot recorded at `plan create`. The two values can differ (e.g., a plan written by Claude but executed by Codex).
