@@ -32,7 +32,23 @@ task calls for it.
 
 - `SKILL.md` is the only required file. A package without it is rejected on upload and on download.
 - `references/` and `scripts/` are the only resource directories accepted today.
-- Binary assets are not supported yet. Keep packages text-only.
+- Binary assets are not supported. A file that is not UTF-8 text is rejected — by the CLI when it collects the
+  package, and by the server on upload. Keep packages text-only. The CLI skips well-known OS junk files
+  (`.DS_Store`, `Thumbs.db`, `desktop.ini`, AppleDouble `._*`) during collection so a Finder or Explorer visit does
+  not fail `skill push`.
+
+### Resource file types
+
+There is **no extension whitelist**. A resource file is judged by its location, its size, and its encoding — nothing
+else. What follows is guidance, not enforcement.
+
+- `references/` — supporting documents the entry file points at. `.md` is the default; reach for `.json` when the
+  material is a structured example (a tool input payload, a fixture) that prose would distort.
+- `scripts/` — helpers the skill tells the agent to run: `.sh` for shell, or a script source such as `.ts` / `.mjs`.
+- The executable bit is **not preserved** through upload and download. Name the interpreter at the call site in
+  `SKILL.md` — `bash scripts/<name>.sh`, not `./scripts/<name>.sh`.
+- Anything that is neither a document the entry file cites nor a helper it runs usually belongs in `SKILL.md`
+  itself, or nowhere.
 
 ### Frontmatter contract
 
@@ -80,7 +96,11 @@ description: >-
 | Total package size        | 2 MB           | Sum of all file contents                    |
 | Path length               | 200 characters | Relative path per file                      |
 
-- Encoding is **UTF-8 text only**. A file that is not valid UTF-8 is rejected.
+- Encoding is **UTF-8 text only**. The CLI rejects a file whose bytes are not valid UTF-8 or that contains a null
+  byte while collecting the local package. The server rejects an upload whose content contains a null byte, a lone
+  surrogate, or a Unicode replacement character (U+FFFD). Fastify's JSON parser replacement-decodes invalid UTF-8
+  into U+FFFD rather than rejecting the body, so the server treats U+FFFD as evidence of that path — a legitimate
+  U+FFFD in otherwise valid text is also refused.
 - Every file records a `sha256` hash of its content. The package version is the hash of the sorted
   `(relativePath, sha256)` pairs, so an unchanged package produces an unchanged version.
 
