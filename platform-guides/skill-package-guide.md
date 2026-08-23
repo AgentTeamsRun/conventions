@@ -98,7 +98,7 @@ description: >-
 
 - Encoding is **UTF-8 text only**. The CLI rejects a file whose bytes are not valid UTF-8 or that contains a null
   byte while collecting the local package. The server rejects an upload whose content contains a null byte, a lone
-  surrogate, or a Unicode replacement character (U+FFFD). Fastify's JSON parser replacement-decodes invalid UTF-8
+  surrogate, or a Unicode replacement character (U+FFFD). Some JSON parsers replacement-decode invalid UTF-8
   into U+FFFD rather than rejecting the body, so the server treats U+FFFD as evidence of that path — a legitimate
   U+FFFD in otherwise valid text is also refused.
 - Every file records a `sha256` hash of its content. The package version is the hash of the sorted
