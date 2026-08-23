@@ -42,6 +42,7 @@ Write the report file with this structure:
 ## Conventions Referenced
 
 - <list .agentteams/rules/\*.md files you actually referenced — do not guess>
+- <skill packages too, by path: .agentteams/skills/{slug}/SKILL.md>
 ```
 
 ## Diagrams (Mermaid)

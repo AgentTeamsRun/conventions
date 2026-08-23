@@ -58,13 +58,14 @@ Example:
 ### Conventions Referenced
 
 <!--
-Required at every tier. List the project convention files you actually consulted
-while drafting this plan — do not guess. Same format as completion reports so the
-platform can auto-link plan-stage convention usage to execution-stage usage.
+Required at every tier. List the project convention files and skill packages you
+actually consulted while drafting this plan — do not guess. Same format as completion
+reports so the platform can auto-link plan-stage usage to execution-stage usage.
 
 Example:
 - .agentteams/rules/<convention-name>.md
 - .agentteams/rules/<convention-name>.md - <why it was relevant>
+- .agentteams/skills/<slug>/SKILL.md - <why the package was needed>
 -->
 
 ---

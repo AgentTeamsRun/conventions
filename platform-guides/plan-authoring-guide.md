@@ -61,7 +61,7 @@ The tier determines how much structure the plan body needs. Each tier has its ow
 | `STANDARD` | `plan-template-standard.md` | Everything in MINIMAL, plus `## Context` (Original Request / Research Findings / Assumptions & Unknowns / Conventions Referenced) · `## Work Objectives` · `## Verification Strategy` · TODOs add Must NOT do / References / Required Conventions |
 | `FULL`     | `plan-template-full.md`     | Everything in STANDARD, plus Context adds Interview Summary / Gap-Analysis Review · `## Execution Strategy` (Parallel Waves / Diagrams) · `## Final Verification Wave` · TODOs add Agent Profile / Parallelization / QA Scenarios / Commit        |
 
-`### Conventions Referenced` — the project convention files you consulted while planning — is **required at every tier**. Do not guess. Place it under Context, or top-level when Context is omitted.
+`### Conventions Referenced` — the project convention files and skill packages you consulted while planning — is **required at every tier**. Do not guess. Place it under Context, or top-level when Context is omitted.
 
 `### Assumptions & Unknowns` — project-specific claims you could **not** verify against this repo (see Grounding above), kept separate from the body's confirmed facts. Required at STANDARD/FULL whenever any such claim exists; write `none` if everything was verified. At MINIMAL (no Context section), note an unverified assumption inline in the TODO it affects rather than stating it as fact.
 
