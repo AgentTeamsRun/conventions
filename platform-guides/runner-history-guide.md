@@ -28,7 +28,16 @@ How to write the runner history file. The runner prompt gives you the history pa
 
 When the runner prompt provides a previous history path:
 
-- The previous history file has two sections: `## Requests` (all prior user requests in chronological order) and `## History (latest)` (the most recent cumulative summary, may be absent on the first follow-up).
-- Read both sections to understand the conversation context, then continue without repeating completed work.
+- The previous history file has two sections: `## Requests` (all prior user requests in chronological order) and `## History (latest)` (the most recent cumulative summary, may be absent on the first follow-up). A `## Task Histories` index may also appear when two or more session snapshots exist.
+- Read `## Requests` and `## History (latest)` to understand the conversation context, then continue without repeating completed work.
+- `## Task Histories` is an index only (number, title, one-line summary, lookup command). Do not treat it as content to copy. Read snapshots other than the latest **only when needed** — looking up every snapshot reintroduces the context accumulation this index is designed to prevent.
 - If the previous history has a `Suggestions for User` section, consider those suggestions in the context of the user's current prompt and proceed accordingly.
 - When writing the new history file, do NOT copy or append previous session content. Write a single up-to-date summary that supersedes prior history.
+
+## Plan Task Chains
+
+Plan tasks often run in separate sessions, so the next task cannot see this session's working memory.
+
+- Put decisions and remaining work the next task needs in `### Summary`.
+- Do not keep trial-and-error that is only valid for this task.
+- Older snapshots stay reachable through `## Task Histories`; the next session should read them only when the latest summary is not enough.
