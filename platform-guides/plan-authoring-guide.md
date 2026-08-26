@@ -91,6 +91,36 @@ V2 task rows are parsed from the plan body. The following markup is a machine-re
 
 The parser derives task rows, dependency links, and waves from these labels. Changing the headings or inventing equivalent labels can leave the plan without the intended structured task metadata.
 
+### Task Execution Policy
+
+To select a task-specific runner engine and model, add either or both of these labels outside code fences in that task's `### N. Task title` body:
+
+```markdown
+- **Engine**: CODEX
+- **Model**: gpt-5-codex
+```
+
+- This guide does not hard-code the accepted `Engine` values. Read the current list from the `--runner-type` description in `agentteams plan create --help`.
+- Omitting both labels uses the run snapshot's engine, model, and fast mode.
+- An unknown `Engine` does not block plan storage. Publishing emits a warning and falls back to the run snapshot's execution policy.
+- When the task `Engine` differs from the run snapshot, the task does not inherit that snapshot's model or fast mode. If `Model` is absent or cannot be resolved for the new engine, publishing uses the new engine's default model with `fastMode=false`.
+- If a label appears more than once, the last occurrence outside a code fence wins.
+
+### Plan Code Review Policy
+
+To request an automatic code review after plan completion, add a separate `## Code Review` section outside `## TODOs`:
+
+```markdown
+## Code Review
+
+- **Auto Review**: on
+- **Engine**: CODEX
+- **Model**: gpt-5-codex
+```
+
+- Only `on`, `true`, `yes`, and `&#xCF1C;` enable `Auto Review`. A missing section, a missing value, or any unknown value leaves it disabled.
+- `Engine` and `Model` are optional and follow the same accepted-value, omission, fallback, and duplicate-label rules as the task execution policy.
+
 ### Editing an Existing V2 Task Graph
 
 There is no separate task-edit command. A V2 plan's task titles, details, waves, and dependency graph are rewritten from the plan body on a content-only update (`plan download` → edit the markdown → `plan update`). That path is available only while the plan is `BACKLOG` or `TODO`. After the plan leaves those statuses, the task graph is frozen — do not rewrite the body to change task status.
