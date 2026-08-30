@@ -147,6 +147,35 @@ Use these severities consistently:
 - `P2`: Fix soon. Maintainability issue, missing edge case, incomplete test coverage, confusing API or UI behavior.
 - `P3`: Optional improvement. Naming, small readability issue, non-blocking cleanup, or polish.
 
+## Review Summary
+
+`resultSummary` is the review's conclusion. It is rendered above the findings on the review detail screen, and it is the only part a reader sees before deciding whether to open the findings at all. Write it so that decision can be made without reading them and without opening the diff.
+
+Write it as three blocks, in this order:
+
+1. **Verdict** — one line. Whether the change can merge, plus the finding counts by severity. If a required input could not be recovered or a command failed, say so here; it changes how far the verdict can be trusted.
+2. **What changes for people** — at most three lines. Who experiences what: the user, the screen, the data, the operator, or the team. When a finding changes UI, name the affected screen and the condition that triggers it. When a finding changes a business rule, state the rule before and after.
+3. **Remaining actions** — a short list, most severe first. One line per item that still needs a fix or a decision.
+
+Constraints:
+
+- Do not open with code narration. Symbol names, call paths, and file layout belong in block 3 or in the findings themselves — never in blocks 1 and 2.
+- Do not write the summary as a single paragraph. A reader who has to parse one long block to reach the consequence gains nothing over reading the findings.
+- Say so plainly when a finding has no user-visible effect. Contract regressions, refactors, and internal cleanups are legitimate findings; report what they mean for the team or the operator instead of inventing a user-facing consequence.
+- Keep it shorter than the findings it summarizes. A summary approaching the length of the findings is a second copy of them.
+
+Example:
+
+> **Not mergeable as is** — P0 0 / P1 2 / P2 3 / P3 3.
+>
+> Two P1s let a chained runner request run on a machine whose owner never shared that agent, and run in write mode on a runner restricted to planning only. Both appear only once this change enables chained dispatch for the first time, so neither is reachable in production today.
+>
+> Remaining:
+>
+> - P1 — route chain publishing through the shared-agent and plan-mode checks the direct API already enforces.
+> - P1 — same root cause as above; one shared predicate fixes both.
+> - P2 ×3 — a misclassified error message, a disabled-state UI conflict, and a missing server-side guard for agent-key callers.
+
 ## Finding Format
 
 Each finding must include:
@@ -155,10 +184,23 @@ Each finding must include:
 - File path and line range when available
 - Short title
 - Problem: what is wrong
-- Impact: why it matters
+- Impact: who experiences what — see below
 - Suggestion: concrete fix direction
 
 Prefer actionable findings over broad commentary. Do not include items that cannot be verified from the diff, repository context, or stated requirements.
+
+### Writing `impact`
+
+Open with the consequence, not the mechanism. The first sentence must name who experiences what: the user, the screen, the data, the operator, or the team. Symbol names, call paths, and ordering belong in the sentences after it, or in `problem`.
+
+When the finding changes UI, name the affected screen and the condition that triggers it. When it changes a business rule, state the rule before and after.
+
+Not every finding reaches a user, and that is fine. A contract regression, an internal refactor, or a missing test still has a real consequence for the team or the operator — report that one. Do not invent a user-facing effect to satisfy the format, and do not stretch a maintainability issue into a user harm it does not cause.
+
+- ❌ `printMcpRegistration` filters on `outcome !== 'SKIPPED_NOT_DETECTED'`, so the entry is removed from the list and the remaining count is printed instead.
+- ✅ A user whose client was not detected sees no row for it in the install output and cannot tell whether it was skipped or failed. `printMcpRegistration` drops the entry before printing the count.
+
+Both sentences describe the same defect. Only the second lets a reader judge severity without opening the file.
 
 ### Findings JSON File Format
 
