@@ -159,6 +159,7 @@ Write it as three blocks, in this order:
 
 Constraints:
 
+- Always write it. Every finding carries an `impactArea`, and the detail screen groups findings by that area, but a grouped list is a map of where the problems are — not a verdict. Impact areas never substitute for `resultSummary`.
 - Do not open with code narration. Symbol names, call paths, and file layout belong in block 3 or in the findings themselves — never in blocks 1 and 2.
 - Do not write the summary as a single paragraph. A reader who has to parse one long block to reach the consequence gains nothing over reading the findings.
 - Say so plainly when a finding has no user-visible effect. Contract regressions, refactors, and internal cleanups are legitimate findings; report what they mean for the team or the operator instead of inventing a user-facing consequence.
@@ -181,6 +182,7 @@ Example:
 Each finding must include:
 
 - Severity: `P0`, `P1`, `P2`, or `P3`
+- Impact area: exactly one of the nine values in `Choosing impactArea` below
 - File path and line range when available
 - Short title
 - Problem: what is wrong
@@ -202,14 +204,42 @@ Not every finding reaches a user, and that is fine. A contract regression, an in
 
 Both sentences describe the same defect. Only the second lets a reader judge severity without opening the file.
 
+### Choosing `impactArea`
+
+`impactArea` answers a different question from `severity`: not how urgent the defect is, but which part of the product it lands in. The review detail screen groups findings by that area, so a reader can see where the problems are without opening the diff — and when a review has no `resultSummary`, it is the only such axis.
+
+Pick **exactly one** value per finding: the area the defect most directly lands in. Do not pick the area a fix would touch, and do not add a second area because the defect also has a downstream effect somewhere else. A defect that genuinely splits across two areas is two findings.
+
+| Value           | Choose it when the finding most directly affects…                                                                             |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `UI`            | What a user sees or can do on a screen — rendering, layout, copy, i18n, accessibility, client-side interaction state.         |
+| `BUSINESS_RULE` | A domain rule or decision logic — eligibility, status transitions, pricing, quota, scoring, branch conditions.                |
+| `CONTRACT`      | An interface between components — API request/response shape, schema validation, CLI or tool arguments, events, shared types. |
+| `DATA`          | Stored data and its integrity — persistence, migrations, transactions, consistency, retention, query correctness.             |
+| `SECURITY`      | Authentication, authorization, tenant or scope isolation, secret handling, injection, or exposure of protected data.          |
+| `OPS`           | Running the system — deployment, configuration, logging, monitoring, scheduled jobs, performance, failure handling, recovery. |
+| `DOCS`          | Documentation and user-facing guidance — product manuals, guides, conventions, help text describing behavior.                 |
+| `TEST`          | Verification itself — missing, wrong, flaky, or unrunnable tests and their fixtures.                                          |
+| `OTHER`         | Nothing above fits. See below.                                                                                                |
+
+When two areas seem to fit, ask which one a reader has to look at to judge the risk:
+
+- A missing permission check is `SECURITY`, not `BUSINESS_RULE`, even though the rule it guards is a business rule.
+- A response field dropped before it reaches the screen is `CONTRACT`; a field that arrives but renders wrong is `UI`.
+- A migration that can lose rows is `DATA`; a migration that fails only in the deploy pipeline is `OPS`.
+- A rename that breaks a shared type is `CONTRACT`; a rename that only hurts readability is `OTHER`.
+
+Use `OTHER` only when no other value fits — typically internal maintainability, naming, dead code, or code structure with no user, contract, data, or operational consequence. It is a real answer, not a place to put uncertainty: when you are torn between two listed areas, choose the one whose reader owns the risk instead of escaping to `OTHER`.
+
 ### Findings JSON File Format
 
-`--findings-file` expects a JSON array. Each item must include the six required fields below; `lineStart` / `lineEnd` are optional.
+`--findings-file` expects a JSON array. Each item must include the seven required fields below; `lineStart` / `lineEnd` are optional.
 
 ```json
 [
   {
     "severity": "P1",
+    "impactArea": "SECURITY",
     "title": "Missing authorization check",
     "filePath": "src/path/to/file.ts",
     "lineStart": 42,
@@ -221,7 +251,7 @@ Both sentences describe the same defect. Only the second lets a reader judge sev
 ]
 ```
 
-Required fields per item: `severity`, `title`, `filePath`, `problem`, `impact`, `suggestion`. The CLI rejects the file with a clear error when any required field is missing or the top-level value is not an array.
+Required fields per item: `severity`, `impactArea`, `title`, `filePath`, `problem`, `impact`, `suggestion`. The CLI rejects the file with a clear error when any required field is missing, when `impactArea` is not one of the nine allowed values, or when the top-level value is not an array. The same nine values are required on every finding passed to `agentteams_codereview_create`.
 
 ## Finding Lifecycle
 
