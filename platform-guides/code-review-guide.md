@@ -39,9 +39,12 @@ agentteams code-review create \
   --test-file .agentteams/cli/temp/<review-test-summary>.md \
   --reviewer-context "<review instructions and source context>" \
   --findings-file .agentteams/cli/temp/<review-findings>.json \
+  --result-summary-file .agentteams/cli/temp/<review-result-summary>.md \
   --runner-type <runner-type> \
   --model <model-id>
 ```
+
+`resultSummary` is the review's conclusion, and which command carries it depends on how the review reaches its result — see [Review Summary](#review-summary) for what it must contain. When you create the review with `findings` upfront, put `resultSummary` in that same call (`--result-summary-file <path>`, or `--result-summary "<text>"`, which takes precedence); there is no way to fill it in afterwards, because `code-review update` rejects `resultSummary` and `submit-result` applies only to a `PENDING` review. Sending `resultSummary` without `findings` is rejected. When you instead execute an existing `PENDING` review, carry it on `agentteams code-review submit-result` with the same two flags.
 
 Do not use reviewer names, agent names, or author names as substitutes for `--runner-type` or `--model`. Inside a runner session both flags are filled in from the session, so omit them rather than restating what the runner already knows. Outside one, if either value is unknown, stop and ask for the correct execution environment before creating the record — never guess it.
 
@@ -74,6 +77,7 @@ Before `submit-result`, confirm these fields are recorded when the information i
 - `reviewerContext`
 - `runnerType`
 - `model`
+- `resultSummary` — pass it on `submit-result` itself; `code-review update` does not accept it
 
 If any required context cannot be recovered or the CLI cannot update it, mention that limitation in `resultSummary` before submitting the result.
 
@@ -98,12 +102,12 @@ Do not use `code-review update` for `findings`, `status`, `resultSummary`, `erro
 
 When the AgentTeams MCP server is connected, prefer the MCP write tools over shelling out to the CLI.
 
-| Tool                                       | Purpose                                                                                           |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| `agentteams_guide_get("code-review")`      | Fetch this guide's current text plus its `guideHash`. **Call this before any code review write.** |
-| `agentteams_codereview_create`             | Create a review. Pass `findings` upfront when the result is already known.                        |
-| `agentteams_codereview_update`             | Update metadata on a `PENDING` review, or cancel it by passing `status: "CANCELLED"`.             |
-| `agentteams_codereview_finding_status_set` | Move one finding to `DISMISSED` (dismiss), `OPEN` (undismiss), or `RESOLVED`.                     |
+| Tool                                       | Purpose                                                                                                                                                            |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `agentteams_guide_get("code-review")`      | Fetch this guide's current text plus its `guideHash`. **Call this before any code review write.**                                                                  |
+| `agentteams_codereview_create`             | Create a review. Pass `findings` upfront when the result is already known, and send `resultSummary` in the same call — `resultSummary` cannot be added afterwards. |
+| `agentteams_codereview_update`             | Update metadata on a `PENDING` review, or cancel it by passing `status: "CANCELLED"`.                                                                              |
+| `agentteams_codereview_finding_status_set` | Move one finding to `DISMISSED` (dismiss), `OPEN` (undismiss), or `RESOLVED`.                                                                                      |
 
 The tools operate on the single project the MCP server is bound to. There is no `projectId` argument — a different project cannot be reached from an MCP session.
 
@@ -160,6 +164,7 @@ Write it as three blocks, in this order:
 Constraints:
 
 - Always write it. Every finding carries an `impactArea`, and the detail screen groups findings by that area, but a grouped list is a map of where the problems are — not a verdict. Impact areas never substitute for `resultSummary`.
+- Write it with the command that matches how the review is created — `code-review create` / `agentteams_codereview_create` when findings are supplied upfront, `code-review submit-result` when an existing `PENDING` review is executed. See [Creating a Review Record](#creating-a-review-record).
 - Do not open with code narration. Symbol names, call paths, and file layout belong in block 3 or in the findings themselves — never in blocks 1 and 2.
 - Do not write the summary as a single paragraph. A reader who has to parse one long block to reach the consequence gains nothing over reading the findings.
 - Say so plainly when a finding has no user-visible effect. Contract regressions, refactors, and internal cleanups are legitimate findings; report what they mean for the team or the operator instead of inventing a user-facing consequence.
