@@ -93,17 +93,22 @@ The parser derives task rows, dependency links, and waves from these labels. Cha
 
 ### Task Execution Policy
 
-To select a task-specific runner engine and model, add either or both of these labels outside code fences in that task's `### N. Task title` body:
+To select a task-specific runner engine, model, and idle timeout, add any of these labels outside code fences in that task's `### N. Task title` body:
 
 ```markdown
 - **Engine**: CODEX
 - **Model**: gpt-5-codex
+- **Idle Timeout**: 30m
 ```
 
 - This guide does not hard-code the accepted `Engine` values. Read the current list from the `--runner-type` description in `agentteams plan create --help`.
-- Omitting both labels uses the run snapshot's engine, model, and fast mode.
+- Omitting `Engine` and `Model` uses the run snapshot's engine, model, and fast mode.
 - An unknown `Engine` does not block plan storage. Publishing emits a warning and falls back to the run snapshot's execution policy.
 - When the task `Engine` differs from the run snapshot, the task does not inherit that snapshot's model or fast mode. If `Model` is absent or cannot be resolved for the new engine, publishing uses the new engine's default model with `fastMode=false`.
+- `Idle Timeout` caps how long that task's runner may produce no output before the run is stopped. Write a whole number with an optional `ms`, `s`, `m`, or `h` suffix (`30m`, `90s`, `2h`); a bare number is read as milliseconds, the unit the value is stored in.
+- `Idle Timeout` accepts 1 minute through 24 hours. A shorter, longer, or unparsable value — including a decimal such as `1.5h` — is treated as if the label were absent; it never blocks plan storage.
+- Omitting `Idle Timeout` leaves the task on the runner's own default: the runner host's `IDLE_TIMEOUT_MS` when it is set, otherwise that engine's default, otherwise the global default of 30 minutes.
+- `Idle Timeout` applies only to the task that carries it and is never inherited. Unlike `Engine` and `Model`, it does not carry over from a preceding task, so every long-running task needs its own label, and the generated finish node always runs on the runner's default.
 - If a label appears more than once, the last occurrence outside a code fence wins.
 
 ### Plan Code Review Policy
@@ -119,7 +124,7 @@ To request an automatic code review after plan completion, add a separate `## Co
 ```
 
 - Only `on`, `true`, `yes`, and `&#xCF1C;` enable `Auto Review`. A missing section, a missing value, or any unknown value leaves it disabled.
-- `Engine` and `Model` are optional and follow the same accepted-value, omission, fallback, and duplicate-label rules as the task execution policy.
+- `Engine` and `Model` are optional and follow the same accepted-value, omission, fallback, and duplicate-label rules as the task execution policy. This section does not read `Idle Timeout`.
 
 ### Editing an Existing V2 Task Graph
 
