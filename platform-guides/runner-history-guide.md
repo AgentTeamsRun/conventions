@@ -41,3 +41,4 @@ Plan tasks often run in separate sessions, so the next task cannot see this sess
 - Put decisions and remaining work the next task needs in `### Summary`.
 - Do not keep trial-and-error that is only valid for this task.
 - Older snapshots stay reachable through `## Task Histories`; the next session should read them only when the latest summary is not enough.
+- If a task commit is not on a remote, a later runner stops before start with a `GIT_STATE_UNAVAILABLE:` reason. Record whether it was pushed and the branch name in `### Summary`.
