@@ -33,6 +33,23 @@ agentteams task start --plan-id {planId} --task-id {taskId}
 
 The phrase "start the plan" is an explicit approval signal — do not stop after the CLI status change. Implement unless a blocking comment requires human confirmation.
 
+### Resuming a plan that is already started (`IN_PROGRESS` or `PARTIAL`)
+
+A continuation run, or a later node of a plan task chain, arrives at a plan that an earlier session already started. Do not start it again — resume it from the current task states:
+
+```bash
+# 1. Check the plan status and the task states
+agentteams plan status --id {planId}
+
+# 2. If the plan is IN_PROGRESS or PARTIAL, skip `plan start` and continue the task loop
+agentteams task start --plan-id {planId} --task-id {taskId}
+```
+
+- Calling `plan start` on an `IN_PROGRESS` or `PARTIAL` plan is harmless: the server answers `alreadyStarted: true` and changes nothing — no status transition, no new execution run, `startedAt` preserved. Treat that response as "continue with the tasks", not as a fresh start.
+- `PARTIAL` means an earlier `plan finish` found `BLOCKED` or unfinished tasks. Resume those tasks with `task start`, then call `plan finish` again once they are settled; the plan stays `PARTIAL` until that second finish.
+- If the plan is still `TODO` (the earlier session ended before `plan start`), `plan start` is the right call even for a continuation.
+- 409 `PLAN_START_NOT_ALLOWED` means the plan cannot be started from its current state — run `plan status` and act on what it shows. `DONE` and `CANCELLED` plans are closed: report that instead of retrying.
+
 ## Execution Shortcuts
 
 For standard execution flows, use lifecycle shortcuts instead of manual multi-step status updates.
@@ -106,12 +123,14 @@ Do not mark a task `DONE` merely because code was written. Verification is part 
 
 ### Lifecycle Error Recovery
 
-| Reason                | Action                                                                 |
-| --------------------- | ---------------------------------------------------------------------- |
-| `DEPENDENCY_BLOCKED`  | Inspect `blockedByTaskIds`; finish those prerequisites first           |
-| `NOT_V2`              | This plan has no V2 task lifecycle; track execution with plan comments |
-| `NO_STRUCTURED_TASKS` | Re-check the authored `## TODOs` structure or use comment tracking     |
-| `PLAN_TERMINAL`       | Do not mutate tasks on a completed or cancelled plan                   |
+| Reason                   | Action                                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `DEPENDENCY_BLOCKED`     | Inspect `blockedByTaskIds`; finish those prerequisites first                                           |
+| `NOT_V2`                 | This plan has no V2 task lifecycle; track execution with plan comments                                 |
+| `NO_STRUCTURED_TASKS`    | Re-check the authored `## TODOs` structure or use comment tracking                                     |
+| `PLAN_TERMINAL`          | Do not mutate tasks on a completed or cancelled plan                                                   |
+| `alreadyStarted: true`   | `plan start` reached an `IN_PROGRESS` or `PARTIAL` plan; nothing changed — continue with `task start`  |
+| `PLAN_START_NOT_ALLOWED` | The plan cannot be started from its current state; check `plan status` — `DONE`/`CANCELLED` are closed |
 
 ### Finish Preflight
 
