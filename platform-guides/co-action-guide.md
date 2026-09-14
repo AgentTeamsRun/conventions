@@ -56,11 +56,6 @@ Tips: state decisions _with_ their reason ("Redis over in-memory because multi-i
 
 A fenced `mermaid flowchart` renders in the web viewer; stays plain text in CLI/raw — keep prose self-contained.
 
-## Visibility
-
-- `PRIVATE` (default): creator only
-- `PROJECT`: all project members view; only creator changes status/visibility/deletes
-
 ## Takeaways
 
 Standalone insights attached to (but separate from) the content. Create one when you found a non-obvious constraint, an undocumented decision, a reusable workaround, or a risk that doesn't fit the main sections.
@@ -95,7 +90,7 @@ When MCP is unavailable or a tool is missing, use `agentteams coaction create/up
 ## Commands
 
 ```bash
-# Create. Omit `--visibility` for `PRIVATE`; pass `--visibility PROJECT` explicitly to share with project members.
+# Create
 agentteams coaction create \
   --title "<handoff title>" \
   --file .agentteams/cli/temp/{name}-coaction.md
