@@ -10,13 +10,13 @@ Conventions. For Convention authoring rules and the category decision table, see
 A Convention is **policy** the agent must comply with. A Skill is a **capability** the agent loads when it decides the
 task calls for it.
 
-|            | Convention                                      | Skill                                                    |
-| ---------- | ----------------------------------------------- | -------------------------------------------------------- |
-| Answers    | "What rules govern this work?"                  | "How do I perform this specific job?"                    |
-| Shape      | Single markdown file                            | Package: `SKILL.md` + optional resources                 |
-| Loading    | Trigger-driven (`always_on` / `model_decision`) | Model decides from `description`, then reads the package |
-| Location   | `.agentteams/<category>/<name>.md`              | `.agentteams/skills/<slug>/SKILL.md`                     |
-| Compliance | Mandatory when it applies                       | Advisory — it teaches a procedure                        |
+|            | Convention                                      | Skill                                                                   |
+| ---------- | ----------------------------------------------- | ----------------------------------------------------------------------- |
+| Answers    | "What rules govern this work?"                  | "How do I perform this specific job?"                                   |
+| Shape      | Single markdown file                            | Package: `SKILL.md` + optional resources (text files and binary assets) |
+| Loading    | Trigger-driven (`always_on` / `model_decision`) | Model decides from `description`, then reads the package                |
+| Location   | `.agentteams/<category>/<name>.md`              | `.agentteams/skills/<slug>/SKILL.md`                                    |
+| Compliance | Mandatory when it applies                       | Advisory — it teaches a procedure                                       |
 
 🚫 A Skill must **not** restate project policy. If the content is a rule the agent must always obey, it belongs in a
 `rules` Convention. Skills reference conventions; they do not copy them.
@@ -27,15 +27,17 @@ task calls for it.
 .agentteams/skills/<slug>/
 ├─ SKILL.md          # required entry file
 ├─ references/       # optional — supporting documents the skill points at
-└─ scripts/          # optional — executable helpers the skill invokes
+├─ scripts/          # optional — executable helpers the skill invokes
+└─ assets/           # optional — binary files the skill ships with the package
 ```
 
 - `SKILL.md` is the only required file. A package without it is rejected on upload and on download.
-- `references/` and `scripts/` are the only resource directories accepted today.
-- Binary assets are not supported. A file that is not UTF-8 text is rejected — by the CLI when it collects the
-  package, and by the server on upload. Keep packages text-only. The CLI skips well-known OS junk files
-  (`.DS_Store`, `Thumbs.db`, `desktop.ini`, AppleDouble `._*`) during collection so a Finder or Explorer visit does
-  not fail `skill push`.
+- `references/`, `scripts/`, and `assets/` are the resource directories accepted today.
+- Location decides the kind: `assets/` holds binary files only, while `references/` and `scripts/` hold UTF-8 text
+  only. A text entry under `assets/`, or a binary entry under `references/` or `scripts/`, is rejected — by the CLI
+  when it collects the package, and by the server on upload.
+- The CLI skips well-known OS junk files (`.DS_Store`, `Thumbs.db`, `desktop.ini`, AppleDouble `._*`) during
+  collection so a Finder or Explorer visit does not fail `skill push`.
 
 ### Resource file types
 
@@ -45,6 +47,10 @@ else. What follows is guidance, not enforcement.
 - `references/` — supporting documents the entry file points at. `.md` is the default; reach for `.json` when the
   material is a structured example (a tool input payload, a fixture) that prose would distort.
 - `scripts/` — helpers the skill tells the agent to run: `.sh` for shell, or a script source such as `.ts` / `.mjs`.
+- `assets/` — binary files the entry file points at or the agent uses directly: images (`.png`, `.jpg`, `.jpeg`,
+  `.gif`, `.webp`), `.pdf`, and office documents (`.docx`, `.pptx`, `.xlsx`). These are the only asset types
+  accepted; anything else under `assets/` is rejected. Cite an asset from `SKILL.md` by its package-relative path
+  (`assets/<name>`).
 - The executable bit is **not preserved** through upload and download. Name the interpreter at the call site in
   `SKILL.md` — `bash scripts/<name>.sh`, not `./scripts/<name>.sh`.
 - Anything that is neither a document the entry file cites nor a helper it runs usually belongs in `SKILL.md`
@@ -88,21 +94,29 @@ description: >-
 
 ### Size limits
 
-| Limit                     | Value          | Applies to                                  |
-| ------------------------- | -------------- | ------------------------------------------- |
-| `SKILL.md` size           | 64 KB          | Entry file                                  |
-| Single resource file size | 256 KB         | Each file under `references/` or `scripts/` |
-| Files per package         | 50             | Including `SKILL.md`                        |
-| Total package size        | 2 MB           | Sum of all file contents                    |
-| Path length               | 200 characters | Relative path per file                      |
+| Limit                     | Value          | Applies to                                       |
+| ------------------------- | -------------- | ------------------------------------------------ |
+| `SKILL.md` size           | 64 KB          | Entry file                                       |
+| Single resource file size | 256 KB         | Each text file under `references/` or `scripts/` |
+| Single asset file size    | 10 MB          | Each binary file under `assets/`                 |
+| Total asset size          | 20 MB          | Sum of all files under `assets/`                 |
+| Files per package         | 50             | Including `SKILL.md` and assets                  |
+| Total package size        | 2 MB           | Sum of all text file contents (assets excluded)  |
+| Path length               | 200 characters | Relative path per file                           |
 
-- Encoding is **UTF-8 text only**. The CLI rejects a file whose bytes are not valid UTF-8 or that contains a null
-  byte while collecting the local package. The server rejects an upload whose content contains a null byte, a lone
-  surrogate, or a Unicode replacement character (U+FFFD). Some JSON parsers replacement-decode invalid UTF-8
-  into U+FFFD rather than rejecting the body, so the server treats U+FFFD as evidence of that path — a legitimate
-  U+FFFD in otherwise valid text is also refused.
+- Encoding is **UTF-8 text only** for `SKILL.md`, `references/`, and `scripts/`. The CLI rejects a file whose bytes
+  are not valid UTF-8 or that contains a null byte while collecting the local package. The server rejects an upload
+  whose content contains a null byte, a lone surrogate, or a Unicode replacement character (U+FFFD). Some JSON
+  parsers replacement-decode invalid UTF-8 into U+FFFD rather than rejecting the body, so the server treats U+FFFD
+  as evidence of that path — a legitimate U+FFFD in otherwise valid text is also refused.
+- Binary assets travel outside the text body. The server verifies the uploaded bytes — format markers and hash —
+  before accepting them, and the package version still uses each file's `sha256`: for an asset that is the hash of
+  the raw bytes, so an unchanged package produces an unchanged version.
 - Every file records a `sha256` hash of its content. The package version is the hash of the sorted
   `(relativePath, sha256)` pairs, so an unchanged package produces an unchanged version.
+- Receiving assets requires a current CLI. A download that does not ask for assets carries the text files only, and
+  the package version is unchanged, so older CLIs keep working on text. An update that does not mention assets
+  leaves the existing assets in place; only new or changed assets are uploaded.
 
 ## 3) Local sync ownership
 
