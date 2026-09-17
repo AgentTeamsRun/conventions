@@ -93,11 +93,12 @@ The parser derives task rows, dependency links, and waves from these labels. Cha
 
 ### Task Execution Policy
 
-To select a task-specific runner engine, model, and idle timeout, add any of these labels outside code fences in that task's `### N. Task title` body:
+To select a task-specific runner engine, model, idle timeout, and reasoning effort, add any of these labels outside code fences in that task's `### N. Task title` body:
 
 ```markdown
 - **Engine**: CODEX
 - **Model**: gpt-5-codex
+- **Effort**: high
 - **Idle Timeout**: 30m
 ```
 
@@ -109,6 +110,10 @@ To select a task-specific runner engine, model, and idle timeout, add any of the
 - `Idle Timeout` accepts 1 minute through 24 hours. A shorter, longer, or unparsable value — including a decimal such as `1.5h` — is treated as if the label were absent; it never blocks plan storage.
 - Omitting `Idle Timeout` leaves the task on the runner's own default: the runner host's `IDLE_TIMEOUT_MS` when it is set, otherwise that engine's default, otherwise the global default of 30 minutes.
 - `Idle Timeout` applies only to the task that carries it and is never inherited. Unlike `Engine` and `Model`, it does not carry over from a preceding task, so every long-running task needs its own label, and the generated finish node always runs on the runner's default.
+- `Effort` sets the reasoning effort the runner passes to the engine CLI for that task. The value is read case-insensitively and stored in lowercase.
+- `Effort` is read only when the same task body also carries `Engine` and `Model`. Without an explicit model there is no verified level list to check against, so the label is ignored and the task runs at the model's default intensity.
+- This guide does not hard-code the accepted `Effort` values. Each engine has its own set, and each model narrows it to the levels verified for that model (the supported effort levels on the Runner Models screen, or the levels the engine reports for auto-detected models). A level outside the engine's set is treated as if the label were absent. A level the model does not list, a level that conflicts with one embedded in the model name, or a target runner too old to pass effort for that engine drops the value at publish time with a warning. None of these block plan storage or stop the task chain — the task runs at the model's default intensity.
+- Omitting `Effort` inherits the effort chosen in the run's start settings, the same way `Engine` and `Model` are inherited. If the task switches `Engine` to a different engine or overrides `Model`, the run's effort is not carried over — a level is only valid for the model it was verified against — and only the task's own `Effort` applies.
 - If a label appears more than once, the last occurrence outside a code fence wins.
 
 ### Plan Code Review Policy
@@ -121,10 +126,12 @@ To request an automatic code review after plan completion, add a separate `## Co
 - **Auto Review**: on
 - **Engine**: CODEX
 - **Model**: gpt-5-codex
+- **Effort**: high
 ```
 
 - Only `on`, `true`, `yes`, and `&#xCF1C;` enable `Auto Review`. A missing section, a missing value, or any unknown value leaves it disabled.
 - `Engine` and `Model` are optional and follow the same accepted-value, omission, fallback, and duplicate-label rules as the task execution policy. This section does not read `Idle Timeout`.
+- `Effort` is optional and follows the task execution policy rules: it is read only when this section also sets `Engine` and `Model`, an unsupported level is dropped at publish time with a warning, and omitting it inherits the run's effort unless this section switches the engine or overrides the model.
 
 ### Editing an Existing V2 Task Graph
 
