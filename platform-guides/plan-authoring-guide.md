@@ -33,6 +33,7 @@ A plan is **specific to this repository** — and every project-specific claim i
 - **Verify before you assert**: stack, build/test/lint commands, file paths, symbol/function names, and config must be confirmed from the source — read the manifest and its scripts, open the file, run the command's `--help` — before you state them as fact.
 - **Do not launder memory into fact**: if a detail comes from "projects like this usually…", it is an assumption, not a finding. Keep it out of the body's factual claims.
 - **Separate, don't blend**: anything you could not verify goes in `### Assumptions & Unknowns` (see below), never mixed into the body as if confirmed.
+- **Make guardrails checkable**: when a `Must Have` or `Must NOT Have` rests on a fact outside the diff — what is deployed, what a downstream consumer calls, which branch a change reached — state the fact _and_ the command that confirms it, right there in the guardrail. A guardrail whose reason cannot be re-checked is one a later reviewer will overturn on a guess.
 - Record what you actually consulted in `### Research Findings` and `### Conventions Referenced` — do not guess these.
 
 > Specificity is still the goal — a vague, "neutral" plan is the failure mode the QA examples in `plan-template-full.md` warn against. Be concrete **about this repo**; be honest about what you have not confirmed.

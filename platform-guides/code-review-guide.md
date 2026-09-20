@@ -26,6 +26,19 @@ Separate the two contexts clearly in the request:
 - Original work: plan / report / commit range / branch / diff summary / test results
 - Reviewer execution: reviewer agent / session / model + review instructions
 
+## Reviewing Against the Source Plan
+
+When the review has a source plan, read that plan's `Must Have` and `Must NOT Have` before finalizing any finding. Those lines are decisions the requester already made, usually with a reason recorded next to them. A reviewer arriving with fresh context sees the code but not that reasoning, so a finding can read as an obvious improvement while asking for the exact thing the plan rules out.
+
+Check each finding against those guardrails before you write it down:
+
+- **The finding is compatible with the guardrails** — report it normally.
+- **The finding asks for something the plan forbids** — do not file it as a finding. Filing it makes a plan conflict look like a defect, and whoever applies the fix will violate the guardrail while believing they are closing a review item.
+
+Report a conflict in `resultSummary` instead, under **Remaining actions**, as a line that names the guardrail it collides with and what the reviewer believes is wrong with it. That routes the question to the person who set the guardrail rather than to the agent fixing findings.
+
+To argue that a plan's premise is wrong, supply repository evidence that disproves it — a command and its output, not a plausibility argument. A plan states its premises so they can be checked; "this seems risky" is not a check.
+
 ## Creating a Review Record
 
 Use the dedicated CLI command to register a completed review. The runner and model that performed the review are required execution-environment snapshots.
@@ -195,6 +208,24 @@ Each finding must include:
 - Suggestion: concrete fix direction
 
 Prefer actionable findings over broad commentary. Do not include items that cannot be verified from the diff, repository context, or stated requirements.
+
+### Claims About What Is Already Released
+
+Compatibility findings — removed endpoints, renamed flags, changed payload shapes — rest on a claim about what is already running out there. That claim is checkable in the repository, and a finding that gets it wrong inverts the correct fix: it asks for a compatibility layer that protects nothing, and that layer then outlives the reason given for it.
+
+A package version number is not evidence. It says which version was published, not what that version contains. Check the release branch itself before asserting that deployed code calls the endpoint or uses the flag:
+
+```bash
+# Is the commit that introduced this surface on the release branch at all?
+git branch -a --contains <commit-that-introduced-it>
+
+# Does the released code actually reference it?
+git grep -n "<path-or-symbol>" origin/<release-branch> -- <workspace>/src
+```
+
+If the surface never reached the release branch, there is no compatibility window to preserve and no finding to file. If it did, put the evidence in `problem` so the reader can judge the exposure rather than take it on faith.
+
+The same rule applies in reverse: do not wave away a real compatibility break because the change "looks internal". Run the check either way.
 
 ### Writing `impact`
 
