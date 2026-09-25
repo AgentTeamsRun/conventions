@@ -86,7 +86,7 @@ V2 task rows are parsed from the plan body. The following markup is a machine-re
 - Put tasks under the exact `## TODOs` heading.
 - Start each task with a numbered third-level heading in the form `### N. Task title`. Keep task numbers unique and sequential.
 - Express a dependency as `Blocked By: Task N` or `Depends On: Task N`. Use `Blocks: Task N` only on the blocking task.
-- Express an execution wave as `Parallel Group: Wave N`.
+- Express an execution wave as `Parallel Group: Wave N`. Tasks in the same wave are dispatched together as one runner request (one session runs them in order and reports each task separately), so a task must not depend on another task in the same wave — starting such a plan is rejected with `PLAN_START_TASK_WAVE_DEPENDENCY_CONFLICT`. Put dependent tasks in a later wave.
 - Reference only task numbers that exist in the same plan. Self-dependencies and unknown task numbers do not create usable dependency links.
 - Treat each task's Acceptance Criteria as the evidence required before that task can be marked `DONE`.
 

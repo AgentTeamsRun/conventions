@@ -37,7 +37,7 @@ Example:
 
 ## TODOs
 
-> **Structured task contract**: Keep the exact `## TODOs` heading and numbered `### N. Task title` headings. The server parses dependencies from `Blocked By: Task N` or `Depends On: Task N`, and waves from `Parallel Group: Wave N`. Reference only task numbers that exist in this plan.
+> **Structured task contract**: Keep the exact `## TODOs` heading and numbered `### N. Task title` headings. The server parses dependencies from `Blocked By: Task N` or `Depends On: Task N`, and waves from `Parallel Group: Wave N`. Reference only task numbers that exist in this plan. Tasks sharing a wave run in one runner request, so dependencies must point to an earlier wave.
 
 ---
 

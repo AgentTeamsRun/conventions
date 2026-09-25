@@ -99,13 +99,13 @@ Example:
 
 ## TODOs
 
-> **Structured task contract**: Keep the exact `## TODOs` heading and numbered `### N. Task title` headings. The server parses dependencies from `Blocked By: Task N` or `Depends On: Task N`, and waves from `Parallel Group: Wave N`. Reference only task numbers that exist in this plan.
+> **Structured task contract**: Keep the exact `## TODOs` heading and numbered `### N. Task title` headings. The server parses dependencies from `Blocked By: Task N` or `Depends On: Task N`, and waves from `Parallel Group: Wave N`. Reference only task numbers that exist in this plan. Tasks sharing a wave run in one runner request, so dependencies must point to an earlier wave.
 
 ---
 
 ### 1. Task title
 
-- **Parallel Group**: <!-- Wave 1; keep this label so the server can parse the wave -->
+- **Parallel Group**: <!-- Wave 1; tasks in the same wave run together in one runner request and must not depend on each other -->
 - **Blocked By**: <!-- none; keep this label so the server can parse dependencies -->
 
 **What to do**:
@@ -136,7 +136,7 @@ Example:
 
 ### 2. Task title
 
-- **Parallel Group**: <!-- Wave 2; use Wave 1 instead when this task is independent of Task 1 -->
+- **Parallel Group**: <!-- Wave 2; use Wave 1 only when this task is independent of Task 1 (same-wave dependencies are rejected at start) -->
 - **Blocked By**: <!-- Task 1; write none when this task is independent -->
 
 **What to do**:
