@@ -158,7 +158,7 @@ agentteams plan cleanup --id {planId}
 
 ## Quick Log
 
-A **quick log** is the way to record work you already finished when there is no plan for it yet. The `plan quick` command performs create + start + finish in a single command and optionally attaches a completion report in the same call, so the work is captured as a plan-linked report without a separate up-front planning step. Use it for work that does not need a downloaded runbook or multi-step status tracking.
+A **quick log** records work you already finished when there is no plan for it yet. The CLI `plan quick` command performs create + start + finish and attaches a required completion report in a single request. Provide `--report-file <path>`: missing or blank paths, missing files, empty report content, and read failures stop registration before the request is sent. Use it for work that does not need a downloaded runbook or multi-step status tracking.
 
 > Because every completion report is plan-linked, a quick log is the standard path for logging already-done work — it provides the plan the report attaches to, in one shot.
 
@@ -168,20 +168,22 @@ A **quick log** is the way to record work you already finished when there is no 
 | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
 | Single, small, well-understood task finished in one session      | Work spans multiple steps, waves, or sessions                     |
 | No separate runbook / step-by-step execution is needed           | Reviewers need to inspect the plan before execution               |
-| You are recording work you just did (often with `--report-file`) | Risk signals apply (schema / auth / billing / quota / deployment) |
+| You are recording completed work with a required `--report-file` | Risk signals apply (schema / auth / billing / quota / deployment) |
 
 When unsure, prefer the full lifecycle — a quick log cannot be reviewed before the work happens.
 
 ### Command
 
 ```bash
-agentteams plan quick --title "<title>" --content "<plan content>" \
+agentteams plan quick --title "<title>" \
+  --content "## TL;DR\n\n<intent and scope>" --interpret-escapes \
   --runner-type <runner> --model <model> \
+  --report-file <path> \
   [--assigned-to <agent config id or name>] \
-  [--report-file <path> --report-title <report title> ...]
+  [--report-title <report title> ...]
 ```
 
-`--content` carries the plan body (format below). Adding report flags attaches a completion report in the same command. The `--runner-type` / `--model` contract is defined in `plan-authoring-guide.md` (**Runner Type & Model Reference**).
+`--content` carries the plan body (format below). `--report-file` must provide a valid completion report. If `--report-title` is omitted, the plan title is used; other report options, including quality score, remain optional. The `--runner-type` / `--model` contract is defined in `plan-authoring-guide.md` (**Runner Type & Model Reference**).
 
 ### Agent Assignment
 
@@ -200,14 +202,7 @@ The server's step is a fallback, not a guess: it matches the calling machine aga
 
 ### `--content` Format
 
-A quick log's body **scales to whether you attach a completion report**, so the same work is never described twice. Decide ownership first:
-
-| You attach a report (`--report-file`)? | `--content` carries                                 | Why                                                                                                                                                   |
-| -------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Yes** (the common path)              | `## TL;DR` only — the intent/scope, one anchor line | The report owns _what changed_ (`## Summary`) and _how it was verified_ (`## Verification`). Restating them in the plan duplicates the report's SSOT. |
-| **No**                                 | The full three sections below                       | With no report attached, the plan body is the **only** record of the work, so it must carry the work and verification itself.                         |
-
-**With a report (minimal anchor):**
+Every CLI quick log includes a completion report. Keep the plan body to `## TL;DR` with the intent and scope; the report owns the outcome and verification.
 
 ```markdown
 ## TL;DR
@@ -215,27 +210,11 @@ A quick log's body **scales to whether you attach a completion report**, so the 
 <!-- 1-2 sentence intent: what this work was and why. The report carries the detail. -->
 ```
 
-**Without a report (sole record):**
-
-```markdown
-## TL;DR
-
-<!-- 1-2 sentence summary -->
-
-## Work Performed
-
-- <!-- changed files / description -->
-
-## Verification Results
-
-- <!-- build/test pass status -->
-```
-
-> Ownership split: the **quick-log plan** = _why/what_ (intent) + the anchor the report links to; the **completion report** = _what changed + how verified + risks/follow-ups + conventions_ (the outcome SSOT). When a report is attached, do not repeat Work Performed / Verification in `--content`.
+> Ownership split: the **quick-log plan** = _why/what_ (intent) + the anchor the report links to; the **completion report** = _what changed + how verified + risks/follow-ups + conventions_ (the outcome SSOT). Do not repeat Work Performed / Verification in `--content`.
 
 ### Completion Report
 
-`completion-report-guide.md` is the SSOT for the report flags (report status, quality score, review recommendation) and for the quick-log-with-report path. Commit your work first — report-attaching `plan quick` auto-collects commit metrics from the current git state.
+`completion-report-guide.md` is the SSOT for the report flags (report status, quality score, review recommendation) and the required quick-log report. Commit your work first — CLI `plan quick` always attaches a report and auto-collects commit metrics from the current git state.
 
 ## Origin Issue Linking
 

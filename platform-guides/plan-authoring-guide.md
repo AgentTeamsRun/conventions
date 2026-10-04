@@ -192,7 +192,7 @@ If no such reviewer is available, self-check:
 
 ## Runner Type & Model Reference
 
-`--runner-type` and `--model` are **required** for `plan create`, `plan quick`, `report create`, `code-review create`, and report-attaching `plan finish` — the creator snapshot (`Plan.*`) at create, the executor snapshot (`CompletionReport.*`) at report; the two can differ. Lifecycle commands that only move status, and a report-less `plan finish`, do not take them. Always required for `plan quick`, whether or not it attaches a report.
+`--runner-type` and `--model` are **required** for `plan create`, `plan quick`, `report create`, `code-review create`, and report-attaching `plan finish` — the creator snapshot (`Plan.*`) at create, the executor snapshot (`CompletionReport.*`) at report; the two can differ. Lifecycle commands that only move status, and a report-less `plan finish`, do not take them. Always required for `plan quick`, which also requires `--report-file` to attach a completion report in the same request.
 
 **Inside a runner session you do not pass either flag.** The runner exports the execution snapshot to every session it spawns, and the CLI fills both in from it. Pass them explicitly only to override, or when running outside a runner session (a local terminal, a manual desktop run) — there is nothing there that knows which model you are on, so the commands above still fail without them.
 

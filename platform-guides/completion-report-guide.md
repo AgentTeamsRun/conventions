@@ -92,11 +92,11 @@ agentteams report create --plan-id {planId} \
   --status <COMPLETED | PARTIAL | FAILED>
 ```
 
-Quick-log report (Path C) — when you finished work that has no plan yet, use a **quick log** (`plan quick`) to record it and attach the report in a single step. This is the standard way to log already-done work without a separate plan:
+Quick-log report (Path C) — when you finished work that has no plan yet, use a CLI **quick log** (`plan quick`) to register the plan and its required completion report in a single request. `--report-file` is required: missing or blank paths, missing files, empty report content, and read failures stop registration before the request is sent:
 
 ```bash
 agentteams plan quick --title "<brief work summary>" \
-  --content "<quick plan description>" \
+  --content "## TL;DR\n\n<intent and scope>" --interpret-escapes \
   --type <FEATURE | BUG_FIX | ISSUE | REFACTOR | CHORE> \
   --runner-type <runner-type> --model <model-id> \
   --report-title "<what you did and why, in one sentence>" \
@@ -107,9 +107,9 @@ agentteams plan quick --title "<brief work summary>" \
   --review-reason "<one-line justification>"
 ```
 
-> All completion report parameters from `plan finish` are supported on `plan quick` when attaching a report.
+> All completion report parameters from `plan finish` are supported on `plan quick`. Only `--report-file` becomes required for quick logs. If `--report-title` is omitted, the plan title is used; other report options, including quality score, remain optional. Attaching a report to a regular `plan finish` remains optional.
 
-> **Avoid duplication with the plan body.** In a quick log with a report, the report is the SSOT for _what changed_ (`## Summary`) and _how it was verified_ (`## Verification`); the plan `--content` should carry only the intent/scope (`## TL;DR`). See `plan-execution-guide.md` → Quick Log → `--content` Format for the ownership split.
+> **Avoid duplication with the plan body.** The required quick-log report is the SSOT for _what changed_ (`## Summary`) and _how it was verified_ (`## Verification`); the plan `--content` should carry only the intent/scope (`## TL;DR`). See `plan-execution-guide.md` → Quick Log → `--content` Format for the ownership split.
 
 ## Metrics (Auto + Manual)
 
