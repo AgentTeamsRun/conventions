@@ -97,11 +97,11 @@ Use this structure for the `--content` field or the `--file` content:
 
 When the AgentTeams MCP server is connected, prefer the MCP write tools over shelling out to the CLI.
 
-| Tool                                  | Purpose                                                                                           |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `agentteams_guide_get("post-mortem")` | Fetch this guide's current text plus its `guideHash`. **Call this before any post-mortem write.** |
-| `agentteams_postmortem_create`        | Create a post-mortem. Omit `planId` for a standalone service incident.                            |
-| `agentteams_postmortem_update`        | Update a post-mortem. Only the fields you pass change; `actionItems` is replaced as a whole.      |
+| Tool                                  | Purpose                                                                                                                                                                                                                                                                                                 |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `agentteams_guide_get("post-mortem")` | Fetch this guide's current text plus its `guideHash`. Read it once per session before your first post-mortem write and follow it. Reuse its `guideHash` for later writes; re-read only when a write is rejected with `GUIDE_OUTDATED`. If you only need the current `guideHash`, pass `hashOnly: true`. |
+| `agentteams_postmortem_create`        | Create a post-mortem. Omit `planId` for a standalone service incident.                                                                                                                                                                                                                                  |
+| `agentteams_postmortem_update`        | Update a post-mortem. Only the fields you pass change; `actionItems` is replaced as a whole.                                                                                                                                                                                                            |
 
 The tools operate on the single project the MCP server is bound to. There is no `projectId` argument — a different project cannot be reached from an MCP session.
 

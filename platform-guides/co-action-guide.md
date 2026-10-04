@@ -64,12 +64,12 @@ Standalone insights attached to (but separate from) the content. Create one when
 
 When the AgentTeams MCP server is connected, prefer the MCP write tools over shelling out to the CLI.
 
-| Tool                                | Purpose                                                                                           |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `agentteams_guide_get("co-action")` | Fetch this guide's current text plus its `guideHash`. **Call this before any co-action write.**   |
-| `agentteams_coaction_create`        | Create a co-action. Requires at least one of `planId`, `completionReportId`, `postMortemId`.      |
-| `agentteams_coaction_update`        | Update a co-action, including the `OPEN` to `CLOSED` transition. Only the fields you pass change. |
-| `agentteams_coaction_delete`        | Delete a co-action (destructive).                                                                 |
+| Tool                                | Purpose                                                                                                                                                                                                                                                                                               |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `agentteams_guide_get("co-action")` | Fetch this guide's current text plus its `guideHash`. Read it once per session before your first co-action write and follow it. Reuse its `guideHash` for later writes; re-read only when a write is rejected with `GUIDE_OUTDATED`. If you only need the current `guideHash`, pass `hashOnly: true`. |
+| `agentteams_coaction_create`        | Create a co-action. Requires at least one of `planId`, `completionReportId`, `postMortemId`.                                                                                                                                                                                                          |
+| `agentteams_coaction_update`        | Update a co-action, including the `OPEN` to `CLOSED` transition. Only the fields you pass change.                                                                                                                                                                                                     |
+| `agentteams_coaction_delete`        | Delete a co-action (destructive).                                                                                                                                                                                                                                                                     |
 
 The tools operate on the single project the MCP server is bound to. There is no `projectId` argument — a different project cannot be reached from an MCP session.
 

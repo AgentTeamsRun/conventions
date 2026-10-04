@@ -39,7 +39,7 @@ Use the `agentteams` CLI for everything else: mutations without an MCP write too
 
 > ⚠️ Creating, updating, or deleting a platform record (plan, convention, skill, report, postmortem, co-action, code review, document) is **not finished when the local files are written** — register the result to the server via the CLI. If the CLI is unavailable, skip reporting and continue the task.
 
-- **Read the matching guide before you write.** `agentteams_guide_get`, or `agentteams guide get --record-kind <kind>` (`agentteams guide list` names them). Do not guess flag values or document structure.
+- **Read the matching guide once per session before your first write.** `agentteams_guide_get`, or `agentteams guide get --record-kind <kind>` (`agentteams guide list` names them). Do not guess flag values or document structure. Reuse its `guideHash` for later writes; re-read only when a write is rejected with `GUIDE_OUTDATED`.
 - **Show every `webUrl` a command returns as a clickable markdown link** (e.g. `[View in AgentTeams](https://...)`) — it is how the user reaches what you just created.
 
 ## Plan Execution and Completion

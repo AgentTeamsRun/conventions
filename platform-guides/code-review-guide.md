@@ -115,12 +115,12 @@ Do not use `code-review update` for `findings`, `status`, `resultSummary`, `erro
 
 When the AgentTeams MCP server is connected, prefer the MCP write tools over shelling out to the CLI.
 
-| Tool                                       | Purpose                                                                                                                                                            |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `agentteams_guide_get("code-review")`      | Fetch this guide's current text plus its `guideHash`. **Call this before any code review write.**                                                                  |
-| `agentteams_codereview_create`             | Create a review. Pass `findings` upfront when the result is already known, and send `resultSummary` in the same call — `resultSummary` cannot be added afterwards. |
-| `agentteams_codereview_update`             | Update metadata on a `PENDING` review, or cancel it by passing `status: "CANCELLED"`.                                                                              |
-| `agentteams_codereview_finding_status_set` | Move one finding to `DISMISSED` (dismiss), `OPEN` (undismiss), or `RESOLVED`.                                                                                      |
+| Tool                                       | Purpose                                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `agentteams_guide_get("code-review")`      | Fetch this guide's current text plus its `guideHash`. Read it once per session before your first code review write and follow it. Reuse its `guideHash` for later writes; re-read only when a write is rejected with `GUIDE_OUTDATED`. If you only need the current `guideHash`, pass `hashOnly: true`. |
+| `agentteams_codereview_create`             | Create a review. Pass `findings` upfront when the result is already known, and send `resultSummary` in the same call — `resultSummary` cannot be added afterwards.                                                                                                                                      |
+| `agentteams_codereview_update`             | Update metadata on a `PENDING` review, or cancel it by passing `status: "CANCELLED"`.                                                                                                                                                                                                                   |
+| `agentteams_codereview_finding_status_set` | Move one finding to `DISMISSED` (dismiss), `OPEN` (undismiss), or `RESOLVED`.                                                                                                                                                                                                                           |
 
 The tools operate on the single project the MCP server is bound to. There is no `projectId` argument — a different project cannot be reached from an MCP session.
 
