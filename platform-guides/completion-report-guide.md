@@ -53,7 +53,7 @@ A fenced `mermaid` block (`flowchart` / `sequenceDiagram`) renders in the web vi
 
 For an existing plan (Path A or B), use `{first 8 characters of planId}-report.md`. Example: if planId is `57a51ec2-cf70-...`, the file name is `57a51ec2-report.md`. Quick-log reports (Path C) do not have a plan ID before the command runs, so use a concise descriptive file name such as `fix-token-refresh-report.md`.
 
-> ⚠️ **Use either Path A, Path B, or Path C, not multiple.** Running them simultaneously will create duplicate completion reports for the same plan.
+> ⚠️ **Use either Path A, Path B, or Path C, not multiple.** Running them simultaneously will create duplicate completion reports for the same plan. This applies to the plan-level report; a task report (below) is a separate, per-task record and does not count toward it.
 
 ## Plan-Linked vs Quick-Log Reports
 
@@ -110,6 +110,23 @@ agentteams plan quick --title "<brief work summary>" \
 > All completion report parameters from `plan finish` are supported on `plan quick`. Only `--report-file` becomes required for quick logs. If `--report-title` is omitted, the plan title is used; other report options, including quality score, remain optional. Attaching a report to a regular `plan finish` remains optional.
 
 > **Avoid duplication with the plan body.** The required quick-log report is the SSOT for _what changed_ (`## Summary`) and _how it was verified_ (`## Verification`); the plan `--content` should carry only the intent/scope (`## TL;DR`). See `plan-execution-guide.md` → Quick Log → `--content` Format for the ownership split.
+
+## Task Report
+
+A task report records the outcome of one task of a V2 plan. Attach it while finishing the task:
+
+```bash
+agentteams task finish --plan-id {planId} --task-id {taskId} --status <DONE | BLOCKED | SKIPPED> \
+  --report-file .agentteams/cli/temp/{taskId-first-8-chars}-task-report.md \
+  --runner-type <runner-type> --model <model-id>
+```
+
+- `--report-title` defaults to `Task {N}. {task title}`. A title already used by another report in the same plan is rejected (409) and the task status stays unchanged.
+- `--report-status` defaults from the task status: `DONE` → `COMPLETED`, `BLOCKED` → `PARTIAL`, `SKIPPED` → `COMPLETED`.
+- `--runner-type` / `--model` are required only when a report is attached; in a runner session they are filled in from the environment.
+- `commitHash` and `branchName` are recorded from the current git state. Line and file counts are collected only when you pass `--commit-start <hash>`, because a task has no recorded start commit.
+- Optional: `--quality-score`, `--review-recommendation`, `--review-reason`, `--fast`, `--keep-temp`, `--no-git`.
+- A task report does not trigger a code review and does not replace the plan-level report from `plan finish`.
 
 ## Metrics (Auto + Manual)
 
